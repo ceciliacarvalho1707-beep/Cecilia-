@@ -50,4 +50,6 @@ export interface Campaign {
   players?: number
   sessions?: number
   party?: PartyMember[]
+  /** Links to entities beyond what already belongs to this campaign via campaignId — e.g. an org or antagonist that spans campaigns. */
+  relations?: string[]
 }

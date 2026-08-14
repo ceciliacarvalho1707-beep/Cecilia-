@@ -1,4 +1,4 @@
-import type { Campaign, Entity } from '../types'
+import type { Campaign, Entity, EntityType } from '../types'
 
 export const campaigns: Campaign[] = [
   {
@@ -111,7 +111,7 @@ export const entities: Entity[] = [
         content: 'Opera através de contratos verbais — promessas que, uma vez aceitas, reescrevem sutilmente a memória de quem as fez.',
       },
     ],
-    relations: ['rookwood', 'padre-thomas', 'marca-na-parede'],
+    relations: ['rookwood', 'padre-thomas', 'marca-na-parede', 'campanha-02'],
   },
   {
     id: 'voraz',
@@ -448,6 +448,7 @@ export const entities: Entity[] = [
     summary: 'O Arquiteto e o Instituto Halvard podem ter a mesma fonte de financiamento original. Guardar para um arco futuro.',
     updatedAt: '2026-07-25',
     blocks: [],
+    relations: ['arquiteto', 'instituto-halvard'],
   },
 ]
 
@@ -467,23 +468,61 @@ export function getEntitiesByCampaign(campaignId: string, type?: Entity['type'])
   return entities.filter((e) => e.campaignId === campaignId && (!type || e.type === type))
 }
 
-export function getRelatedEntities(entity: Entity): Entity[] {
-  if (!entity.relations) return []
-  return entity.relations
-    .map((id) => getEntity(id) ?? (getCampaign(id) as unknown as Entity))
-    .filter(Boolean)
+export interface RelationRef {
+  id: string
+  type: EntityType
+  title: string
+  icon: string
+  href: string
 }
 
-export function resolveRelation(id: string): { title: string; icon: string; href: string } | null {
+export function resolveRelation(id: string): RelationRef | null {
   const entity = getEntity(id)
   if (entity) {
-    return { title: entity.title, icon: entity.icon, href: `/${typeToPath(entity.type)}/${entity.id}` }
+    return { id: entity.id, type: entity.type, title: entity.title, icon: entity.icon, href: `/${typeToPath(entity.type)}/${entity.id}` }
   }
   const campaign = getCampaign(id)
   if (campaign) {
-    return { title: campaign.title, icon: campaign.icon, href: `/campanhas/${campaign.id}` }
+    return { id: campaign.id, type: 'campaign', title: campaign.title, icon: campaign.icon, href: `/campanhas/${campaign.id}` }
   }
   return null
+}
+
+/**
+ * Every declared link is one-directional in the data (A.relations includes B).
+ * This scans every entity/campaign for a reference back to `id` so a page can show
+ * "who points to me" without the source having to declare the link twice.
+ */
+function getIncomingRelationIds(id: string): string[] {
+  const fromEntities = entities.filter((e) => e.relations?.includes(id)).map((e) => e.id)
+  const fromCampaigns = campaigns.filter((c) => c.relations?.includes(id)).map((c) => c.id)
+  const fromMembership = getCampaign(id) ? entities.filter((e) => e.campaignId === id).map((e) => e.id) : []
+  return [...fromEntities, ...fromCampaigns, ...fromMembership]
+}
+
+export interface RelationGroup {
+  type: EntityType
+  label: string
+  icon: string
+  items: RelationRef[]
+}
+
+/** Combines declared (outgoing) and derived (incoming) links for `id`, deduped and grouped by the target's type. */
+export function getGroupedRelations(id: string): RelationGroup[] {
+  const outgoing = getEntity(id)?.relations ?? getCampaign(id)?.relations ?? []
+  const allIds = Array.from(new Set([...outgoing, ...getIncomingRelationIds(id)])).filter((relId) => relId !== id)
+
+  const groups = new Map<EntityType, RelationGroup>()
+  for (const relId of allIds) {
+    const ref = resolveRelation(relId)
+    if (!ref) continue
+    if (!groups.has(ref.type)) {
+      const info = typeLabels[ref.type]
+      groups.set(ref.type, { type: ref.type, label: info.plural, icon: info.icon, items: [] })
+    }
+    groups.get(ref.type)!.items.push(ref)
+  }
+  return Array.from(groups.values())
 }
 
 export function typeToPath(type: Entity['type']): string {

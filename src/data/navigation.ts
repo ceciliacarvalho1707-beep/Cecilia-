@@ -31,6 +31,8 @@ export const campaignSections = (campaignId: string): NavChild[] => [
   { label: 'Locais', icon: '🗺️', href: `/campanhas/${campaignId}#locais` },
   { label: 'Documentos', icon: '📜', href: `/campanhas/${campaignId}#documentos` },
   { label: 'Pistas', icon: '🔎', href: `/campanhas/${campaignId}#pistas` },
+  { label: 'Organizações', icon: '🏛️', href: `/campanhas/${campaignId}#organizacoes` },
+  { label: 'Experimentos', icon: '🧪', href: `/campanhas/${campaignId}#experimentos` },
   { label: 'Segredos', icon: '🔒', href: `/campanhas/${campaignId}#segredos` },
 ]
 

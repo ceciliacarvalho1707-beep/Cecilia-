@@ -3,7 +3,8 @@ import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { PageSection } from '../components/ui/PageSection'
 import { EntityCard } from '../components/ui/EntityCard'
 import { SecretBadge } from '../components/ui/SecretBadge'
-import { getCampaign, getEntitiesByCampaign } from '../data/universe'
+import { RelationGroups } from '../components/ui/RelationGroups'
+import { getCampaign, getEntitiesByCampaign, getEntity, getGroupedRelations } from '../data/universe'
 import { NotFound } from './NotFound'
 
 const STATUS_LABEL: Record<string, string> = {
@@ -24,7 +25,15 @@ export function CampaignDetail() {
   const locations = getEntitiesByCampaign(campaign.id, 'location')
   const documents = getEntitiesByCampaign(campaign.id, 'document')
   const clues = getEntitiesByCampaign(campaign.id, 'clue')
+  const organizations = getEntitiesByCampaign(campaign.id, 'organization')
+  const experiments = getEntitiesByCampaign(campaign.id, 'experiment')
   const secrets = getEntitiesByCampaign(campaign.id).filter((e) => e.status === 'secret')
+
+  // Entities that reference this campaign without belonging to it — e.g. an antagonist whose
+  // influence reaches into another campaign. Members shown in the sections above are excluded.
+  const externalConnections = getGroupedRelations(campaign.id)
+    .map((group) => ({ ...group, items: group.items.filter((item) => getEntity(item.id)?.campaignId !== campaign.id) }))
+    .filter((group) => group.items.length > 0)
 
   return (
     <div className="space-y-9">
@@ -141,6 +150,30 @@ export function CampaignDetail() {
         )}
       </PageSection>
 
+      <PageSection id="organizacoes" icon="🏛️" title="Organizações">
+        {organizations.length > 0 ? (
+          <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+            {organizations.map((e) => (
+              <EntityCard key={e.id} entity={e} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--color-ink-faint)]">Nenhuma organização registrada ainda.</p>
+        )}
+      </PageSection>
+
+      <PageSection id="experimentos" icon="🧪" title="Experimentos">
+        {experiments.length > 0 ? (
+          <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+            {experiments.map((e) => (
+              <EntityCard key={e.id} entity={e} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--color-ink-faint)]">Nenhum experimento registrado ainda.</p>
+        )}
+      </PageSection>
+
       <PageSection id="segredos" icon="🔒" title="Informações do mestre">
         {secrets.length > 0 ? (
           <div className="space-y-2.5">
@@ -161,6 +194,8 @@ export function CampaignDetail() {
           <p className="text-sm text-[var(--color-ink-faint)]">Nenhum segredo registrado nesta campanha ainda.</p>
         )}
       </PageSection>
+
+      <RelationGroups groups={externalConnections} title="🔗 Conexões externas" />
     </div>
   )
 }

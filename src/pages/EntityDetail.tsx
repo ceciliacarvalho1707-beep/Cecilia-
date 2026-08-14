@@ -2,9 +2,9 @@ import { useParams, Link } from 'react-router-dom'
 import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { SecretBadge } from '../components/ui/SecretBadge'
 import { SecretBlock } from '../components/ui/SecretBlock'
-import { RelationChip } from '../components/ui/RelationChip'
+import { RelationGroups } from '../components/ui/RelationGroups'
 import { formatDate } from '../components/ui/EntityCard'
-import { getCampaign, getEntity, resolveRelation, typeLabels, typeToPath } from '../data/universe'
+import { getCampaign, getEntity, getGroupedRelations, typeLabels, typeToPath } from '../data/universe'
 import type { EntityType } from '../types'
 import { NotFound } from './NotFound'
 
@@ -16,7 +16,7 @@ export function EntityDetail({ type }: { type: EntityType }) {
 
   const label = typeLabels[entity.type]
   const campaign = entity.campaignId ? getCampaign(entity.campaignId) : undefined
-  const relations = (entity.relations ?? []).map(resolveRelation).filter(Boolean) as { title: string; icon: string; href: string }[]
+  const relationGroups = getGroupedRelations(entity.id)
 
   return (
     <div>
@@ -68,16 +68,7 @@ export function EntityDetail({ type }: { type: EntityType }) {
         </div>
       )}
 
-      {relations.length > 0 && (
-        <section className="mt-10">
-          <h2 className="mb-3 font-serif-display text-lg font-semibold text-[var(--color-ink)]">🔗 Relacionados</h2>
-          <div className="flex flex-wrap gap-2">
-            {relations.map((r) => (
-              <RelationChip key={r.href} {...r} />
-            ))}
-          </div>
-        </section>
-      )}
+      <RelationGroups groups={relationGroups} />
     </div>
   )
 }

@@ -1,20 +1,32 @@
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { PageSection } from '../components/ui/PageSection'
 import { EntityCard } from '../components/ui/EntityCard'
 import { SecretBadge } from '../components/ui/SecretBadge'
 import { RelationGroups } from '../components/ui/RelationGroups'
-import { getCampaign, getEntitiesByCampaign, getEntity, getGroupedRelations } from '../data/universe'
+import { EditableText } from '../editor/EditableText'
+import { BlockEditor } from '../editor/BlockEditor'
+import { useDebouncedCommit } from '../hooks/useDebouncedCommit'
+import { useUniverse } from '../store/UniverseStore'
+import type { Block, Campaign } from '../types'
 import { NotFound } from './NotFound'
 
-const STATUS_LABEL: Record<string, string> = {
+const STATUS_ORDER: Campaign['status'][] = ['planejamento', 'ativa', 'concluída']
+const STATUS_LABEL: Record<Campaign['status'], string> = {
   ativa: 'Em andamento',
   planejamento: 'Em planejamento',
   concluída: 'Concluída',
 }
+const STATUS_CLASS: Record<Campaign['status'], string> = {
+  ativa: 'bg-[var(--color-status-public-bg)] text-[var(--color-status-public)]',
+  planejamento: 'bg-[var(--color-status-master-bg)] text-[var(--color-status-master)]',
+  concluída: 'bg-[var(--color-overlay)] text-[var(--color-ink-muted)]',
+}
 
 export function CampaignDetail() {
   const { id } = useParams()
+  const { getCampaign, getEntitiesByCampaign, getEntity, getGroupedRelations } = useUniverse()
   const campaign = id ? getCampaign(id) : undefined
 
   if (!campaign) return <NotFound />
@@ -37,43 +49,9 @@ export function CampaignDetail() {
 
   return (
     <div className="space-y-9">
-      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Campanhas', href: '/campanhas' }, { label: campaign.title }]} />
+      <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Campanhas', href: '/campanhas' }, { label: campaign.title || 'Sem título' }]} />
 
-      <header id="visao-geral" className="scroll-mt-20">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <span
-            className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
-              campaign.status === 'ativa'
-                ? 'bg-[var(--color-status-public-bg)] text-[var(--color-status-public)]'
-                : campaign.status === 'planejamento'
-                  ? 'bg-[var(--color-status-master-bg)] text-[var(--color-status-master)]'
-                  : 'bg-[var(--color-overlay)] text-[var(--color-ink-muted)]'
-            }`}
-          >
-            {STATUS_LABEL[campaign.status]}
-          </span>
-          <span className="text-xs text-[var(--color-ink-faint)]">{campaign.subtitle}</span>
-        </div>
-
-        <h1 className="font-serif-display text-4xl font-semibold text-[var(--color-ink)]">
-          <span className="mr-2">{campaign.icon}</span>
-          {campaign.title}
-        </h1>
-
-        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--color-ink-soft)]">{campaign.summary}</p>
-
-        <div className="mt-5 flex flex-wrap gap-6 text-sm text-[var(--color-ink-muted)]">
-          <span>
-            <strong className="text-[var(--color-ink)]">{campaign.sessions ?? 0}</strong> sessões
-          </span>
-          <span>
-            <strong className="text-[var(--color-ink)]">{campaign.players ?? 0}</strong> jogadores
-          </span>
-          <span>
-            <strong className="text-[var(--color-ink)]">{antagonists.length + monsters.length}</strong> ameaças
-          </span>
-        </div>
-      </header>
+      <CampaignOverview key={campaign.id} campaign={campaign} threatCount={antagonists.length + monsters.length} />
 
       <PageSection id="personagens" icon="👥" title="Personagens">
         {campaign.party?.length ? (
@@ -197,5 +175,52 @@ export function CampaignDetail() {
 
       <RelationGroups groups={externalConnections} title="🔗 Conexões externas" />
     </div>
+  )
+}
+
+function CampaignOverview({ campaign, threatCount }: { campaign: Campaign; threatCount: number }) {
+  const { updateCampaignMeta, setCampaignBlocks } = useUniverse()
+  const [title, setTitle] = useState(campaign.title)
+  const [blocks, setBlocks] = useState<Block[]>(campaign.blocks ?? [])
+
+  useDebouncedCommit(title, (t) => updateCampaignMeta(campaign.id, { title: t || 'Sem título' }))
+  useDebouncedCommit(blocks, (b) => setCampaignBlocks(campaign.id, b))
+
+  return (
+    <header id="visao-geral" className="scroll-mt-20">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => updateCampaignMeta(campaign.id, { status: STATUS_ORDER[(STATUS_ORDER.indexOf(campaign.status) + 1) % STATUS_ORDER.length] })}
+          className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition ${STATUS_CLASS[campaign.status]}`}
+        >
+          {STATUS_LABEL[campaign.status]}
+        </button>
+        <span className="text-xs text-[var(--color-ink-faint)]">{campaign.subtitle}</span>
+      </div>
+
+      <EditableText
+        value={title}
+        onChange={setTitle}
+        placeholder="Sem título"
+        className="font-serif-display text-4xl font-semibold text-[var(--color-ink)]"
+      />
+
+      <div className="mt-4">
+        <BlockEditor ownerId={campaign.id} blocks={blocks} onChange={setBlocks} />
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-6 text-sm text-[var(--color-ink-muted)]">
+        <span>
+          <strong className="text-[var(--color-ink)]">{campaign.sessions ?? 0}</strong> sessões
+        </span>
+        <span>
+          <strong className="text-[var(--color-ink)]">{campaign.players ?? 0}</strong> jogadores
+        </span>
+        <span>
+          <strong className="text-[var(--color-ink)]">{threatCount}</strong> ameaças
+        </span>
+      </div>
+    </header>
   )
 }

@@ -1,10 +1,12 @@
 import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { EntityCard } from '../components/ui/EntityCard'
 import { EmptyState } from '../components/ui/EmptyState'
-import { getEntitiesByType, typeLabels } from '../data/universe'
+import { typeLabels } from '../data/universe'
+import { useUniverse } from '../store/UniverseStore'
 import type { EntityType } from '../types'
 
 export function CollectionPage({ type }: { type: EntityType }) {
+  const { getEntitiesByType } = useUniverse()
   const items = getEntitiesByType(type)
   const label = typeLabels[type]
 

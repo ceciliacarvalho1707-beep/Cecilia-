@@ -14,7 +14,7 @@ export function EntityCard({ entity }: { entity: Entity }) {
           <span className="text-xl">{entity.icon}</span>
           <div>
             <h3 className="font-serif-display text-lg font-semibold leading-tight text-[var(--color-ink)] group-hover:text-[var(--color-gold-soft)]">
-              {entity.title}
+              {entity.title || 'Sem título'}
             </h3>
             {entity.subtitle && <p className="text-xs text-[var(--color-ink-muted)]">{entity.subtitle}</p>}
           </div>

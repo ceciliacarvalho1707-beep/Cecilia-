@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Breadcrumbs } from '../components/layout/Breadcrumbs'
-import { campaigns } from '../data/universe'
+import { useUniverse } from '../store/UniverseStore'
 import { formatDate } from '../components/ui/EntityCard'
 
 const STATUS_LABEL: Record<string, string> = {
@@ -10,6 +10,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 export function CampaignsPage() {
+  const { campaigns } = useUniverse()
   return (
     <div>
       <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Campanhas' }]} />
@@ -45,7 +46,7 @@ export function CampaignsPage() {
             </div>
             <div>
               <h2 className="font-serif-display text-xl font-semibold text-[var(--color-ink)] group-hover:text-[var(--color-gold-soft)]">
-                {c.title}
+                {c.title || 'Sem título'}
               </h2>
               <p className="text-xs text-[var(--color-ink-faint)]">{c.subtitle}</p>
             </div>

@@ -1,25 +1,44 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
+import { useUniverse } from '../../store/UniverseStore'
+import { typeToPath } from '../../data/universe'
+import type { EntityType } from '../../types'
 
-const PAGE_TYPES = [
-  { icon: '📄', label: 'Página em branco', desc: 'Comece do zero' },
-  { icon: '🎭', label: 'Campanha', desc: 'Uma nova história para o universo' },
-  { icon: '👹', label: 'Monstro', desc: 'Criatura ou ameaça' },
-  { icon: '☠️', label: 'Antagonista', desc: 'Vilão ou força motriz' },
-  { icon: '👤', label: 'NPC', desc: 'Personagem não jogável' },
-  { icon: '🗺️', label: 'Local', desc: 'Lugar do universo' },
-  { icon: '📜', label: 'Documento', desc: 'Carta, diário, relatório...' },
-  { icon: '🔎', label: 'Pista', desc: 'Fragmento de investigação' },
-  { icon: '🧪', label: 'Experimento', desc: 'Projeto ou protocolo' },
-  { icon: '💡', label: 'Ideia', desc: 'Guardar para depois' },
+const PAGE_TYPES: { icon: string; label: string; desc: string; type: EntityType | 'campaign' }[] = [
+  { icon: '📄', label: 'Página em branco', desc: 'Comece do zero', type: 'page' },
+  { icon: '🎭', label: 'Campanha', desc: 'Uma nova história para o universo', type: 'campaign' },
+  { icon: '👹', label: 'Monstro', desc: 'Criatura ou ameaça', type: 'monster' },
+  { icon: '☠️', label: 'Antagonista', desc: 'Vilão ou força motriz', type: 'antagonist' },
+  { icon: '👤', label: 'NPC', desc: 'Personagem não jogável', type: 'npc' },
+  { icon: '🗺️', label: 'Local', desc: 'Lugar do universo', type: 'location' },
+  { icon: '📜', label: 'Documento', desc: 'Carta, diário, relatório...', type: 'document' },
+  { icon: '🔎', label: 'Pista', desc: 'Fragmento de investigação', type: 'clue' },
+  { icon: '🧪', label: 'Experimento', desc: 'Projeto ou protocolo', type: 'experiment' },
+  { icon: '🏛️', label: 'Organização', desc: 'Facção, grupo ou culto', type: 'organization' },
+  { icon: '💡', label: 'Ideia', desc: 'Guardar para depois', type: 'idea' },
 ]
 
 export function NewPageModal({ onClose }: { onClose: () => void }) {
+  const { createPage, createCampaign } = useUniverse()
+  const navigate = useNavigate()
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
+
+  function handlePick(type: EntityType | 'campaign') {
+    if (type === 'campaign') {
+      const id = createCampaign()
+      navigate(`/campanhas/${id}`, { state: { focusTitle: true } })
+    } else {
+      const id = createPage(type)
+      navigate(`/${typeToPath(type)}/${id}`, { state: { focusTitle: true } })
+    }
+    onClose()
+  }
 
   return (
     <div
@@ -47,9 +66,8 @@ export function NewPageModal({ onClose }: { onClose: () => void }) {
           {PAGE_TYPES.map((t) => (
             <button
               key={t.label}
-              disabled
-              title="Disponível em uma próxima etapa"
-              className="flex cursor-not-allowed items-start gap-3 rounded-lg px-3 py-2.5 text-left opacity-70 transition hover:bg-[var(--color-overlay)]"
+              onClick={() => handlePick(t.type)}
+              className="flex items-start gap-3 rounded-lg px-3 py-2.5 text-left transition hover:bg-[var(--color-overlay)]"
             >
               <span className="text-lg">{t.icon}</span>
               <span>
@@ -61,9 +79,7 @@ export function NewPageModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="border-t border-[var(--color-border-soft)] px-5 py-3">
-          <p className="text-xs text-[var(--color-ink-faint)]">
-            A criação de páginas será habilitada em uma próxima etapa — por enquanto, esta é apenas a experiência visual.
-          </p>
+          <p className="text-xs text-[var(--color-ink-faint)]">A página abre pronta para você escrever — dá para editar tudo depois.</p>
         </div>
       </div>
     </div>

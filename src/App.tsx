@@ -45,6 +45,9 @@ function App() {
         <Route path="/ideias" element={<CollectionPage type="idea" />} />
         <Route path="/ideias/:id" element={<EntityDetail type="idea" />} />
 
+        <Route path="/paginas" element={<CollectionPage type="page" />} />
+        <Route path="/paginas/:id" element={<EntityDetail type="page" />} />
+
         <Route
           path="/conexoes"
           element={

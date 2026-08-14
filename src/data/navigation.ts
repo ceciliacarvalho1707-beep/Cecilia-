@@ -1,4 +1,4 @@
-import { campaigns } from './universe'
+import type { Campaign } from '../types'
 
 export interface NavChild {
   label: string
@@ -11,17 +11,17 @@ export interface NavGroup {
   label: string
   icon: string
   href?: string
-  children?: NavChild[]
   collapsible?: boolean
+  /** Campaigns change at runtime, so this group's children are computed from live data instead of a static list. */
+  dynamicCampaigns?: boolean
 }
 
-const campaignChildren: NavChild[] = campaigns.map((c) => ({
-  label: c.title,
-  icon: c.icon,
-  href: `/campanhas/${c.id}`,
-}))
-
-campaignChildren.push({ label: 'Próximas campanhas', icon: '💭', href: '/campanhas#futuras', badge: 'em breve' })
+export function buildCampaignChildren(campaigns: Campaign[]): NavChild[] {
+  return [
+    ...campaigns.map((c) => ({ label: c.title || 'Sem título', icon: c.icon, href: `/campanhas/${c.id}` })),
+    { label: 'Próximas campanhas', icon: '💭', href: '/campanhas#futuras', badge: 'em breve' },
+  ]
+}
 
 export const campaignSections = (campaignId: string): NavChild[] => [
   { label: 'Visão geral', icon: '📖', href: `/campanhas/${campaignId}#visao-geral` },
@@ -38,7 +38,7 @@ export const campaignSections = (campaignId: string): NavChild[] => [
 
 export const navigation: NavGroup[] = [
   { label: 'Início', icon: '🏠', href: '/' },
-  { label: 'Campanhas', icon: '📚', href: '/campanhas', children: campaignChildren, collapsible: true },
+  { label: 'Campanhas', icon: '📚', href: '/campanhas', collapsible: true, dynamicCampaigns: true },
   { label: 'Criaturas', icon: '👹', href: '/criaturas' },
   { label: 'Antagonistas', icon: '☠️', href: '/antagonistas' },
   { label: 'Personagens', icon: '👤', href: '/personagens' },
@@ -49,5 +49,6 @@ export const navigation: NavGroup[] = [
   { label: 'Organizações', icon: '🏛️', href: '/organizacoes' },
   { label: 'Conexões', icon: '🔗', href: '/conexoes' },
   { label: 'Banco de Ideias', icon: '💡', href: '/ideias' },
+  { label: 'Páginas', icon: '📄', href: '/paginas' },
   { label: 'Arquivo', icon: '🗑️', href: '/arquivo' },
 ]

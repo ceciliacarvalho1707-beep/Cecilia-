@@ -1,10 +1,12 @@
 import { BookOpen, Ghost, Lightbulb, Scroll, Skull, Sparkles } from 'lucide-react'
 import { StatCard } from '../components/ui/StatCard'
-import { campaigns, entities, getCampaign, typeToPath } from '../data/universe'
+import { typeToPath } from '../data/universe'
+import { useUniverse } from '../store/UniverseStore'
 import { formatDate } from '../components/ui/EntityCard'
 import { Link } from 'react-router-dom'
 
 export function Dashboard() {
+  const { campaigns, entities, getCampaign } = useUniverse()
   const antagonistCount = entities.filter((e) => e.type === 'antagonist').length
   const monsterCount = entities.filter((e) => e.type === 'monster').length
   const documentCount = entities.filter((e) => e.type === 'document').length
@@ -51,8 +53,8 @@ export function Dashboard() {
                 >
                   <span className="text-base">{e.icon}</span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-[var(--color-ink-soft)]">{e.title}</p>
-                    {campaign && <p className="truncate text-xs text-[var(--color-ink-faint)]">{campaign.title}</p>}
+                    <p className="truncate text-sm font-medium text-[var(--color-ink-soft)]">{e.title || 'Sem título'}</p>
+                    {campaign && <p className="truncate text-xs text-[var(--color-ink-faint)]">{campaign.title || 'Sem título'}</p>}
                   </div>
                   <span className="shrink-0 text-xs text-[var(--color-ink-faint)]">{formatDate(e.updatedAt)}</span>
                 </Link>

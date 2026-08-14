@@ -4,9 +4,10 @@ import { LayoutGrid, Table2 } from 'lucide-react'
 import { Breadcrumbs } from '../components/layout/Breadcrumbs'
 import { EntityCard, formatDate } from '../components/ui/EntityCard'
 import { SecretBadge } from '../components/ui/SecretBadge'
-import { getCampaign, getEntitiesByType } from '../data/universe'
+import { useUniverse } from '../store/UniverseStore'
 
 export function CreaturesPage() {
+  const { getCampaign, getEntitiesByType } = useUniverse()
   const [view, setView] = useState<'grid' | 'table'>('table')
   const creatures = getEntitiesByType('monster')
 
@@ -69,7 +70,7 @@ export function CreaturesPage() {
                     <td className="px-4 py-3">
                       <Link to={`/criaturas/${c.id}`} className="flex items-center gap-2 font-medium text-[var(--color-ink-soft)] hover:text-[var(--color-gold-soft)]">
                         <span>{c.icon}</span>
-                        {c.title}
+                        {c.title || 'Sem título'}
                       </Link>
                     </td>
                     <td className="px-4 py-3 text-[var(--color-ink-muted)]">

@@ -1,4 +1,4 @@
-import type { RelationGroup } from '../../data/universe'
+import type { RelationGroup } from '../../store/UniverseStore'
 import { RelationChip } from './RelationChip'
 
 export function RelationGroups({ groups, title = '🔗 Conexões' }: { groups: RelationGroup[]; title?: string }) {

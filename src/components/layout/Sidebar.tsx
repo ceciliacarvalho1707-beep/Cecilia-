@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ChevronRight, Plus, X } from 'lucide-react'
-import { navigation, campaignSections, type NavChild } from '../../data/navigation'
+import { navigation, campaignSections, buildCampaignChildren, type NavChild } from '../../data/navigation'
+import { useUniverse } from '../../store/UniverseStore'
 
 function isChildActive(href: string, pathname: string, hash: string): boolean {
   const [childPath, childHash] = href.split('#')
@@ -64,6 +65,7 @@ export function Sidebar({
   onNewPage: () => void
 }) {
   const { pathname, hash } = useLocation()
+  const { campaigns } = useUniverse()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ Campanhas: true })
 
   useEffect(() => {
@@ -93,7 +95,8 @@ export function Sidebar({
 
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2.5 pb-3">
         {navigation.map((group) => {
-          const hasChildren = !!group.children?.length
+          const children = group.dynamicCampaigns ? buildCampaignChildren(campaigns) : undefined
+          const hasChildren = !!children?.length
           const isOpen = expanded[group.label]
           const groupActive = group.href === '/' ? pathname === '/' : pathname.startsWith(group.href ?? '#')
 
@@ -128,7 +131,7 @@ export function Sidebar({
 
               {hasChildren && isOpen && (
                 <div className="ml-3.5 mt-0.5 space-y-0.5 border-l border-[var(--color-border-soft)] pl-2.5">
-                  {group.children!.map((child) => (
+                  {children!.map((child) => (
                     <CampaignChild key={child.href} child={child} pathname={pathname} hash={hash} />
                   ))}
                 </div>

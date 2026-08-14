@@ -1,38 +1,10 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Block, Campaign, Entity, EntityType } from '../types'
-import { seedCampaigns, seedEntities, typeLabels, typeToPath } from '../data/universe'
-
-const STORAGE_KEY = 'meu-universo:data'
-const STORAGE_VERSION = 1
-
-interface PersistedState {
-  version: number
-  campaigns: Campaign[]
-  entities: Entity[]
-}
-
-function loadInitialState(): { campaigns: Campaign[]; entities: Entity[] } {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const parsed: PersistedState = JSON.parse(raw)
-      if (parsed.version === STORAGE_VERSION && Array.isArray(parsed.campaigns) && Array.isArray(parsed.entities)) {
-        return { campaigns: parsed.campaigns, entities: parsed.entities }
-      }
-    }
-  } catch {
-    // fall through to seed data
-  }
-  return { campaigns: seedCampaigns, entities: seedEntities }
-}
-
-function today(): string {
-  return new Date().toISOString().slice(0, 10)
-}
-
-function generateId(type: string): string {
-  return `${type}-${Math.random().toString(36).slice(2, 8)}`
-}
+import { typeLabels, typeToPath } from '../data/universe'
+import { supabase } from '../lib/supabase'
+import { useAuth } from './AuthProvider'
+import { syncBlocks } from './blockSync'
+import { campaignPatchToRowUpdate, entityPatchToRowUpdate, rowToBlock, rowToCampaign, rowToEntity, type BlockRow, type PageRow } from './mappers'
 
 export interface RelationRef {
   id: string
@@ -50,6 +22,8 @@ export interface RelationGroup {
 }
 
 interface UniverseContextValue {
+  loading: boolean
+  workspaceName: string
   campaigns: Campaign[]
   entities: Entity[]
 
@@ -57,6 +31,7 @@ interface UniverseContextValue {
   getCampaign: (id: string) => Campaign | undefined
   getEntitiesByType: (type: EntityType) => Entity[]
   getEntitiesByCampaign: (campaignId: string, type?: EntityType) => Entity[]
+  getArchivedPages: () => { entities: Entity[]; campaigns: Campaign[] }
   resolveRelation: (id: string) => RelationRef | null
   getGroupedRelations: (id: string) => RelationGroup[]
 
@@ -66,20 +41,100 @@ interface UniverseContextValue {
   setCampaignBlocks: (id: string, blocks: Block[]) => void
   addRelation: (id: string, targetId: string) => void
   removeRelation: (id: string, targetId: string) => void
-  createPage: (type: EntityType, campaignId?: string) => string
-  createCampaign: () => string
+  createPage: (type: EntityType, campaignId?: string) => Promise<string>
+  createCampaign: () => Promise<string>
+  archivePage: (id: string) => void
+  unarchivePage: (id: string) => void
 }
 
 const UniverseContext = createContext<UniverseContextValue | null>(null)
 
 export function UniverseProvider({ children }: { children: ReactNode }) {
-  const [campaigns, setCampaigns] = useState<Campaign[]>(() => loadInitialState().campaigns)
-  const [entities, setEntities] = useState<Entity[]>(() => loadInitialState().entities)
+  const { user } = useAuth()
+  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [entities, setEntities] = useState<Entity[]>([])
+  const [loading, setLoading] = useState(true)
+  const [workspaceName, setWorkspaceName] = useState('Meu Universo')
+
+  const workspaceIdRef = useRef<string | null>(null)
+  // pageId -> (blockId -> fractional position). Blocks don't carry position in the frontend
+  // model, so this is the only place that number lives — populated on load, kept in sync on write.
+  const positionsRef = useRef<Map<string, Map<string, number>>>(new Map())
 
   useEffect(() => {
-    const payload: PersistedState = { version: STORAGE_VERSION, campaigns, entities }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
-  }, [campaigns, entities])
+    if (!user) {
+      setEntities([])
+      setCampaigns([])
+      workspaceIdRef.current = null
+      positionsRef.current = new Map()
+      setLoading(false)
+      return
+    }
+
+    let cancelled = false
+    setLoading(true)
+
+    ;(async () => {
+      const { data: ws, error: wsError } = await supabase.from('workspaces').select('id, name').limit(1).maybeSingle()
+      if (wsError || !ws) {
+        console.error('Não foi possível carregar o workspace:', wsError)
+        if (!cancelled) setLoading(false)
+        return
+      }
+      if (cancelled) return
+      workspaceIdRef.current = ws.id
+      setWorkspaceName(ws.name)
+
+      const { data: pageRows, error: pagesError } = await supabase.from('pages').select('*').eq('workspace_id', ws.id)
+      if (pagesError) console.error(pagesError)
+      const pages = (pageRows ?? []) as PageRow[]
+      const pageIds = pages.map((p) => p.id)
+
+      const [{ data: blockRows }, { data: relationRows }] = pageIds.length
+        ? await Promise.all([
+            supabase.from('blocks').select('*').in('page_id', pageIds).order('position'),
+            supabase.from('relations').select('*').in('source_page_id', pageIds),
+          ])
+        : [{ data: [] as BlockRow[] }, { data: [] as { source_page_id: string; target_page_id: string }[] }]
+
+      if (cancelled) return
+
+      const blocksByPage = new Map<string, Block[]>()
+      const posMap = new Map<string, Map<string, number>>()
+      for (const row of (blockRows ?? []) as BlockRow[]) {
+        if (!blocksByPage.has(row.page_id)) {
+          blocksByPage.set(row.page_id, [])
+          posMap.set(row.page_id, new Map())
+        }
+        blocksByPage.get(row.page_id)!.push(rowToBlock(row))
+        posMap.get(row.page_id)!.set(row.id, row.position)
+      }
+      positionsRef.current = posMap
+
+      const relationsByPage = new Map<string, string[]>()
+      for (const row of relationRows ?? []) {
+        if (!relationsByPage.has(row.source_page_id)) relationsByPage.set(row.source_page_id, [])
+        relationsByPage.get(row.source_page_id)!.push(row.target_page_id)
+      }
+
+      const newEntities: Entity[] = []
+      const newCampaigns: Campaign[] = []
+      for (const row of pages) {
+        const blocks = blocksByPage.get(row.id) ?? []
+        const relations = relationsByPage.get(row.id) ?? []
+        if (row.type === 'campaign') newCampaigns.push(rowToCampaign(row, blocks, relations))
+        else newEntities.push(rowToEntity(row, blocks, relations))
+      }
+
+      setEntities(newEntities)
+      setCampaigns(newCampaigns)
+      setLoading(false)
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [user?.id])
 
   const value = useMemo<UniverseContextValue>(() => {
     const getEntity = (id: string) => entities.find((e) => e.id === id)
@@ -121,70 +176,166 @@ export function UniverseProvider({ children }: { children: ReactNode }) {
       return Array.from(groups.values())
     }
 
+    function getPositions(pageId: string): Map<string, number> {
+      if (!positionsRef.current.has(pageId)) positionsRef.current.set(pageId, new Map())
+      return positionsRef.current.get(pageId)!
+    }
+
+    async function touchPage(id: string) {
+      const { error } = await supabase.from('pages').update({ updated_at: new Date().toISOString() }).eq('id', id)
+      if (error) console.error(error)
+    }
+
     return {
+      loading,
+      workspaceName,
       campaigns,
       entities,
       getEntity,
       getCampaign,
-      getEntitiesByType: (type) => entities.filter((e) => e.type === type),
-      getEntitiesByCampaign: (campaignId, type) => entities.filter((e) => e.campaignId === campaignId && (!type || e.type === type)),
+      getEntitiesByType: (type) => entities.filter((e) => e.type === type && !e.archivedAt),
+      getEntitiesByCampaign: (campaignId, type) => entities.filter((e) => e.campaignId === campaignId && !e.archivedAt && (!type || e.type === type)),
+      getArchivedPages: () => ({
+        entities: entities.filter((e) => e.archivedAt),
+        campaigns: campaigns.filter((c) => c.archivedAt),
+      }),
       resolveRelation,
       getGroupedRelations,
 
       updateEntityMeta: (id, patch) => {
-        setEntities((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch, updatedAt: today() } : e)))
+        const current = getEntity(id)
+        if (!current) return
+        setEntities((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch } : e)))
+        supabase
+          .from('pages')
+          .update(entityPatchToRowUpdate(current, patch))
+          .eq('id', id)
+          .then(({ error }) => error && console.error(error))
       },
+
       setEntityBlocks: (id, blocks) => {
-        setEntities((prev) => prev.map((e) => (e.id === id ? { ...e, blocks, updatedAt: today() } : e)))
+        const current = getEntity(id)
+        if (!current) return
+        const oldBlocks = current.blocks
+        setEntities((prev) => prev.map((e) => (e.id === id ? { ...e, blocks } : e)))
+        ;(async () => {
+          await syncBlocks(supabase, id, oldBlocks, blocks, getPositions(id))
+          await touchPage(id)
+        })().catch(console.error)
       },
+
       updateCampaignMeta: (id, patch) => {
-        setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch, updatedAt: today() } : c)))
+        const current = getCampaign(id)
+        if (!current) return
+        setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)))
+        supabase
+          .from('pages')
+          .update(campaignPatchToRowUpdate(current, patch))
+          .eq('id', id)
+          .then(({ error }) => error && console.error(error))
       },
+
       setCampaignBlocks: (id, blocks) => {
-        setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, blocks, updatedAt: today() } : c)))
+        const current = getCampaign(id)
+        if (!current) return
+        const oldBlocks = current.blocks ?? []
+        setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, blocks } : c)))
+        ;(async () => {
+          await syncBlocks(supabase, id, oldBlocks, blocks, getPositions(id))
+          await touchPage(id)
+        })().catch(console.error)
       },
+
       addRelation: (id, targetId) => {
-        setEntities((prev) => prev.map((e) => (e.id === id && !e.relations?.includes(targetId) ? { ...e, relations: [...(e.relations ?? []), targetId], updatedAt: today() } : e)))
-        setCampaigns((prev) => prev.map((c) => (c.id === id && !c.relations?.includes(targetId) ? { ...c, relations: [...(c.relations ?? []), targetId], updatedAt: today() } : c)))
+        setEntities((prev) => prev.map((e) => (e.id === id && !e.relations?.includes(targetId) ? { ...e, relations: [...(e.relations ?? []), targetId] } : e)))
+        setCampaigns((prev) => prev.map((c) => (c.id === id && !c.relations?.includes(targetId) ? { ...c, relations: [...(c.relations ?? []), targetId] } : c)))
+        supabase
+          .from('relations')
+          .insert({ source_page_id: id, target_page_id: targetId })
+          .then(({ error }) => error && console.error(error))
       },
+
       removeRelation: (id, targetId) => {
-        setEntities((prev) => prev.map((e) => (e.id === id ? { ...e, relations: (e.relations ?? []).filter((r) => r !== targetId), updatedAt: today() } : e)))
-        setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, relations: (c.relations ?? []).filter((r) => r !== targetId), updatedAt: today() } : c)))
+        setEntities((prev) => prev.map((e) => (e.id === id ? { ...e, relations: (e.relations ?? []).filter((r) => r !== targetId) } : e)))
+        setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, relations: (c.relations ?? []).filter((r) => r !== targetId) } : c)))
+        supabase
+          .from('relations')
+          .delete()
+          .eq('source_page_id', id)
+          .eq('target_page_id', targetId)
+          .then(({ error }) => error && console.error(error))
       },
-      createPage: (type, campaignId) => {
-        const id = generateId(type)
+
+      createPage: async (type, campaignId) => {
+        const workspaceId = workspaceIdRef.current
+        if (!workspaceId) throw new Error('Workspace ainda não carregado')
         const info = typeLabels[type]
-        const newEntity: Entity = {
-          id,
-          type,
-          title: '',
-          icon: info.icon,
-          campaignId,
-          status: 'public',
-          summary: '',
-          updatedAt: today(),
-          blocks: [],
-        }
-        setEntities((prev) => [...prev, newEntity])
-        return id
+        const { data, error } = await supabase
+          .from('pages')
+          .insert({
+            workspace_id: workspaceId,
+            type,
+            campaign_id: campaignId ?? null,
+            title: '',
+            icon: info.icon,
+            status: 'public',
+            tags: [],
+            summary: '',
+            properties: {},
+            created_by: user?.id,
+          })
+          .select()
+          .single()
+        if (error || !data) throw error ?? new Error('Falha ao criar página')
+        setEntities((prev) => [...prev, rowToEntity(data as PageRow, [], [])])
+        return data.id as string
       },
-      createCampaign: () => {
-        const id = generateId('campanha')
-        const newCampaign: Campaign = {
-          id,
-          title: '',
-          subtitle: '',
-          icon: '🎭',
-          status: 'planejamento',
-          summary: '',
-          updatedAt: today(),
-          blocks: [],
-        }
-        setCampaigns((prev) => [...prev, newCampaign])
-        return id
+
+      createCampaign: async () => {
+        const workspaceId = workspaceIdRef.current
+        if (!workspaceId) throw new Error('Workspace ainda não carregado')
+        const { data, error } = await supabase
+          .from('pages')
+          .insert({
+            workspace_id: workspaceId,
+            type: 'campaign',
+            title: '',
+            icon: '🎭',
+            status: 'public',
+            tags: [],
+            summary: '',
+            properties: { campaignStatus: 'planejamento', players: 0, sessions: 0, party: [] },
+            created_by: user?.id,
+          })
+          .select()
+          .single()
+        if (error || !data) throw error ?? new Error('Falha ao criar campanha')
+        setCampaigns((prev) => [...prev, rowToCampaign(data as PageRow, [], [])])
+        return data.id as string
+      },
+
+      archivePage: (id) => {
+        const now = new Date().toISOString()
+        setEntities((prev) => prev.map((e) => (e.id === id ? { ...e, archivedAt: now } : e)))
+        setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, archivedAt: now } : c)))
+        supabase
+          .from('pages')
+          .update({ archived_at: now })
+          .eq('id', id)
+          .then(({ error }) => error && console.error(error))
+      },
+
+      unarchivePage: (id) => {
+        setEntities((prev) => prev.map((e) => (e.id === id ? { ...e, archivedAt: undefined } : e)))
+        setCampaigns((prev) => prev.map((c) => (c.id === id ? { ...c, archivedAt: undefined } : c)))
+        supabase
+          .from('pages')
+          .update({ archived_at: null })
+          .eq('id', id)
+          .then(({ error }) => error && console.error(error))
       },
     }
-  }, [campaigns, entities])
+  }, [campaigns, entities, loading, workspaceName, user])
 
   return <UniverseContext.Provider value={value}>{children}</UniverseContext.Provider>
 }

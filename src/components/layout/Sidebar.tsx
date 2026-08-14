@@ -65,7 +65,8 @@ export function Sidebar({
   onNewPage: () => void
 }) {
   const { pathname, hash } = useLocation()
-  const { campaigns } = useUniverse()
+  const { campaigns, workspaceName } = useUniverse()
+  const activeCampaigns = campaigns.filter((c) => !c.archivedAt)
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ Campanhas: true })
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export function Sidebar({
             🎲
           </span>
           <div className="leading-tight">
-            <p className="font-serif-display text-[15px] font-semibold text-[var(--color-ink)]">Meu Universo</p>
+            <p className="font-serif-display text-[15px] font-semibold text-[var(--color-ink)]">{workspaceName}</p>
             <p className="text-[10.5px] uppercase tracking-wider text-[var(--color-ink-faint)]">Bíblia do Universo</p>
           </div>
         </div>
@@ -95,7 +96,7 @@ export function Sidebar({
 
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2.5 pb-3">
         {navigation.map((group) => {
-          const children = group.dynamicCampaigns ? buildCampaignChildren(campaigns) : undefined
+          const children = group.dynamicCampaigns ? buildCampaignChildren(activeCampaigns) : undefined
           const hasChildren = !!children?.length
           const isOpen = expanded[group.label]
           const groupActive = group.href === '/' ? pathname === '/' : pathname.startsWith(group.href ?? '#')

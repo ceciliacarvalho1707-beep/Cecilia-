@@ -4,10 +4,10 @@ import type { Block, BlockType, SecretLevel } from '../types'
 type DistributiveOmit<T, K extends keyof T> = T extends unknown ? Omit<T, K> : never
 export type BlockDraft = DistributiveOmit<Block, 'id'>
 
-let counter = 0
+/** A real UUID, generated client-side — stays valid as a Postgres `uuid` primary key so the block a
+ * user just created can be shown and typed into immediately, without waiting on a server round-trip. */
 export function makeBlockId(): string {
-  counter += 1
-  return `b${Date.now().toString(36)}${counter}`
+  return crypto.randomUUID()
 }
 
 /** Assigns stable, readable ids to hand-authored seed blocks: `${prefix}-1`, `${prefix}-2`, ... */

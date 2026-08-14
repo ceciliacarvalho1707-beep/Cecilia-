@@ -6,7 +6,9 @@ import { formatDate } from '../components/ui/EntityCard'
 import { Link } from 'react-router-dom'
 
 export function Dashboard() {
-  const { campaigns, entities, getCampaign } = useUniverse()
+  const { campaigns: allCampaigns, entities: allEntities, getCampaign } = useUniverse()
+  const campaigns = allCampaigns.filter((c) => !c.archivedAt)
+  const entities = allEntities.filter((e) => !e.archivedAt)
   const antagonistCount = entities.filter((e) => e.type === 'antagonist').length
   const monsterCount = entities.filter((e) => e.type === 'monster').length
   const documentCount = entities.filter((e) => e.type === 'document').length

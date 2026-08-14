@@ -29,15 +29,15 @@ export function NewPageModal({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  function handlePick(type: EntityType | 'campaign') {
+  async function handlePick(type: EntityType | 'campaign') {
+    onClose()
     if (type === 'campaign') {
-      const id = createCampaign()
+      const id = await createCampaign()
       navigate(`/campanhas/${id}`, { state: { focusTitle: true } })
     } else {
-      const id = createPage(type)
+      const id = await createPage(type)
       navigate(`/${typeToPath(type)}/${id}`, { state: { focusTitle: true } })
     }
-    onClose()
   }
 
   return (

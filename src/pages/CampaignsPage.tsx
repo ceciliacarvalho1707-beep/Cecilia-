@@ -10,7 +10,8 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 export function CampaignsPage() {
-  const { campaigns } = useUniverse()
+  const { campaigns: allCampaigns } = useUniverse()
+  const campaigns = allCampaigns.filter((c) => !c.archivedAt)
   return (
     <div>
       <Breadcrumbs items={[{ label: 'Início', href: '/' }, { label: 'Campanhas' }]} />

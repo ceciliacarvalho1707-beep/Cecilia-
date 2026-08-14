@@ -97,6 +97,7 @@ export interface Entity {
   element?: string
   summary: string
   updatedAt: string
+  archivedAt?: string
   blocks: Block[]
   relations?: string[]
 }
@@ -114,6 +115,7 @@ export interface Campaign {
   status: 'ativa' | 'planejamento' | 'concluída'
   summary: string
   updatedAt: string
+  archivedAt?: string
   players?: number
   sessions?: number
   party?: PartyMember[]

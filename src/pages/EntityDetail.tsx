@@ -49,7 +49,7 @@ function EntityDocument({
   label: { singular: string; plural: string; icon: string }
   autoFocusTitle: boolean
 }) {
-  const { updateEntityMeta, setEntityBlocks } = useUniverse()
+  const { updateEntityMeta, setEntityBlocks, archivePage, unarchivePage } = useUniverse()
   const [title, setTitle] = useState(entity.title)
   const [blocks, setBlocks] = useState<Block[]>(entity.blocks)
 
@@ -67,6 +67,9 @@ function EntityDocument({
         onChangeCampaign={(campaignId) => updateEntityMeta(entity.id, { campaignId })}
         tags={entity.tags ?? []}
         onChangeTags={(tags) => updateEntityMeta(entity.id, { tags })}
+        archivedAt={entity.archivedAt}
+        onArchive={() => archivePage(entity.id)}
+        onUnarchive={() => unarchivePage(entity.id)}
       />
 
       <EditableText

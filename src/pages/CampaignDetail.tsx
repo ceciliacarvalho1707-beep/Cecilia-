@@ -179,7 +179,7 @@ export function CampaignDetail() {
 }
 
 function CampaignOverview({ campaign, threatCount }: { campaign: Campaign; threatCount: number }) {
-  const { updateCampaignMeta, setCampaignBlocks } = useUniverse()
+  const { updateCampaignMeta, setCampaignBlocks, archivePage, unarchivePage } = useUniverse()
   const [title, setTitle] = useState(campaign.title)
   const [blocks, setBlocks] = useState<Block[]>(campaign.blocks ?? [])
 
@@ -197,6 +197,13 @@ function CampaignOverview({ campaign, threatCount }: { campaign: Campaign; threa
           {STATUS_LABEL[campaign.status]}
         </button>
         <span className="text-xs text-[var(--color-ink-faint)]">{campaign.subtitle}</span>
+        <button
+          type="button"
+          onClick={() => (campaign.archivedAt ? unarchivePage(campaign.id) : archivePage(campaign.id))}
+          className="ml-auto rounded-full border border-[var(--color-border-soft)] px-2.5 py-0.5 text-[11px] text-[var(--color-ink-faint)] transition hover:border-[var(--color-border-strong)] hover:text-[var(--color-ink-soft)]"
+        >
+          {campaign.archivedAt ? 'Restaurar' : 'Arquivar'}
+        </button>
       </div>
 
       <EditableText

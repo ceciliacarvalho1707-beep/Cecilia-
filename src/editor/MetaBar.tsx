@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, X } from 'lucide-react'
+import { Archive, ArchiveRestore, Plus, X } from 'lucide-react'
 import type { SecretLevel } from '../types'
 import { useUniverse } from '../store/UniverseStore'
 
@@ -19,9 +19,12 @@ interface MetaBarProps {
   onChangeCampaign: (id: string | undefined) => void
   tags: string[]
   onChangeTags: (tags: string[]) => void
+  archivedAt?: string
+  onArchive: () => void
+  onUnarchive: () => void
 }
 
-export function MetaBar({ typeLabel, typeIcon, status, onChangeStatus, campaignId, onChangeCampaign, tags, onChangeTags }: MetaBarProps) {
+export function MetaBar({ typeLabel, typeIcon, status, onChangeStatus, campaignId, onChangeCampaign, tags, onChangeTags, archivedAt, onArchive, onUnarchive }: MetaBarProps) {
   const { campaigns } = useUniverse()
   const [addingTag, setAddingTag] = useState(false)
   const [tagDraft, setTagDraft] = useState('')
@@ -92,6 +95,22 @@ export function MetaBar({ typeLabel, typeIcon, status, onChangeStatus, campaignI
           <Plus className="size-2.5" /> tag
         </button>
       )}
+
+      <button
+        type="button"
+        onClick={archivedAt ? onUnarchive : onArchive}
+        className="ml-auto flex items-center gap-1.5 rounded-full border border-[var(--color-border-soft)] px-2.5 py-1 text-[11px] text-[var(--color-ink-faint)] transition hover:border-[var(--color-border-strong)] hover:text-[var(--color-ink-soft)]"
+      >
+        {archivedAt ? (
+          <>
+            <ArchiveRestore className="size-3" /> Restaurar
+          </>
+        ) : (
+          <>
+            <Archive className="size-3" /> Arquivar
+          </>
+        )}
+      </button>
     </div>
   )
 }

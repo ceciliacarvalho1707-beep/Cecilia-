@@ -7,9 +7,20 @@ import { CreaturesPage } from './pages/CreaturesPage'
 import { CollectionPage } from './pages/CollectionPage'
 import { EntityDetail } from './pages/EntityDetail'
 import { PlaceholderPage } from './pages/PlaceholderPage'
+import { ArchivePage } from './pages/ArchivePage'
 import { NotFound } from './pages/NotFound'
+import { AuthScreen } from './pages/AuthScreen'
+import { useAuth } from './store/AuthProvider'
+import { useUniverse } from './store/UniverseStore'
 
 function App() {
+  const { user, loading: authLoading } = useAuth()
+  const { loading: dataLoading } = useUniverse()
+
+  if (authLoading) return <SplashScreen />
+  if (!user) return <AuthScreen />
+  if (dataLoading) return <SplashScreen />
+
   return (
     <Routes>
       <Route element={<AppShell />}>
@@ -59,14 +70,19 @@ function App() {
           }
         />
 
-        <Route
-          path="/arquivo"
-          element={<PlaceholderPage icon="🗑️" title="Arquivo" description="Páginas arquivadas aparecerão aqui." />}
-        />
+        <Route path="/arquivo" element={<ArchivePage />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
+  )
+}
+
+function SplashScreen() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-canvas text-[var(--color-ink-faint)]">
+      <span className="animate-pulse text-2xl">🎲</span>
+    </div>
   )
 }
 

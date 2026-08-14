@@ -1,0 +1,97 @@
+@import 'tailwindcss';
+
+@theme {
+  /* -- surfaces -- */
+  --color-void: #0a0a0e;
+  --color-abyss: #0e0e13;
+  --color-base: #131319;
+  --color-raised: #18181f;
+  --color-overlay: #1e1e27;
+  --color-border: #28282f;
+  --color-border-soft: #202027;
+  --color-border-strong: #34343e;
+
+  /* -- text -- */
+  --color-ink: #ece8e1;
+  --color-ink-soft: #c3bfc7;
+  --color-ink-muted: #8b8896;
+  --color-ink-faint: #5c5966;
+
+  /* -- accents -- */
+  --color-gold: #c9a24b;
+  --color-gold-soft: #ddc07f;
+  --color-gold-dim: #8a7038;
+  --color-violet: #9a8bc4;
+  --color-violet-soft: #b7abd9;
+  --color-violet-dim: #574f75;
+
+  /* -- status: public / master / secret -- */
+  --color-status-public: #5fa383;
+  --color-status-public-bg: rgba(95, 163, 131, 0.12);
+  --color-status-master: #cf9f4a;
+  --color-status-master-bg: rgba(207, 159, 74, 0.12);
+  --color-status-secret: #a1544f;
+  --color-status-secret-bg: rgba(161, 84, 79, 0.14);
+
+  --font-serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+
+  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -12px rgba(0, 0, 0, 0.55);
+  --shadow-float: 0 4px 10px rgba(0, 0, 0, 0.35), 0 24px 48px -16px rgba(0, 0, 0, 0.6);
+}
+
+html {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(201, 162, 75, 0.25);
+  color: var(--color-ink);
+}
+
+/* thin, quiet scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-faint);
+}
+
+.font-serif-display {
+  font-family: var(--font-serif);
+}
+
+/* faint noise/vignette texture for the main canvas, kept subtle */
+.bg-canvas {
+  background-color: var(--color-void);
+  background-image:
+    radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(154, 139, 196, 0.05), transparent 60%),
+    radial-gradient(ellipse 900px 500px at 100% 10%, rgba(201, 162, 75, 0.04), transparent 55%);
+}

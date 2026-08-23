@@ -10,8 +10,13 @@
  *
  * Ou coloque as quatro variáveis em .env.local e rode `npm run seed`.
  */
-import 'dotenv/config'
+import { config } from 'dotenv'
 import { createClient } from '@supabase/supabase-js'
+
+// dotenv's default `import 'dotenv/config'` only looks for a file named `.env` — Vite's
+// `.env.local` convention needs to be pointed at explicitly.
+config({ path: '.env.local' })
+config()
 import { seedCampaigns, seedEntities } from '../src/data/universe'
 import type { Block, Campaign, Entity } from '../src/types'
 

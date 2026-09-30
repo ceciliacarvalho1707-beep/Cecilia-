@@ -570,6 +570,99 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .age-block li::marker { color: var(--gold); }
 @media (max-width: 760px) { .age-block { grid-template-columns: 1fr; } }
 
+/* Aula-modelo: barra de tempo + índice numerado de blocos */
+.lesson-bar { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+.lesson-bar-track {
+  display: flex;
+  gap: 2px;
+  height: 46px;
+}
+.lesson-bar-track span {
+  flex: var(--m) 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: 0 .7rem;
+  background: var(--pine);
+  color: rgba(244, 240, 225, .8);
+  font-size: .78rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.lesson-bar-track span:nth-child(even) { background: var(--pine-soft); }
+.lesson-bar-track b {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: .9rem;
+  color: var(--gold);
+}
+.lesson-bar-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: .5rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: .85rem;
+  color: var(--ink-soft);
+}
+@media (max-width: 760px) {
+  .lesson-bar-track span { font-size: 0; justify-content: center; padding: 0; }
+  .lesson-bar-track b { font-size: .85rem; }
+}
+
+.lesson { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.lesson li {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) 7rem;
+  gap: 1.5rem;
+  align-items: baseline;
+  padding: clamp(1.75rem, 3vw, 2.25rem) 0;
+  border-bottom: 1px solid var(--line-light);
+}
+.lesson-num { font-size: 1.9rem; line-height: 1; color: var(--gold-deep); }
+.lesson-body h3 { margin-bottom: .9rem; }
+.lesson-body p { margin: 0; max-width: 44rem; }
+.lesson-ex { color: var(--ink); font-weight: 500; margin-bottom: .8rem !important; }
+.lesson-why { color: var(--ink-soft); font-size: 1rem; }
+.lesson-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: .2rem;
+}
+.lesson-time {
+  text-align: right;
+  font-size: .85rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.lesson-time .numeral { font-size: 2.4rem; line-height: 1; color: var(--ink); margin-right: .15rem; }
+.lesson li.lesson-total { border-bottom: 1px solid var(--ink); align-items: center; padding: 1.25rem 0; }
+.lesson-total .lesson-label { margin: 0; color: var(--ink); }
+.lesson-total .lesson-time .numeral { color: var(--gold-deep); }
+
+@media (max-width: 760px) {
+  .lesson li {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    grid-template-areas: "num time" "body body";
+    gap: .75rem 1rem;
+  }
+  .lesson-num { grid-area: num; }
+  .lesson-time { grid-area: time; text-align: left; }
+  .lesson-body { grid-area: body; }
+  .lesson li.lesson-total { grid-template-areas: "label time"; grid-template-columns: 1fr auto; }
+  .lesson-total > span:first-child { display: none; }
+  .lesson-total .lesson-label { grid-area: label; }
+  .lesson-total .lesson-time { text-align: right; }
+}
+
 /* Prosa longa (páginas internas) */
 .prose { max-width: 42rem; }
 .prose h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); margin: 3rem 0 1.25rem; }

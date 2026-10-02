@@ -19,12 +19,14 @@
     });
   }
 
-  // Revelação suave ao rolar
+  // Leve deslocamento ao rolar (o conteúdo fica sempre visível)
   var items = document.querySelectorAll('.reveal');
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!('IntersectionObserver' in window)) {
     items.forEach(function (el) { el.classList.add('is-visible'); });
     return;
   }
+  document.documentElement.classList.add('js-motion');
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {

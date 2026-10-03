@@ -32,8 +32,8 @@ I = {
     'shield': ic('<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>'),
 }
 
-LOGO_SVG = ('<svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><rect width="34" height="34" rx="10" fill="#B9893C"/>'
-            '<path d="M8 21c3.5-8 7.5-10 9-4.5s5.5 4 9-4" stroke="#16261D" stroke-width="2.4" stroke-linecap="round"/></svg>')
+LOGO_SVG = ('<svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="14.5" stroke="#B9893C"/>'
+            '<path d="M6 20c4-9 8-11 10-4s6 5 10-4" stroke="#B9893C" stroke-width="1.6" stroke-linecap="round"/></svg>')
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com" />\n'
          '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n'
@@ -136,7 +136,7 @@ def sources(items, section_class='bg-parchment'):
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Fontes</span>
-          <h2>De onde vêm essas informações</h2>
+          <h2>De onde vêm <em>essas</em> informações</h2>
         </div>
         <div class="sources">
           <ol>
@@ -247,7 +247,7 @@ TIPS = [
 ]
 tip_cards = '\n'.join(
     f'''          <div class="step">
-            <div class="step-num">{n}</div>
+            <div class="step-num">{n:02d}</div>
             <h3>{t}</h3>
             <p>{d}</p>
           </div>''' for n, (t, d) in enumerate(TIPS, 1))
@@ -269,7 +269,7 @@ HOME = f'''    <section class="hero on-dark">
       <div class="wrap hero-grid">
         <div>
           <span class="eyebrow">Para pais e mães</span>
-          <h1>Criança que se mexe <em>cresce</em> mais forte.</h1>
+          <h1>Crianças que se movem <em>crescem</em> por inteiro.</h1>
           <p class="lead">Descubra, de forma simples, como o exercício físico ajuda o corpo e a mente do seu filho, e quanto movimento é recomendado em cada idade.</p>
           <div class="hero-actions">
             <a class="btn btn-gold" href="por-idade.html">Ver o guia por idade →</a>
@@ -294,7 +294,7 @@ HOME = f'''    <section class="hero on-dark">
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Benefícios</span>
-          <h2>O que o exercício faz pelo seu filho</h2>
+          <h2>O que o exercício faz <em>pelo</em> seu filho</h2>
           <p class="lead">O movimento diário ajuda no corpo e na mente ao mesmo tempo. Veja os principais benefícios.</p>
         </div>
         <div class="cards">
@@ -307,7 +307,7 @@ HOME = f'''    <section class="hero on-dark">
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Recomendações</span>
-          <h2>Quanto movimento em cada idade?</h2>
+          <h2>Quanto movimento <em>em</em> cada idade?</h2>
           <p class="lead">Escolha a faixa de idade do seu filho para ver o que a Organização Mundial da Saúde recomenda.</p>
         </div>
         <div class="tabs" data-tabs>
@@ -316,7 +316,7 @@ HOME = f'''    <section class="hero on-dark">
           </div>
 {tab_panels}
         </div>
-        <p style="text-align:center;margin-top:2rem"><a class="text-link" href="por-idade.html">Ver o guia completo por idade →</a></p>
+        <p style="margin-top:2.5rem"><a class="text-link" href="por-idade.html">Ver o guia completo por idade →</a></p>
       </div>
     </section>
 
@@ -324,7 +324,7 @@ HOME = f'''    <section class="hero on-dark">
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Dicas práticas</span>
-          <h2>Como colocar mais movimento no dia a dia</h2>
+          <h2>Mais movimento <em>no</em> dia a dia</h2>
           <p class="lead">Não é preciso academia nem planilha. Pequenas mudanças na rotina fazem diferença.</p>
         </div>
         <div class="steps">
@@ -358,7 +358,7 @@ HOME = f'''    <section class="hero on-dark">
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Dúvidas</span>
-          <h2>Perguntas frequentes</h2>
+          <h2>Perguntas <em>frequentes</em></h2>
         </div>
         <div class="faq">
 {faq_items}
@@ -369,7 +369,7 @@ HOME = f'''    <section class="hero on-dark">
     <section class="section bg-cream">
       <div class="wrap">
         <div class="cta">
-          <h2>Toda atividade conta</h2>
+          <h2>Toda atividade <em>conta</em>.</h2>
           <p class="lead">Fazer um pouco é melhor do que nada, e fazer mais traz mais benefícios. Comece hoje, do jeito que der.</p>
           <a class="btn btn-gold" href="por-idade.html">Ver o que é ideal para o meu filho →</a>
         </div>
@@ -403,7 +403,7 @@ def topic(id_, icon, title, paras, tip=None, warn=None):
 def stats(items):
     return '\n'.join(f'          <div class="stat"><strong>{a}</strong><span>{b}</span></div>' for a, b in items)
 
-CORPO = f'''{page_header('O corpo', 'O corpo', 'Como o exercício fortalece o corpo', 'Ossos, músculos, coração e coordenação: o corpo da criança está se formando e responde muito bem ao movimento.')}
+CORPO = f'''{page_header('O corpo', 'O corpo', 'Como o exercício fortalece <em>o</em> corpo', 'Ossos, músculos, coração e coordenação: o corpo da criança está se formando e responde muito bem ao movimento.')}
     <section class="on-dark" style="padding-bottom:3.5rem">
       <div class="wrap">
         <div class="stats">
@@ -428,7 +428,7 @@ CORPO = f'''{page_header('O corpo', 'O corpo', 'Como o exercício fortalece o co
 {topic('coordenacao', 'target', 'Coordenação: a base de todos os esportes',
        ['Correr, saltar, arremessar, chutar, se equilibrar e pegar uma bola são as <strong>habilidades motoras básicas</strong>. Elas não aparecem sozinhas com a idade: precisam de oportunidade e prática.',
         'Crianças que se sentem capazes brincam mais, e quem brinca mais fica ainda mais capaz. É um ciclo que se alimenta.'])}
-        <p style="text-align:center;margin-top:2.5rem"><a class="btn btn-pine" href="mente.html">Próximo: a mente →</a></p>
+        <p style="margin-top:2.5rem"><a class="btn btn-pine" href="mente.html">Próximo: a mente →</a></p>
       </div>
     </section>
 
@@ -438,7 +438,7 @@ CORPO = f'''{page_header('O corpo', 'O corpo', 'Como o exercício fortalece o co
 # A mente
 # --------------------------------------------------------------------------
 
-MENTE = f'''{page_header('A mente', 'A mente', 'Como o exercício ajuda o cérebro', 'Movimento também é aprendizado. Ele ajuda na atenção, no humor e no sono das crianças.')}
+MENTE = f'''{page_header('A mente', 'A mente', 'O cérebro também <em>vai</em> ao parquinho', 'Movimento também é aprendizado. Ele ajuda na atenção, no humor e no sono das crianças.')}
 
     <section class="section bg-cream">
       <div class="wrap narrow">
@@ -454,7 +454,7 @@ MENTE = f'''{page_header('A mente', 'A mente', 'Como o exercício ajuda o céreb
        warn='Pressão excessiva por resultado transforma o esporte em ansiedade. Diversão é o que mais faz a criança continuar se movendo.')}
 {topic('sono', 'moon', 'Sono',
        ['Movimento de dia e sono bom à noite andam juntos. Crianças ativas costumam dormir mais rápido e melhor. E é durante o sono que a memória se fixa, o corpo cresce e as emoções se organizam.'])}
-        <p style="text-align:center;margin-top:2.5rem"><a class="btn btn-pine" href="por-idade.html">Próximo: guia por idade →</a></p>
+        <p style="margin-top:2.5rem"><a class="btn btn-pine" href="por-idade.html">Próximo: guia por idade →</a></p>
       </div>
     </section>
 
@@ -517,33 +517,34 @@ age_cards = '\n'.join(
         </article>''' for k, age, name, title, intro, ideas, goals in AGE_PAGE)
 
 LESSON = [
-    ('Aquecimento', '8 min', ['Marcha', 'Polichinelo', 'Rotação de ombros', 'Rotação de quadril', 'Rotação de tornozelos'],
+    ('Aquecimento', 'Aquecimento', 8, 'Marcha, polichinelo e rotação de articulações: ombro, quadril e tornozelo.',
      'Eleva a frequência cardíaca aos poucos e prepara as articulações antes do esforço, reduzindo o risco de lesão.'),
-    ('Cardio', '12 min', ['Pular corda: 1min30 pulando', '30 s de descanso', '3 séries'],
+    ('Cardio', 'Cardio', 12, 'Pular corda em intervalos: 1min30 pulando e 30 s de descanso, em 3 séries.',
      'Nessa idade a criança já aguenta intervalos de esforço mais longos que as menores, parecido com o treino de adultos, mas com descanso suficiente para não se cansar demais.'),
-    ('Força: pernas', '12 min', ['Agachamento livre', 'Afundo alternado', 'Salto no agachamento'],
+    ('Força: pernas', 'Pernas', 12, 'Agachamento livre, afundo alternado e salto no agachamento.',
      'Entre 10 e 12 anos, a criança já consegue fazer variações mais difíceis, como o salto no agachamento, que trabalha potência e não só força. Mas só depois de dominar bem o agachamento simples.'),
-    ('Força: tronco e braços', '10 min', ['Prancha', 'Flexão com joelhos no chão', 'Abdominal remador', 'Prancha lateral'],
+    ('Força: tronco e braços', 'Tronco', 10, 'Prancha, flexão com os joelhos no chão, abdominal remador e prancha lateral.',
      'Já existe controle do tronco para fazer a prancha lateral com boa postura. Ela fortalece a lateral do corpo, importante em esportes com mudança de direção.'),
-    ('Coordenação e agilidade', '8 min', ['Escada de agilidade', 'Equilíbrio num pé só de olhos fechados'],
+    ('Coordenação e agilidade', 'Coordenação', 8, 'Escada de agilidade e equilíbrio num pé só, de olhos fechados.',
      'Fechar os olhos tira a ajuda da visão no equilíbrio. Crianças menores geralmente ainda não conseguem, e o corpo passa a depender só da percepção da própria posição.'),
-    ('Volta à calma', '10 min', ['Alongamento de pernas', 'Alongamento de costas', 'Alongamento de ombros', 'Respiração guiada'],
+    ('Volta à calma', 'Calma', 10, 'Alongamento de pernas, costas e ombros, seguido de respiração guiada.',
      'Nessa idade já faz sentido ensinar a “desligar” o corpo depois do esforço, criando um hábito útil para a adolescência e a vida adulta.'),
 ]
-lesson_cards = '\n'.join(
-    f'''          <li class="lesson-card">
-            <span class="n">{n}</span>
-            <div class="body">
+lesson_bar = '\n'.join(
+    f'            <span style="--m:{m}"><b>{n:02d}</b> {short}</span>'
+    for n, (t, short, m, ex, why) in enumerate(LESSON, 1))
+lesson_items = '\n'.join(
+    f'''          <li>
+            <span class="numeral lesson-num">{n:02d}</span>
+            <div class="lesson-body">
               <h3>{t}</h3>
-              <ul class="exercises" aria-label="Exercícios">
-{chr(10).join(f"                <li>{e}</li>" for e in ex)}
-              </ul>
-              <div class="why"><strong>Por que nessa idade?</strong>{why}</div>
+              <p class="lesson-ex"><span class="lesson-label">Exercícios</span>{ex}</p>
+              <p class="lesson-why"><span class="lesson-label">Por que nessa idade</span>{why}</p>
             </div>
-            <span class="time">{tm}</span>
-          </li>''' for n, (t, tm, ex, why) in enumerate(LESSON, 1))
+            <span class="lesson-time"><span class="numeral">{m}</span> min</span>
+          </li>''' for n, (t, short, m, ex, why) in enumerate(LESSON, 1))
 
-POR_IDADE = f'''{page_header('Por idade', 'Guia por idade', 'Quanto movimento em cada fase', 'Do bebê ao adolescente: o que é recomendado e ideias simples para cada idade, segundo a OMS e o Ministério da Saúde.')}
+POR_IDADE = f'''{page_header('Por idade', 'Guia por idade', 'Quanto movimento <em>em</em> cada fase', 'Do bebê ao adolescente: o que é recomendado e ideias simples para cada idade, segundo a OMS e o Ministério da Saúde.')}
 
     <section class="section bg-cream">
       <div class="wrap narrow">
@@ -556,21 +557,23 @@ POR_IDADE = f'''{page_header('Por idade', 'Guia por idade', 'Quanto movimento em
       <div class="wrap">
         <div class="section-head">
           <span class="eyebrow">Aula-modelo · 10 a 12 anos</span>
-          <h2>Uma aula de educação física em 6 partes</h2>
+          <h2>Uma aula de 60 minutos, <em>em</em> seis blocos.</h2>
           <p class="lead">Uma aula organizada, pensada para crianças de 10 a 12 anos, que já conseguem seguir uma sequência e aguentar esforços mais longos. Ela complementa a brincadeira livre, não substitui.</p>
         </div>
-        <div class="lesson-summary">
-          <span class="pill">{I['clock']} 60 minutos</span>
-          <span class="pill">{I['puzzle']} 6 blocos</span>
-          <span class="pill">{I['users']} 10 a 12 anos</span>
-        </div>
-        <div class="timebar" aria-hidden="true">
-          <span style="--m:8"></span><span style="--m:12"></span><span style="--m:12"></span><span style="--m:10"></span><span style="--m:8"></span><span style="--m:10"></span>
+        <div class="lesson-bar" aria-hidden="true">
+          <div class="lesson-bar-track">
+{lesson_bar}
+          </div>
+          <div class="lesson-bar-scale"><span>0 min</span><span>30</span><span>60 min</span></div>
         </div>
         <ol class="lesson">
-{lesson_cards}
+{lesson_items}
+          <li class="lesson-total">
+            <span></span>
+            <span class="lesson-label">Duração total</span>
+            <span class="lesson-time"><span class="numeral">60</span> min</span>
+          </li>
         </ol>
-        <div class="lesson-total"><span>Duração total da aula</span><strong>60 min</strong></div>
       </div>
     </section>
 

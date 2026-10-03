@@ -8,7 +8,7 @@ import pathlib
 OUT = pathlib.Path(__file__).resolve().parent
 
 def ic(paths):
-    return ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
+    return ('<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
             'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths + '</svg>')
 
 I = {
@@ -39,6 +39,13 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com" />\n'
          '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n'
          '  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />')
 
+# Estilo e script vão embutidos no HTML, para a página funcionar sozinha
+# em qualquer visualizador (inclusive quando o arquivo é aberto direto).
+import urllib.parse
+CSS = (OUT / 'assets' / 'styles.css').read_text(encoding='utf-8')
+JS = (OUT / 'assets' / 'main.js').read_text(encoding='utf-8')
+FAVICON = 'data:image/svg+xml,' + urllib.parse.quote((OUT / 'assets' / 'favicon.svg').read_text(encoding='utf-8').strip())
+
 NAV_ITEMS = [('#corpo', 'O corpo'), ('#mente', 'A mente'), ('#idades', 'Por idade'), ('#dicas', 'Dicas'), ('#perguntas', 'Dúvidas')]
 
 
@@ -54,9 +61,11 @@ def page(filename, title, description, body):
   <title>{title}</title>
   <meta name="description" content="{description}" />
   <meta name="theme-color" content="#16261D" />
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="{FAVICON}" />
   {FONTS}
-  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+{CSS}
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -110,7 +119,9 @@ def page(filename, title, description, body):
     </div>
   </footer>
 
-  <script src="assets/main.js"></script>
+  <script>
+{JS}
+  </script>
 </body>
 </html>
 '''

@@ -250,11 +250,14 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .chip-a { left: -20px; top: 12%; }
 .chip-b { right: -16px; bottom: 10%; }
 
-@media (max-width: 920px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .hero-art { max-width: 540px; display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+@media (max-width: 1240px) {
+  .hero-art { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
   .hero-art .scene { grid-column: 1 / -1; }
   .chip { position: static; }
+}
+@media (max-width: 920px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-art { max-width: 540px; }
 }
 @media (max-width: 480px) { .hero-art { grid-template-columns: 1fr; } }
 

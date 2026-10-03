@@ -2,7 +2,7 @@
 
 Site editorial sobre o impacto do exercício físico no corpo e na mente das crianças, escrito para pais.
 
-HTML + CSS + JS puros, sem etapa de build. Para visualizar, abra `index.html` no navegador ou sirva a pasta:
+HTML + CSS + JS puros. O `index.html` já traz o estilo e o script embutidos, então funciona sozinho: basta abrir o arquivo no navegador ou servir a pasta:
 
 ```bash
 npx serve em-movimento
@@ -18,4 +18,4 @@ Tudo fica em `index.html`, numa página única com menu de âncoras: banner, O c
 - `assets/main.js` — menu no celular e abas por idade
 - `assets/favicon.svg`
 
-As páginas são geradas por `build.py` (menu, rodapé e ícones compartilhados). Para mudar textos ou seções, edite `build.py` e rode `python3 build.py` (Python 3.12+).
+As páginas são geradas por `build.py` (menu, rodapé e ícones compartilhados). Para mudar textos ou seções, edite `build.py` (ou `assets/styles.css` / `assets/main.js`, que são embutidos no HTML) e rode `python3 build.py` (Python 3.12+).

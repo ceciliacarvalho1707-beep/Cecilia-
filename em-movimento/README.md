@@ -21,4 +21,4 @@ npx serve em-movimento
 - `assets/main.js` — menu móvel e revelação ao rolar
 - `assets/favicon.svg`
 
-Para criar uma nova página, copie uma das páginas internas (nav, rodapé e `<head>` já prontos) e marque o link correspondente com `aria-current="page"`.
+As páginas são geradas por `build.py` (menu, rodapé e ícones compartilhados). Para mudar textos ou criar uma página, edite `build.py` e rode `python3 build.py` (Python 3.12+).

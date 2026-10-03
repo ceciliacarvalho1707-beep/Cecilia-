@@ -2,40 +2,46 @@
 (function () {
   document.documentElement.classList.remove('no-js');
 
-  // Menu móvel
+  // Menu no celular
   var toggle = document.querySelector('.nav-toggle');
-  var links = document.getElementById('nav-links');
-  if (toggle && links) {
+  var menu = document.getElementById('nav-menu');
+  if (toggle && menu) {
     toggle.addEventListener('click', function () {
       var open = toggle.getAttribute('aria-expanded') === 'true';
       toggle.setAttribute('aria-expanded', String(!open));
-      links.classList.toggle('is-open', !open);
+      toggle.setAttribute('aria-label', open ? 'Abrir menu' : 'Fechar menu');
+      menu.classList.toggle('is-open', !open);
     });
-    links.addEventListener('click', function (e) {
+    menu.addEventListener('click', function (e) {
       if (e.target.closest('a')) {
         toggle.setAttribute('aria-expanded', 'false');
-        links.classList.remove('is-open');
+        menu.classList.remove('is-open');
       }
     });
   }
 
-  // Leve deslocamento ao rolar (o conteúdo fica sempre visível)
-  var items = document.querySelectorAll('.reveal');
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (!('IntersectionObserver' in window)) {
-    items.forEach(function (el) { el.classList.add('is-visible'); });
-    return;
-  }
-  document.documentElement.classList.add('js-motion');
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        io.unobserve(entry.target);
-      }
+  // Abas (recomendações por idade)
+  document.querySelectorAll('[data-tabs]').forEach(function (root) {
+    var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+    function select(tab, focus) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+      if (focus) tab.focus();
+    }
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(tab, false); });
+      tab.addEventListener('keydown', function (e) {
+        var next = null;
+        if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+        if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+        if (next) { e.preventDefault(); select(next, true); }
+      });
     });
-  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-  items.forEach(function (el) { io.observe(el); });
+  });
 
   // Ano no rodapé
   var year = document.querySelector('[data-year]');

@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>O corpo — Em Movimento</title>
-  <meta name="description" content="Como o exercício físico atua sobre ossos, músculos, coração e coordenação durante a infância e a adolescência." />
+  <meta name="description" content="Como o exercício físico fortalece ossos, músculos, coração e coordenação das crianças." />
   <meta name="theme-color" content="#16261D" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,0..100;1,9..144,400..700,0..100&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
@@ -17,93 +17,94 @@
 
   <header class="nav">
     <div class="wrap">
-      <a class="wordmark" href="index.html" aria-label="Em Movimento — início">
-        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="14.5" stroke="#B9893C"/><path d="M6 20c4-9 8-11 10-4s6 5 10-4" stroke="#B9893C" stroke-width="1.6" stroke-linecap="round"/></svg>
-        <span>Em <em>Movimento</em></span>
-      </a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu"><span></span></button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="corpo.html" aria-current="page">O corpo</a></li>
-        <li><a href="mente.html">A mente</a></li>
-        <li><a href="por-idade.html">Por idade</a></li>
-        <li><a href="index.html#pratica">Na prática</a></li>
-        <li><a href="#fontes">Fontes</a></li>
-      </ul>
+      <a class="logo" href="index.html" aria-label="Em Movimento, página inicial"><svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><rect width="34" height="34" rx="10" fill="#B9893C"/><path d="M8 21c3.5-8 7.5-10 9-4.5s5.5 4 9-4" stroke="#16261D" stroke-width="2.4" stroke-linecap="round"/></svg><span>Em <em>Movimento</em></span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menu"><span></span></button>
+      <nav class="nav-menu" id="nav-menu" aria-label="Principal">
+        <ul class="nav-links">
+          <li><a href="index.html">Início</a></li>
+          <li><a href="corpo.html" aria-current="page">O corpo</a></li>
+          <li><a href="mente.html">A mente</a></li>
+          <li><a href="por-idade.html">Por idade</a></li>
+        </ul>
+        <a class="btn btn-gold btn-sm" href="por-idade.html#aula-10-12">Aula-modelo</a>
+      </nav>
     </div>
   </header>
 
   <main id="conteudo">
-    <section class="page-hero on-dark">
+    <section class="page-header on-dark">
       <div class="wrap">
-        <p class="breadcrumb"><a href="index.html">Início</a> &nbsp;/&nbsp; Capítulo I</p>
-        <p class="kicker">Capítulo I · O corpo</p>
-        <h1>Um organismo que se constrói <em>com</em> o uso.</h1>
-        <p class="lede">O corpo infantil não é um corpo adulto em miniatura: ele está montando as estruturas que vai usar pelas próximas décadas. E responde ao movimento com uma eficiência que nunca mais se repete.</p>
-        <div class="stat-row">
-          <div class="stat"><span class="numeral">~¼</span><p>da massa óssea adulta é acumulada nos cerca de dois anos em torno do estirão de crescimento.<sup><a href="#ref-2">2</a></sup></p></div>
-          <div class="stat"><span class="numeral">3<small>×/sem</small></span><p>é a frequência recomendada de atividades que fortalecem músculos e ossos, dos 5 aos 17 anos.<sup><a href="#ref-1">1</a></sup></p></div>
-          <div class="stat"><span class="numeral">60<small>min</small></span><p>por dia, em média, de atividade moderada a vigorosa — somando todos os momentos do dia.<sup><a href="#ref-1">1</a></sup></p></div>
+        <p class="crumbs"><a href="index.html">Início</a> › O corpo</p>
+        <span class="eyebrow">O corpo</span>
+        <h1>Como o exercício fortalece o corpo</h1>
+        <p class="lead">Ossos, músculos, coração e coordenação: o corpo da criança está se formando e responde muito bem ao movimento.</p>
+      </div>
+    </section>
+    <section class="on-dark" style="padding-bottom:3.5rem">
+      <div class="wrap">
+        <div class="stats">
+          <div class="stat"><strong>~25%</strong><span>da massa óssea adulta se forma nos cerca de 2 anos do estirão de crescimento</span></div>
+          <div class="stat"><strong>3× por semana</strong><span>atividades que fortalecem músculos e ossos (5 a 17 anos)</span></div>
+          <div class="stat"><strong>60 min</strong><span>por dia, em média, de atividade moderada a intensa</span></div>
         </div>
       </div>
     </section>
 
-    <section class="section on-cream">
-      <div class="wrap layout-aside">
-        <aside class="sticky-aside" aria-label="Neste capítulo">
-          <p class="kicker">Neste capítulo</p>
-          <ol class="toc">
-            <li><a href="#ossos"><span class="numeral">1</span> Ossos</a></li>
-            <li><a href="#musculos"><span class="numeral">2</span> Músculos</a></li>
-            <li><a href="#coracao"><span class="numeral">3</span> Coração e metabolismo</a></li>
-            <li><a href="#coordenacao"><span class="numeral">4</span> Coordenação</a></li>
-            <li><a href="#fontes"><span class="numeral">—</span> Fontes</a></li>
-          </ol>
-        </aside>
-
-        <article class="prose">
-          <h2 id="ossos">1. Ossos: uma reserva para a vida</h2>
-          <p>O osso é um tecido vivo, que se remodela conforme a carga que recebe. Quando uma criança corre, pula ou sobe numa árvore, o impacto e a tração dos músculos sinalizam ao esqueleto que ele precisa ficar mais forte — e ele responde ganhando densidade e espessura.</p>
-          <p>Essa resposta é particularmente intensa antes e durante a puberdade. <strong>A maior parte do pico de massa óssea é construída até o fim da adolescência</strong>, e o que se acumula nessa janela funciona como uma poupança: quanto maior o saldo, mais protegido o adulto estará contra a perda óssea do envelhecimento.<sup><a href="#ref-2">2</a></sup></p>
-          <div class="aside-note">
-            <p>Atividades com impacto — pular corda, amarelinha, basquete, corrida — estimulam mais o osso do que atividades sem carga, como a natação. Todas são boas; o ideal é combinar.</p>
+    <section class="section bg-cream">
+      <div class="wrap narrow">
+        <article class="topic" id="ossos">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a3 3 0 0 0-2.8 4.1L7.1 14.2A3 3 0 1 0 6 20a3 3 0 1 0 5.8-1.1l7.1-7.1A3 3 0 1 0 17 3z"/></svg></div>
+          <div>
+            <h2>Ossos: uma reserva para a vida toda</h2>
+            <p>O osso é um tecido vivo. Quando a criança corre, pula ou sobe em algum lugar, o impacto avisa o esqueleto que ele precisa ficar mais forte, e ele responde ficando mais denso.</p>
+            <p>Isso acontece principalmente antes e durante a puberdade. <strong>A maior parte da massa óssea é formada até o fim da adolescência</strong> e funciona como uma poupança que protege o adulto contra a perda óssea na velhice.</p>
+            <div class="tip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg><p>Atividades com impacto (pular corda, amarelinha, basquete, corrida) fortalecem mais os ossos do que a natação. O ideal é combinar as duas coisas.</p></div>
           </div>
-
-          <h2 id="musculos">2. Músculos: força é segura, quando bem orientada</h2>
-          <p>Por muito tempo se acreditou que exercícios de força “atrapalhariam o crescimento”. A pesquisa não confirma essa ideia. Entidades pediátricas consideram o treino de força seguro e benéfico para crianças e adolescentes <strong>quando supervisionado, com técnica adequada e cargas apropriadas</strong>.<sup><a href="#ref-4">4</a></sup></p>
-          <p>Nas crianças menores, a força se desenvolve sobretudo de forma lúdica: pendurar-se no trepa-trepa, empurrar, carregar, escalar. Nos primeiros anos, o ganho de força vem mais da melhora da comunicação entre sistema nervoso e músculo do que do aumento do tamanho muscular.</p>
-
-          <h2 id="coracao">3. Coração e metabolismo</h2>
-          <p>A atividade aeróbica — aquela que acelera a respiração e o coração por alguns minutos seguidos — melhora a aptidão cardiorrespiratória, a sensibilidade à insulina, a pressão arterial e o perfil de gorduras no sangue. As diretrizes da OMS associam a atividade física regular na infância a <strong>melhor saúde cardiometabólica e menor acúmulo de gordura corporal</strong>.<sup><a href="#ref-1">1</a></sup></p>
-          <p>Uma forma simples de reconhecer a intensidade: na atividade <em>moderada</em>, a criança ainda consegue conversar, mas fica ofegante; na <em>vigorosa</em>, falar frases inteiras fica difícil.<sup><a href="#ref-3">3</a></sup></p>
-          <div class="aside-note rust">
-            <span class="label">Um cuidado</span>
-            <p>Peso não é o objetivo. Tratar exercício como castigo ou como forma de “compensar” o que se comeu tende a afastar a criança do movimento.</p>
-          </div>
-
-          <h2 id="coordenacao">4. Coordenação: o alfabeto do movimento</h2>
-          <p>Correr, saltar, arremessar, chutar, equilibrar-se e receber uma bola são chamados de <strong>habilidades motoras fundamentais</strong>. Elas não surgem sozinhas com a idade: precisam de oportunidade, repetição e alguma variedade.</p>
-          <p>Crianças com boa competência motora tendem a participar mais de jogos e esportes — o que, por sua vez, as mantém mais ativas. É um ciclo que se alimenta: quem se sente capaz se move mais, e quem se move mais se torna mais capaz.</p>
-
-          <p style="margin-top:3rem"><a class="link-arrow" href="mente.html">Próximo capítulo: a mente <span aria-hidden="true">→</span></a></p>
         </article>
+        <article class="topic" id="musculos">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg></div>
+          <div>
+            <h2>Músculos: força com segurança</h2>
+            <p>Muita gente acha que exercício de força “atrapalha o crescimento”. A ciência não confirma isso. Os pediatras consideram o treino de força <strong>seguro e benéfico</strong> quando há supervisão, boa técnica e carga adequada.</p>
+            <p>Nas crianças pequenas, a força vem das brincadeiras: se pendurar no trepa-trepa, empurrar, carregar e escalar.</p>
+          </div>
+        </article>
+        <article class="topic" id="coracao">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M4 12h4l2-3 3 6 2-3h5"/></svg></div>
+          <div>
+            <h2>Coração e fôlego</h2>
+            <p>Atividades que aceleram a respiração por alguns minutos melhoram o fôlego, a pressão arterial e a forma como o corpo usa o açúcar e a gordura. A OMS liga a atividade regular na infância a <strong>um coração mais saudável e menos gordura corporal</strong>.</p>
+            <p>Um teste simples: na atividade moderada a criança fica ofegante mas ainda conversa. Na intensa, não consegue falar uma frase inteira.</p>
+            <div class="tip warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17h.01"/></svg><p>O objetivo não é o peso. Usar exercício como castigo ou para “compensar” o que se comeu costuma afastar a criança do movimento.</p></div>
+          </div>
+        </article>
+        <article class="topic" id="coordenacao">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div>
+          <div>
+            <h2>Coordenação: a base de todos os esportes</h2>
+            <p>Correr, saltar, arremessar, chutar, se equilibrar e pegar uma bola são as <strong>habilidades motoras básicas</strong>. Elas não aparecem sozinhas com a idade: precisam de oportunidade e prática.</p>
+            <p>Crianças que se sentem capazes brincam mais, e quem brinca mais fica ainda mais capaz. É um ciclo que se alimenta.</p>
+          </div>
+        </article>
+        <p style="text-align:center;margin-top:2.5rem"><a class="btn btn-pine" href="mente.html">Próximo: a mente →</a></p>
       </div>
     </section>
 
-    <section class="section on-light" id="fontes">
-      <div class="wrap grid-2">
-        <div>
-          <p class="kicker">Fontes</p>
-          <h2>Referências <em>deste</em> capítulo.</h2>
+    <section class="section bg-parchment" id="fontes">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Fontes</span>
+          <h2>De onde vêm essas informações</h2>
         </div>
-        <div>
-          <ol class="refs">
-            <li id="ref-1">World Health Organization. <em>WHO guidelines on physical activity and sedentary behaviour.</em> Genebra: OMS, 2020.</li>
-            <li id="ref-2">Weaver, C. M. et al. The National Osteoporosis Foundation’s position statement on peak bone mass development and lifestyle factors: a systematic review and implementation recommendations. <em>Osteoporosis International</em>, 27, 2016.</li>
-            <li id="ref-3">Ministério da Saúde. <em>Guia de Atividade Física para a População Brasileira.</em> Brasília, 2021.</li>
-            <li id="ref-4">Stricker, P. R.; Faigenbaum, A. D.; McCambridge, T. M. Resistance training for children and adolescents. <em>Pediatrics</em>, 145(6), 2020.</li>
+        <div class="sources">
+          <ol>
+            <li>Organização Mundial da Saúde. <em>Diretrizes sobre atividade física e comportamento sedentário.</em> 2020.</li>
+            <li>Weaver, C. M. e colaboradores. Desenvolvimento do pico de massa óssea e fatores de estilo de vida. <em>Osteoporosis International</em>, 2016.</li>
+            <li>Ministério da Saúde. <em>Guia de Atividade Física para a População Brasileira.</em> 2021.</li>
+            <li>Stricker, P. R. e colaboradores. Treino de força para crianças e adolescentes. <em>Pediatrics</em>, 2020.</li>
           </ol>
-          <p class="disclaimer"><strong>Importante:</strong> conteúdo informativo, que não substitui a orientação do pediatra.</p>
         </div>
+        <div class="notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><p style="margin:0"><strong>Importante:</strong> este site é informativo e não substitui a orientação do pediatra ou de outros profissionais que acompanham seu filho.</p></div>
       </div>
     </section>
   </main>
@@ -112,31 +113,30 @@
     <div class="wrap">
       <div class="footer-grid">
         <div>
-          <a class="wordmark" href="index.html">
-            <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="14.5" stroke="#B9893C"/><path d="M6 20c4-9 8-11 10-4s6 5 10-4" stroke="#B9893C" stroke-width="1.6" stroke-linecap="round"/></svg>
-            <span>Em <em>Movimento</em></span>
-          </a>
-          <p>Um projeto pessoal de divulgação sobre exercício físico, corpo e mente na infância — escrito para pais curiosos.</p>
+          <a class="logo" href="index.html"><svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><rect width="34" height="34" rx="10" fill="#B9893C"/><path d="M8 21c3.5-8 7.5-10 9-4.5s5.5 4 9-4" stroke="#16261D" stroke-width="2.4" stroke-linecap="round"/></svg><span>Em <em>Movimento</em></span></a>
+          <p>Informação confiável sobre exercício físico, corpo e mente na infância, escrita para pais e mães.</p>
         </div>
         <div>
-          <h4>Capítulos</h4>
+          <h4>Conteúdo</h4>
           <ul>
             <li><a href="corpo.html">O corpo</a></li>
             <li><a href="mente.html">A mente</a></li>
             <li><a href="por-idade.html">Guia por idade</a></li>
+            <li><a href="por-idade.html#aula-10-12">Aula-modelo (10 a 12 anos)</a></li>
           </ul>
         </div>
         <div>
-          <h4>Site</h4>
+          <h4>Mais</h4>
           <ul>
-            <li><a href="index.html">Início</a></li>
-            <li><a href="index.html#pratica">Na prática</a></li>
+            <li><a href="index.html#dicas">Dicas práticas</a></li>
+            <li><a href="index.html#perguntas">Perguntas frequentes</a></li>
+            <li><a href="index.html#fontes">Fontes</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-base">
         <span>© <span data-year>2026</span> Em Movimento</span>
-        <span>Conteúdo informativo — não substitui orientação profissional.</span>
+        <span>Conteúdo informativo. Não substitui a orientação do pediatra.</span>
       </div>
     </div>
   </footer>

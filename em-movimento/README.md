@@ -8,12 +8,9 @@ HTML + CSS + JS puros, sem etapa de build. Para visualizar, abra `index.html` no
 npx serve em-movimento
 ```
 
-## Páginas
+## Página
 
-- `index.html` — página inicial (hero, resumo dos capítulos, tabela por idade, prática, fontes)
-- `corpo.html` — Capítulo I: ossos, músculos, coração, coordenação
-- `mente.html` — Capítulo II: atenção, aprendizagem, emoções, sono
-- `por-idade.html` — guia do bebê ao adolescente e aula-modelo de 10 a 12 anos
+Tudo fica em `index.html`, numa página única com menu de âncoras: banner, O corpo, A mente, Por idade, aula-modelo de 10 a 12 anos, dicas, perguntas frequentes e fontes.
 
 ## Estrutura
 
@@ -21,4 +18,4 @@ npx serve em-movimento
 - `assets/main.js` — menu no celular e abas por idade
 - `assets/favicon.svg`
 
-As páginas são geradas por `build.py` (menu, rodapé e ícones compartilhados). Para mudar textos ou criar uma página, edite `build.py` e rode `python3 build.py` (Python 3.12+).
+As páginas são geradas por `build.py` (menu, rodapé e ícones compartilhados). Para mudar textos ou seções, edite `build.py` e rode `python3 build.py` (Python 3.12+).

@@ -39,7 +39,7 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com" />\n'
          '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n'
          '  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />')
 
-NAV_ITEMS = [('index.html', 'Início'), ('corpo.html', 'O corpo'), ('mente.html', 'A mente'), ('por-idade.html', 'Por idade')]
+NAV_ITEMS = [('#corpo', 'O corpo'), ('#mente', 'A mente'), ('#idades', 'Por idade'), ('#dicas', 'Dicas'), ('#perguntas', 'Dúvidas')]
 
 
 def page(filename, title, description, body):
@@ -69,7 +69,7 @@ def page(filename, title, description, body):
         <ul class="nav-links">
 {links}
         </ul>
-        <a class="btn btn-gold btn-sm" href="por-idade.html#aula-10-12">Aula-modelo</a>
+        <a class="btn btn-gold btn-sm" href="#aula-10-12">Aula-modelo</a>
       </nav>
     </div>
   </header>
@@ -88,18 +88,18 @@ def page(filename, title, description, body):
         <div>
           <h4>Conteúdo</h4>
           <ul>
-            <li><a href="corpo.html">O corpo</a></li>
-            <li><a href="mente.html">A mente</a></li>
-            <li><a href="por-idade.html">Guia por idade</a></li>
-            <li><a href="por-idade.html#aula-10-12">Aula-modelo (10 a 12 anos)</a></li>
+            <li><a href="#corpo">O corpo</a></li>
+            <li><a href="#mente">A mente</a></li>
+            <li><a href="#idades">Guia por idade</a></li>
+            <li><a href="#aula-10-12">Aula-modelo (10 a 12 anos)</a></li>
           </ul>
         </div>
         <div>
           <h4>Mais</h4>
           <ul>
-            <li><a href="index.html#dicas">Dicas práticas</a></li>
-            <li><a href="index.html#perguntas">Perguntas frequentes</a></li>
-            <li><a href="index.html#fontes">Fontes</a></li>
+            <li><a href="#dicas">Dicas práticas</a></li>
+            <li><a href="#perguntas">Perguntas frequentes</a></li>
+            <li><a href="#fontes">Fontes</a></li>
           </ul>
         </div>
       </div>
@@ -579,13 +579,96 @@ POR_IDADE = f'''{page_header('Por idade', 'Guia por idade', 'Quanto movimento <e
 
 {sources([SRC_WHO2020, SRC_WHO2019, SRC_MS, 'Brenner, J. S. e colaboradores. Especialização esportiva e treino intenso em jovens atletas. <em>Pediatrics</em>, 2016.'], 'bg-cream')}'''
 
-PAGES = [
-    ('index.html', 'Em Movimento — exercício, corpo e mente na infância', 'Como o exercício físico ajuda o corpo e a mente das crianças, e quanto movimento é recomendado em cada idade. Um guia simples para pais.', HOME),
-    ('corpo.html', 'O corpo — Em Movimento', 'Como o exercício físico fortalece ossos, músculos, coração e coordenação das crianças.', CORPO),
-    ('mente.html', 'A mente — Em Movimento', 'Como o exercício físico ajuda na atenção, no aprendizado, no humor e no sono das crianças.', MENTE),
-    ('por-idade.html', 'Guia por idade — Em Movimento', 'Quanto movimento é recomendado do bebê ao adolescente, e uma aula-modelo para crianças de 10 a 12 anos.', POR_IDADE),
-]
+# --------------------------------------------------------------------------
+# Página única: todas as seções juntas
+# --------------------------------------------------------------------------
 
-for fn, title, desc, body in PAGES:
-    (OUT / fn).write_text(page(fn, title, desc, body), encoding='utf-8')
-    print('ok', fn)
+def between(text, start, end):
+    i = text.index(start) + len(start)
+    return text[i:text.index(end, i)]
+
+HERO = HOME[:HOME.index('    <section class="section bg-cream" id="beneficios">')].rstrip()
+HERO = HERO.replace('href="por-idade.html"', 'href="#idades"').replace('href="#beneficios"', 'href="#corpo"')
+CORPO_TOPICS = between(CORPO, '<div class="wrap narrow">\n', '        <p style="margin-top:2.5rem">')
+MENTE_TOPICS = between(MENTE, '<div class="wrap narrow">\n', '        <p style="margin-top:2.5rem">')
+AULA = POR_IDADE[POR_IDADE.index('    <section class="section bg-parchment" id="aula-10-12">'):POR_IDADE.index('    <section class="section bg-cream" id="fontes">')].rstrip()
+
+
+def head(eyebrow, h2, lead):
+    return f'''        <div class="section-head">
+          <span class="eyebrow">{eyebrow}</span>
+          <h2>{h2}</h2>
+          <p class="lead">{lead}</p>
+        </div>'''
+
+SINGLE = f'''{HERO}
+
+    <section class="section bg-cream" id="corpo">
+      <div class="wrap narrow">
+{head('O corpo', 'Como o exercício fortalece <em>o</em> corpo', 'Ossos, músculos, coração e coordenação: o corpo da criança está se formando e responde muito bem ao movimento.')}
+{CORPO_TOPICS.rstrip()}
+      </div>
+    </section>
+
+    <section class="section bg-parchment" id="mente">
+      <div class="wrap narrow">
+{head('A mente', 'O cérebro também <em>vai</em> ao parquinho', 'Movimento também é aprendizado. Ele ajuda na atenção, no humor e no sono das crianças.')}
+{MENTE_TOPICS.rstrip()}
+      </div>
+    </section>
+
+    <section class="section bg-cream" id="idades">
+      <div class="wrap narrow">
+{head('Por idade', 'Quanto movimento <em>em</em> cada fase', 'Do bebê ao adolescente: o que é recomendado e ideias simples para cada idade, segundo a OMS e o Ministério da Saúde.')}
+{age_cards}
+        <div class="tip warn" style="max-width:none;margin-top:1.5rem">{I['alert']}<p><strong>Quando procurar o pediatra:</strong> dor que não passa ou piora com a atividade, falta de ar ou desmaio durante o esforço, atraso nos marcos do desenvolvimento motor, ou antes de começar treinos intensos e competições.</p></div>
+      </div>
+    </section>
+
+{AULA}
+
+    <section class="section bg-cream" id="dicas">
+      <div class="wrap">
+{head('Dicas práticas', 'Mais movimento <em>no</em> dia a dia', 'Não é preciso academia nem planilha. Pequenas mudanças na rotina fazem diferença.')}
+        <div class="steps">
+{tip_cards}
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-parchment" id="perguntas">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Dúvidas</span>
+          <h2>Perguntas <em>frequentes</em></h2>
+        </div>
+        <div class="faq">
+{faq_items}
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-cream">
+      <div class="wrap">
+        <div class="cta">
+          <h2>Toda atividade <em>conta</em>.</h2>
+          <p class="lead">Fazer um pouco é melhor do que nada, e fazer mais traz mais benefícios. Comece hoje, do jeito que der.</p>
+          <a class="btn btn-gold" href="#idades">Ver o que é ideal para o meu filho →</a>
+        </div>
+      </div>
+    </section>
+
+{sources([SRC_WHO2020, SRC_WHO2019, SRC_MS,
+          'Weaver, C. M. e colaboradores. Desenvolvimento do pico de massa óssea e fatores de estilo de vida. <em>Osteoporosis International</em>, 2016.',
+          'Stricker, P. R. e colaboradores. Treino de força para crianças e adolescentes. <em>Pediatrics</em>, 2020.',
+          'Hillman, C. H. e colaboradores. Efeito da caminhada na esteira sobre o controle cognitivo e o desempenho escolar em crianças. <em>Neuroscience</em>, 2009.',
+          'Donnelly, J. E. e colaboradores. Atividade física, aptidão, função cognitiva e desempenho escolar em crianças: revisão sistemática. <em>Medicine &amp; Science in Sports &amp; Exercise</em>, 2016.',
+          'Biddle, S. J. H. e colaboradores. Atividade física e saúde mental em crianças e adolescentes: revisão de revisões. <em>Psychology of Sport and Exercise</em>, 2019.',
+          'Brenner, J. S. e colaboradores. Especialização esportiva e treino intenso em jovens atletas. <em>Pediatrics</em>, 2016.'])}'''
+
+(OUT / 'index.html').write_text(
+    page('index.html', 'Em Movimento — exercício, corpo e mente na infância',
+         'Como o exercício físico ajuda o corpo e a mente das crianças, quanto movimento é recomendado em cada idade e uma aula-modelo para 10 a 12 anos.',
+         SINGLE),
+    encoding='utf-8')
+print('ok index.html')

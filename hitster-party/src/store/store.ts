@@ -284,6 +284,17 @@ export const matchActions = {
     return { ok: true };
   },
 
+  /** Coloca uma música escolhida pelo organizador (de qualquer lugar do mundo) no turno atual. */
+  chooseSong(song: Song): ActionResult {
+    const m = state.match; const t = m && currentTurn(m);
+    if (!m || !t) return { ok: false, erro: 'Nenhuma partida em andamento.' };
+    if (t.revealed || Object.values(t.evals).some((e) => e.concluida)) return { ok: false, erro: 'Não dá para trocar a música depois de abrir o gabarito.' };
+    songActions.upsert(song);
+    updateMatch((mm) => ({ ...mm, usedSongIds: [...mm.usedSongIds, song.id] }));
+    updateCurrentTurn((turn) => ({ ...turn, songId: song.id, guesses: {}, evals: {}, revealed: false, publicReveal: false }));
+    return { ok: true };
+  },
+
   /** Avança: próximo turno existente, próxima equipe (cria turno) ou próxima rodada. */
   next(): ActionResult & { fim?: boolean } {
     const m = state.match;

@@ -230,6 +230,18 @@ try {
   await page.getByRole('radio', { name: /Resposta simultânea/ }).click();
   await page.click('[data-testid=btn-iniciar]');
   await page.waitForSelector('[data-testid=guess-panel]');
+  // Escolher QUALQUER música pelo link (sem precisar de conexão com o Spotify)
+  await page.click('[data-testid=btn-escolher]');
+  await page.fill('[data-testid=pick-link]', 'https://open.spotify.com/intl-pt/track/0aym2LBJBk9DAYuHHutrIl?si=abc');
+  await page.fill('[data-testid=pick-titulo]', 'Hey Jude');
+  await page.fill('[data-testid=pick-artista]', 'The Beatles');
+  await page.fill('[data-testid=pick-ano]', '1968');
+  await page.screenshot({ path: join(shots, '16-escolher-musica.png') });
+  await page.click('[data-testid=pick-usar]');
+  const picked = await curSong();
+  const pickedHref = await page.getAttribute('[data-testid=spotify-button]', 'href');
+  const pickedBody = norm(await page.textContent('[data-testid=round-card]'));
+  check('19', 'Organizador coloca qualquer música pelo link (sem spoiler no cartão)', picked.titulo === 'Hey Jude' && pickedHref === 'https://open.spotify.com/track/0aym2LBJBk9DAYuHHutrIl' && !pickedBody.includes('hey jude') && !pickedBody.includes('beatles'));
   await page.fill('[data-testid=guess-ano]', '1999');
   await page.fill('[data-testid=guess-titulo]', 'Palpite Secreto Roxo');
   await page.fill('[data-testid=guess-artista]', 'Artista Secreto');

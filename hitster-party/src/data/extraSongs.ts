@@ -2227,6 +2227,678 @@ const raw: Base[] = [
   "fontes": [
    "https://en.wikipedia.org/w/index.php?search=Le%20Freak%20Chic"
   ]
+ },
+ {
+  "id": "br-amor-de-indio-beto-guedes",
+  "titulo": "Amor de Índio",
+  "artista": "Beto Guedes",
+  "ano": 1978,
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "MPB",
+  "dificuldade": "media",
+  "spotify": "0lxzm7lqfLZ08xLh4IsfKI",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Amor%20de%20%C3%8Dndio%20Beto%20Guedes"
+  ]
+ },
+ {
+  "id": "br-aquarela-toquinho",
+  "titulo": "Aquarela",
+  "artista": "Toquinho",
+  "ano": 1983,
+  "alternativas": {
+   "titulo": [
+    "Acquarello"
+   ]
+  },
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "MPB",
+  "dificuldade": "facil",
+  "spotify": "5cGwTeyOmC3gMkLfMCCpGt",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Aquarela%20Toquinho"
+  ]
+ },
+ {
+  "id": "br-to-nem-ai-luka",
+  "titulo": "Tô Nem Aí",
+  "artista": "Luka",
+  "ano": 2003,
+  "anosAceitos": [
+   2004,
+   2005
+  ],
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "Pop rock",
+  "dificuldade": "facil",
+  "spotify": "7MD6V1JFPvei9hQ8r0xnWE",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=T%C3%B4%20Nem%20A%C3%AD%20Luka"
+  ]
+ },
+ {
+  "id": "br-gostava-tanto-de-voce-tim-maia",
+  "titulo": "Gostava Tanto de Você",
+  "artista": "Tim Maia",
+  "ano": 1973,
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "Soul brasileiro",
+  "dificuldade": "facil",
+  "spotify": "2SNEBpdEClerYG7BrOJwDy",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Gostava%20Tanto%20de%20Voc%C3%AA%20Tim%20Maia"
+  ]
+ },
+ {
+  "id": "br-me-chama-lobao",
+  "titulo": "Me Chama",
+  "artista": "Lobão",
+  "ano": 1984,
+  "alternativas": {
+   "artista": [
+    "Lobão e Os Ronaldos"
+   ]
+  },
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "Rock nacional",
+  "dificuldade": "media",
+  "spotify": "6YEs08eeTPKqODQV6TFI0t",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Me%20Chama%20Lob%C3%A3o"
+  ]
+ },
+ {
+  "id": "br-tente-outra-vez-raul-seixas",
+  "titulo": "Tente Outra Vez",
+  "artista": "Raul Seixas",
+  "ano": 1975,
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "Rock nacional",
+  "dificuldade": "media",
+  "spotify": "1W4SPqMmN3vjdYaxiKtfLH",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Tente%20Outra%20Vez%20Raul%20Seixas"
+  ]
+ },
+ {
+  "id": "br-negro-drama-racionais-mc-s",
+  "titulo": "Negro Drama",
+  "artista": "Racionais MC's",
+  "ano": 2002,
+  "alternativas": {
+   "artista": [
+    "Racionais"
+   ]
+  },
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "Rap nacional",
+  "dificuldade": "media",
+  "spotify": "3ytXzEJFeVydFfmUhHvti8",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Negro%20Drama%20Racionais%20MC%27s"
+  ]
+ },
+ {
+  "id": "br-burguesinha-seu-jorge",
+  "titulo": "Burguesinha",
+  "artista": "Seu Jorge",
+  "ano": 2007,
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "Samba-funk",
+  "dificuldade": "facil",
+  "spotify": "2ge48dnEjNjbnTgDdWKBlu",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Burguesinha%20Seu%20Jorge"
+  ]
+ },
+ {
+  "id": "br-medo-bobo-maiara-maraisa",
+  "titulo": "Medo Bobo",
+  "artista": "Maiara & Maraisa",
+  "ano": 2016,
+  "anosAceitos": [
+   2017
+  ],
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "Sertanejo",
+  "dificuldade": "facil",
+  "spotify": "5q6BkTqKiBxXfu3Q67pTxS",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Medo%20Bobo%20Maiara%20%26%20Maraisa"
+  ]
+ },
+ {
+  "id": "br-ta-escrito-grupo-revelacao",
+  "titulo": "Tá Escrito",
+  "artista": "Grupo Revelação",
+  "ano": 2009,
+  "anosAceitos": [
+   2014
+  ],
+  "alternativas": {
+   "artista": [
+    "Revelação"
+   ]
+  },
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "Pagode",
+  "dificuldade": "facil",
+  "spotify": "6hXiKJoGgWYH38IYlX6VLJ",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=T%C3%A1%20Escrito%20Grupo%20Revela%C3%A7%C3%A3o"
+  ]
+ },
+ {
+  "id": "br-boa-sorte-good-luck-vanessa-da-mata-feat",
+  "titulo": "Boa Sorte / Good Luck",
+  "artista": "Vanessa da Mata feat. Ben Harper",
+  "ano": 2007,
+  "alternativas": {
+   "titulo": [
+    "Boa Sorte",
+    "Good Luck"
+   ],
+   "artista": [
+    "Vanessa da Mata"
+   ]
+  },
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "MPB / Pop",
+  "dificuldade": "facil",
+  "spotify": "0yCZjltOHQnRJKJJJiZ0pJ",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Boa%20Sorte%20/%20Good%20Luck%20Vanessa%20da%20Mata"
+  ]
+ },
+ {
+  "id": "br-planeta-agua-guilherme-arantes",
+  "titulo": "Planeta Água",
+  "artista": "Guilherme Arantes",
+  "ano": 1981,
+  "pais": "Brasil",
+  "idioma": "Português",
+  "origem": "br",
+  "genero": "MPB",
+  "dificuldade": "media",
+  "spotify": "0SR74dobB8e1dTpsCasi9W",
+  "fontes": [
+   "https://pt.wikipedia.org/w/index.php?search=Planeta%20%C3%81gua%20Guilherme%20Arantes"
+  ]
+ },
+ {
+  "id": "intl-waka-waka-this-time-for-africa-shakira-feat-freshly",
+  "titulo": "Waka Waka (This Time for Africa)",
+  "artista": "Shakira feat. Freshlyground",
+  "ano": 2010,
+  "alternativas": {
+   "titulo": [
+    "Waka Waka"
+   ],
+   "artista": [
+    "Shakira"
+   ]
+  },
+  "pais": "Colômbia / África do Sul",
+  "idioma": "Inglês e espanhol",
+  "origem": "intl",
+  "genero": "Pop / Afro-pop",
+  "dificuldade": "facil",
+  "spotify": "2Cd9iWfcOpGDHLz6tVA3G4",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Waka%20Waka%20%28This%20Time%20for%20Africa%29%20Shakira"
+  ]
+ },
+ {
+  "id": "intl-hello-adele",
+  "titulo": "Hello",
+  "artista": "Adele",
+  "ano": 2015,
+  "pais": "Reino Unido",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Balada pop",
+  "dificuldade": "facil",
+  "spotify": "62PaSfnXSMyLshYJrlTuL3",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Hello%20Adele"
+  ]
+ },
+ {
+  "id": "intl-bad-romance-lady-gaga",
+  "titulo": "Bad Romance",
+  "artista": "Lady Gaga",
+  "ano": 2009,
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Electropop",
+  "dificuldade": "facil",
+  "spotify": "0SiywuOBRcynK0uKGWdCnn",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Bad%20Romance%20Lady%20Gaga"
+  ]
+ },
+ {
+  "id": "intl-beat-it-michael-jackson",
+  "titulo": "Beat It",
+  "artista": "Michael Jackson",
+  "ano": 1982,
+  "anosAceitos": [
+   1983
+  ],
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Pop rock",
+  "dificuldade": "facil",
+  "spotify": "1OOtq8tRnDM8kG2gqUPjAj",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Beat%20It%20Michael%20Jackson"
+  ]
+ },
+ {
+  "id": "intl-losing-my-religion-r-e-m",
+  "titulo": "Losing My Religion",
+  "artista": "R.E.M.",
+  "ano": 1991,
+  "alternativas": {
+   "artista": [
+    "REM"
+   ]
+  },
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Rock alternativo",
+  "dificuldade": "media",
+  "spotify": "6bCPryuQjsts5cEybA3Nb5",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Losing%20My%20Religion%20R.E.M."
+  ]
+ },
+ {
+  "id": "intl-toxic-britney-spears",
+  "titulo": "Toxic",
+  "artista": "Britney Spears",
+  "ano": 2003,
+  "anosAceitos": [
+   2004
+  ],
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Pop",
+  "dificuldade": "facil",
+  "spotify": "00c5Yvh0m43e3otzvmZ4rI",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Toxic%20Britney%20Spears"
+  ]
+ },
+ {
+  "id": "intl-levitating-dua-lipa",
+  "titulo": "Levitating",
+  "artista": "Dua Lipa",
+  "ano": 2020,
+  "pais": "Reino Unido",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Disco-pop",
+  "dificuldade": "facil",
+  "spotify": "39LLxExYz6ewLAcYrzQQyP",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Levitating%20Dua%20Lipa"
+  ]
+ },
+ {
+  "id": "intl-birds-of-a-feather-billie-eilish",
+  "titulo": "BIRDS OF A FEATHER",
+  "artista": "Billie Eilish",
+  "ano": 2024,
+  "alternativas": {
+   "titulo": [
+    "Birds of a Feather"
+   ]
+  },
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Pop",
+  "dificuldade": "facil",
+  "spotify": "5rhLm6PY6rvHN7L7NotoTB",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=BIRDS%20OF%20A%20FEATHER%20Billie%20Eilish"
+  ]
+ },
+ {
+  "id": "intl-die-with-a-smile-lady-gaga-e-bruno-ma",
+  "titulo": "Die With A Smile",
+  "artista": "Lady Gaga e Bruno Mars",
+  "ano": 2024,
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Pop / Balada",
+  "dificuldade": "facil",
+  "spotify": "2plbrEY59IikOBgBGLjaoe",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Die%20With%20A%20Smile%20Lady%20Gaga"
+  ]
+ },
+ {
+  "id": "intl-calm-down-rema-e-selena-gomez",
+  "titulo": "Calm Down",
+  "artista": "Rema e Selena Gomez",
+  "ano": 2022,
+  "alternativas": {
+   "artista": [
+    "Rema"
+   ]
+  },
+  "pais": "Nigéria / Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Afrobeats",
+  "dificuldade": "facil",
+  "spotify": "0WtM2NBVQNNJLh6scP13H8",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Calm%20Down%20Rema"
+  ]
+ },
+ {
+  "id": "intl-papaoutai-stromae",
+  "titulo": "Papaoutai",
+  "artista": "Stromae",
+  "ano": 2013,
+  "alternativas": {
+   "titulo": [
+    "Papa où t'es"
+   ]
+  },
+  "pais": "Bélgica",
+  "idioma": "Francês",
+  "origem": "intl",
+  "genero": "Pop / Electro",
+  "dificuldade": "media",
+  "spotify": "6YL6C7y3KhQvjwiXLXNWoD",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Papaoutai%20Stromae"
+  ]
+ },
+ {
+  "id": "intl-dragostea-din-tei-o-zone",
+  "titulo": "Dragostea Din Tei",
+  "artista": "O-Zone",
+  "ano": 2003,
+  "anosAceitos": [
+   2004
+  ],
+  "alternativas": {
+   "titulo": [
+    "Numa Numa"
+   ]
+  },
+  "pais": "Moldávia",
+  "idioma": "Romeno",
+  "origem": "intl",
+  "genero": "Eurodance",
+  "dificuldade": "media",
+  "spotify": "6tGagZPOCOitsSTFvgbOdQ",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Dragostea%20Din%20Tei%20O-Zone"
+  ]
+ },
+ {
+  "id": "intl-con-te-partiro-andrea-bocelli",
+  "titulo": "Con te partirò",
+  "artista": "Andrea Bocelli",
+  "ano": 1995,
+  "alternativas": {
+   "titulo": [
+    "Time to Say Goodbye"
+   ]
+  },
+  "pais": "Itália",
+  "idioma": "Italiano",
+  "origem": "intl",
+  "genero": "Pop lírico",
+  "dificuldade": "dificil",
+  "spotify": "7zrpoAJte9o12TzawqgdD0",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Con%20te%20partir%C3%B2%20Andrea%20Bocelli"
+  ]
+ },
+ {
+  "id": "intl-felicita-al-bano-e-romina-pow",
+  "titulo": "Felicità",
+  "artista": "Al Bano e Romina Power",
+  "ano": 1982,
+  "alternativas": {
+   "titulo": [
+    "Felicita"
+   ],
+   "artista": [
+    "Al Bano",
+    "Romina Power"
+   ]
+  },
+  "pais": "Itália",
+  "idioma": "Italiano",
+  "origem": "intl",
+  "genero": "Pop italiano",
+  "dificuldade": "media",
+  "spotify": "7sXTcibuNYugjjYNfgf2kY",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Felicit%C3%A0%20Al%20Bano"
+  ]
+ },
+ {
+  "id": "intl-l-italiano-toto-cutugno",
+  "titulo": "L'italiano",
+  "artista": "Toto Cutugno",
+  "ano": 1983,
+  "alternativas": {
+   "titulo": [
+    "L'Italiano"
+   ]
+  },
+  "pais": "Itália",
+  "idioma": "Italiano",
+  "origem": "intl",
+  "genero": "Pop italiano",
+  "dificuldade": "media",
+  "spotify": "0XBKBYtlM1WYp1RpLnPSVB",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=L%27italiano%20Toto%20Cutugno"
+  ]
+ },
+ {
+  "id": "intl-sukiyaki-ue-o-muite-aruko-kyu-sakamoto",
+  "titulo": "Sukiyaki (Ue o muite arukō)",
+  "artista": "Kyu Sakamoto",
+  "ano": 1961,
+  "alternativas": {
+   "titulo": [
+    "Sukiyaki",
+    "Ue o Muite Aruko"
+   ]
+  },
+  "pais": "Japão",
+  "idioma": "Japonês",
+  "origem": "intl",
+  "genero": "Kayōkyoku (pop japonês)",
+  "dificuldade": "muito_dificil",
+  "spotify": "2rLSdHjRDZdc9UTFG8Hdla",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Sukiyaki%20%28Ue%20o%20muite%20aruk%C5%8D%29%20Kyu%20Sakamoto"
+  ]
+ },
+ {
+  "id": "intl-jerusalema-master-kg-feat-nomce",
+  "titulo": "Jerusalema",
+  "artista": "Master KG feat. Nomcebo Zikode",
+  "ano": 2019,
+  "anosAceitos": [
+   2020
+  ],
+  "alternativas": {
+   "artista": [
+    "Master KG"
+   ]
+  },
+  "pais": "África do Sul",
+  "idioma": "Zulu",
+  "origem": "intl",
+  "genero": "Gospel house",
+  "dificuldade": "media",
+  "spotify": "2MlOUXmcofMackX3bxfSwi",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Jerusalema%20Master%20KG"
+  ]
+ },
+ {
+  "id": "intl-pata-pata-miriam-makeba",
+  "titulo": "Pata Pata",
+  "artista": "Miriam Makeba",
+  "ano": 1967,
+  "pais": "África do Sul",
+  "idioma": "Xhosa e inglês",
+  "origem": "intl",
+  "genero": "Afro-pop",
+  "dificuldade": "dificil",
+  "spotify": "4S4dCACmtuPWbhvMSfDXqN",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Pata%20Pata%20Miriam%20Makeba"
+  ]
+ },
+ {
+  "id": "intl-chan-chan-buena-vista-social-c",
+  "titulo": "Chan Chan",
+  "artista": "Buena Vista Social Club",
+  "ano": 1997,
+  "alternativas": {
+   "artista": [
+    "Compay Segundo"
+   ]
+  },
+  "pais": "Cuba",
+  "idioma": "Espanhol",
+  "origem": "intl",
+  "genero": "Son cubano",
+  "dificuldade": "dificil",
+  "spotify": "7DqTaelFf846rl1CHmyfOW",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Chan%20Chan%20Buena%20Vista%20Social%20Club"
+  ]
+ },
+ {
+  "id": "intl-alors-on-danse-stromae",
+  "titulo": "Alors on danse",
+  "artista": "Stromae",
+  "ano": 2009,
+  "anosAceitos": [
+   2010
+  ],
+  "pais": "Bélgica",
+  "idioma": "Francês",
+  "origem": "intl",
+  "genero": "Electro / Dance",
+  "dificuldade": "media",
+  "spotify": "2MJooWW15CQPTS3ewVzgW3",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Alors%20on%20danse%20Stromae"
+  ]
+ },
+ {
+  "id": "intl-thriller-michael-jackson",
+  "titulo": "Thriller",
+  "artista": "Michael Jackson",
+  "ano": 1982,
+  "anosAceitos": [
+   1983,
+   1984
+  ],
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Pop / Funk",
+  "dificuldade": "facil",
+  "spotify": "2LlQb7Uoj1kKyGhlkBf9aC",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Thriller%20Michael%20Jackson"
+  ]
+ },
+ {
+  "id": "intl-kill-bill-sza",
+  "titulo": "Kill Bill",
+  "artista": "SZA",
+  "ano": 2022,
+  "anosAceitos": [
+   2023
+  ],
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "R&B",
+  "dificuldade": "facil",
+  "spotify": "6FUFHxoGIBoxnDKsWmbSDJ",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Kill%20Bill%20SZA"
+  ]
+ },
+ {
+  "id": "intl-pepas-farruko",
+  "titulo": "Pepas",
+  "artista": "Farruko",
+  "ano": 2021,
+  "pais": "Porto Rico",
+  "idioma": "Espanhol",
+  "origem": "intl",
+  "genero": "Reggaeton / EDM",
+  "dificuldade": "facil",
+  "spotify": "2B4GHvToeLTOBB4QLzW3Ni",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Pepas%20Farruko"
+  ]
+ },
+ {
+  "id": "intl-cruel-summer-taylor-swift",
+  "titulo": "Cruel Summer",
+  "artista": "Taylor Swift",
+  "ano": 2019,
+  "anosAceitos": [
+   2023
+  ],
+  "pais": "Estados Unidos",
+  "idioma": "Inglês",
+  "origem": "intl",
+  "genero": "Synth-pop",
+  "dificuldade": "facil",
+  "spotify": "1BxfuPKGuaTgP7aM0Bbdwr",
+  "fontes": [
+   "https://en.wikipedia.org/w/index.php?search=Cruel%20Summer%20Taylor%20Swift"
+  ]
  }
 ];
 

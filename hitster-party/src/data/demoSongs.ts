@@ -14,7 +14,7 @@ import { EXTRA_SONGS } from './extraSongs';
  * Mesmo assim, catálogos de streaming mudam: use "Verificar links" no painel do organizador
  * antes da festa. Para adicionar milhares de músicas, importe JSON/CSV pela área administrativa.
  */
-export const DEMO_BANK_VERSION = 2;
+export const DEMO_BANK_VERSION = 3;
 
 type Base = Omit<Song, 'temLetra' | 'exemplo' | 'spotifyUrl'> & { spotify: string };
 

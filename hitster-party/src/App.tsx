@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { handleRedirect } from './lib/spotifyApi';
+import { navigate } from './router';
 import { FeedbackProvider } from './components/feedback';
 import { useRoute } from './router';
 import { Admin } from './screens/Admin';
@@ -20,6 +22,8 @@ export default function App() {
   const saveError = getSaveError();
 
   useEffect(() => { document.documentElement.classList.toggle('reduce-motion', reduzir); }, [reduzir]);
+  useEffect(() => { handleRedirect().then((r) => { if (r) { setSpotifyMsg(r.ok ? 'Spotify conectado! 🎉' : r.erro ?? 'Falha ao conectar.'); navigate('admin'); } }); }, []);
+  const [spotifyMsg, setSpotifyMsg] = useState<string | null>(null);
 
   return (
     <FeedbackProvider>
@@ -27,6 +31,7 @@ export default function App() {
       {['jogo', 'placar', 'historico', 'admin', 'classificacao', 'vitoria', 'nova'].includes(route) && <OrganizerSyncBridge />}
       <div className="app" key={route}>
         {saveError && <p className="notice notice--error">{saveError}</p>}
+        {spotifyMsg && <p className="notice" role="status" onClick={() => setSpotifyMsg(null)}>{spotifyMsg} <button className="link-btn">ok</button></p>}
         {route === 'home' && <Home />}
         {route === 'nova' && <Setup />}
         {route === 'jogo' && <Game />}

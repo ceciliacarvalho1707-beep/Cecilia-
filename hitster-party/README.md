@@ -72,9 +72,9 @@ Não dentro do Spotify: o app sempre mostra título, artista e capa, e nenhum si
 
 ## Banco de músicas
 
-O projeto vem com **181 músicas de exemplo** (marcadas como "exemplo"), 80 brasileiras e 101 internacionais, de 1917 a 2024, todas com letra, incluindo musicais e trilhas de filmes:
+O projeto vem com **217 músicas de exemplo** (marcadas como "exemplo"), 92 brasileiras e 125 internacionais, de 1917 a 2024, todas com letra, incluindo musicais e trilhas de filmes:
 - **58 com verificação detalhada** (`src/data/demoSongs.ts`): o link aponta para uma **faixa específica** encontrada em páginas públicas do Spotify cujo título e artista conferem; ano, autoria e curiosidade foram conferidos no verbete da Wikipédia indicado; anos legitimamente divergentes (composição × gravação, single × álbum) estão em `anosAceitos`.
-- **123 do banco ampliado** (`src/data/extraSongs.ts`): o link também foi conferido em páginas públicas do Spotify (título e intérprete). O ano segue o lançamento original conhecido, com anos alternativos quando há divergência. Aqui a fonte é uma busca na Wikipédia que leva ao verbete, e não há curiosidade cadastrada. Algumas faixas são gravações ao vivo, remasterizações ou coletâneas do próprio artista.
+- **159 do banco ampliado** (`src/data/extraSongs.ts`): o link também foi conferido em páginas públicas do Spotify (título e intérprete). O ano segue o lançamento original conhecido, com anos alternativos quando há divergência. Aqui a fonte é uma busca na Wikipédia que leva ao verbete, e não há curiosidade cadastrada. Algumas faixas são gravações ao vivo, remasterizações ou coletâneas do próprio artista.
 
 Catálogos de streaming mudam. Antes da festa, use **Área do organizador → 🌐 Verificar links on-line**.
 
@@ -115,15 +115,45 @@ O banco suporta milhares de músicas (o limite prático é o `localStorage`, cer
 
 Sorteio uniforme com o gerador criptográfico do navegador, sem ciclos, sem alternar país, época ou gênero. Ele não repete músicas na partida enquanto houver inéditas e evita apenas o mesmo artista duas vezes seguidas. Se a dificuldade escolhida acabar, usa outras dificuldades. Só repete quando o banco inteiro (no filtro de idioma) se esgota, e nesse caso avisa na tela. Com um banco pequeno a variedade é limitada; importe mais músicas para partidas longas.
 
+## Qualquer música do mundo
+
+**Sem conexão nenhuma (funciona em qualquer versão, inclusive no claude.ai):** na tela do jogo, toque em **🎯 Escolher qualquer música**, cole o link da música (no app do Spotify: *Compartilhar → Copiar link*) e preencha nome, artista e ano. Ela entra na rodada na hora e fica salva no banco. Se o link já estiver no banco, os campos se preenchem sozinhos.
+
+## Conexão direta com o Spotify (opcional)
+
+Com a conta do organizador conectada, o jogo ganha:
+- **busca** em todo o catálogo do Spotify, dentro do jogo (Área do organizador → aba 🟢 Spotify, e também em "Escolher qualquer música");
+- **importação de playlists inteiras** (suas ou que você segue): nome, artista e ano entram automaticamente;
+- **tocar direto numa caixa de som ou TV** (Spotify Connect): o celular não precisa abrir o Spotify, então não aparece título nem capa na tela dele. Escolha o modo em *Configurações → Spotify → Tocar direto numa caixa/aparelho*.
+
+### Como configurar (uma vez)
+1. Rode o jogo **no seu computador**: `npm run dev` e abra **http://127.0.0.1:5173/**. O Spotify não aceita "localhost" desde 2025. Também funciona hospedando a pasta `dist/` num endereço HTTPS.
+2. Em [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard), crie um app (APIs: *Web API*). Em *Redirect URIs*, cadastre exatamente `http://127.0.0.1:5173/` (ou o seu endereço HTTPS).
+3. Em *User Management*, adicione o e-mail da sua conta Spotify.
+4. No jogo: *Configurações → Conexão direta com o Spotify*. Cole o **Client ID** e toque em **Conectar com o Spotify**.
+
+Não existe "client secret" no jogo: o login usa o fluxo *Authorization Code com PKCE*, feito para apps no navegador. Os tokens ficam só no navegador do organizador.
+
+### Limites do Spotify (regras em vigor desde fevereiro e março de 2026)
+- Apps em **modo de desenvolvimento**: a conta dona do app precisa ser **Premium**, e no máximo **5 usuários** podem ser autorizados.
+- **Tocar num aparelho** (Spotify Connect) exige **Premium** e o Spotify aberto em algum aparelho (celular, PC, caixa ou TV compatível).
+- O Spotify **não informa** se uma música é instrumental nem a popularidade dela. Por isso as importadas entram como "com letra" e com a dificuldade que você escolher; revise e remova as instrumentais.
+- O ano vem da data do **álbum**. Em coletâneas e remasterizações, ele pode ser o do relançamento. Essas músicas ganham a etiqueta **"conferir ano"** na área do organizador.
+- Playlists editoriais do próprio Spotify não podem ser lidas por apps novos. Monte uma playlist sua com as músicas da festa.
+- **Dentro do claude.ai a conexão não funciona**, porque a página publicada não pode acessar a API do Spotify. Lá continua valendo colar links.
+
+**Como foi testado:** o código da integração (`src/lib/spotifyApi.ts`) foi testado com respostas simuladas no formato atual da API (login PKCE, renovação de token, busca, playlists por `/items` e por `/tracks`, tocar em aparelho, erro 403). Ele **não foi testado contra o Spotify de verdade**, porque o ambiente de desenvolvimento não tinha acesso à rede do Spotify. Se algo falhar no primeiro uso, a mensagem de erro da tela diz o motivo.
+
 ## O que depende de serviços externos
 
 | Recurso | Depende de | Observação |
 |---|---|---|
-| Tocar música | App ou site do Spotify | O jogo só abre o link da faixa. Tocar a música inteira depende da conta Spotify do organizador. |
+| Tocar música | App ou site do Spotify | Por padrão o jogo abre o link da faixa. Com a conexão direta e Premium, ele pode tocar num aparelho via Spotify Connect. |
+| Buscar e importar | API Web do Spotify (opcional) | Só na versão rodando no seu computador ou hospedada. Veja "Conexão direta com o Spotify". |
 | Verificar links on-line | oEmbed público do Spotify (`open.spotify.com/oembed`) | Não usa credenciais e roda no navegador do organizador. **Não foi testado de ponta a ponta** neste ambiente de desenvolvimento, porque o acesso ao Spotify estava bloqueado na rede. Se a consulta falhar, o jogo informa o erro em vez de marcar o link como inválido. A verificação de *formato* funciona sem internet. |
 | Fonte "Outfit" | Google Fonts | Sem internet, o jogo usa a fonte do sistema. |
 
-Não há integração com a API Web do Spotify e não há segredo no código. Se no futuro você quiser buscar músicas automaticamente pela API oficial, faça isso num backend (por exemplo, uma função serverless) que guarde `SPOTIFY_CLIENT_ID` e `SPOTIFY_CLIENT_SECRET` em variáveis de ambiente e exporte o resultado no formato JSON acima. Nunca coloque essas credenciais no código do navegador.
+Não há segredo no código: o Client ID é público por natureza, e o fluxo PKCE dispensa o "client secret".
 
 ## Estrutura
 

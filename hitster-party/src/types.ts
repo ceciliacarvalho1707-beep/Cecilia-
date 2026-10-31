@@ -44,6 +44,8 @@ export interface Song {
   temLetra: boolean;
   /** Marca músicas de demonstração incluídas no projeto. */
   exemplo?: boolean;
+  /** Importada automaticamente: o ano veio de uma coletânea/remasterização e merece conferência. */
+  anoConferir?: boolean;
   /** Resultado da última verificação de link no painel administrativo. */
   verificacao?: { status: 'ok' | 'erro' | 'formato'; em: string; detalhe?: string };
 }
@@ -128,7 +130,10 @@ export interface Match {
 
 export interface Settings {
   toleranciaPadrao: Tolerancia;
-  spotifyModo: 'web' | 'app';
+  /** web/app: abre o link; connect: toca direto num aparelho pela API (precisa de conexão e Premium). */
+  spotifyModo: 'web' | 'app' | 'connect';
+  /** Aparelho do Spotify Connect escolhido para tocar. */
+  spotifyDeviceId?: string;
   /** Hash simples do PIN do organizador (opcional). */
   pinHash?: string;
   reduzirAnimacoes: boolean;

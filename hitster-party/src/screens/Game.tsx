@@ -2,6 +2,8 @@ import { useFeedback } from '../components/feedback';
 import { EvaluationPanel, GuessPanel, Scoreboard, SecretAnswerCard, SpotifyButton } from '../components/game';
 import { DifficultyBadge, Equalizer, Redirect, TopBar, Vinyl } from '../components/ui';
 import { useTransportKind } from '../components/sync';
+import { PickSongModal, PlayOnDevice, useSpotifyAuth } from '../components/spotify';
+import { useState } from 'react';
 import { navigate } from '../router';
 import { currentRound, currentTurn, hasNextTeam, isLastRound, matchActions, songById, turnComplete, useAppState } from '../store/store';
 
@@ -10,6 +12,9 @@ export function Game() {
   useAppState((s) => s.songs); // re-render se o gabarito for editado no painel
   const { toast, confirm } = useFeedback();
   const kind = useTransportKind();
+  const { connected } = useSpotifyAuth();
+  const spotifyModo = useAppState((s) => s.settings.spotifyModo);
+  const [pick, setPick] = useState(false);
 
   if (!match) {
     return (
@@ -72,6 +77,7 @@ export function Game() {
       {match.avisoRepeticao && <p className="notice">ℹ️ O banco não tem músicas inéditas suficientes para estes filtros: algumas músicas podem se repetir. Importe mais músicas na área do organizador.</p>}
       {isPast && <p className="notice">⏪ Você está revisando um turno anterior. Correções aqui atualizam o placar sem duplicar pontos.</p>}
 
+      <PickSongModal open={pick} onClose={() => setPick(false)} />
       <div className="game-grid">
         <div className="game-main">
           {/* CARTÃO PÚBLICO: não contém título, artista, ano, capa ou qualquer dado secreto. */}
@@ -88,12 +94,15 @@ export function Game() {
                 <p className="round-card__inst">Ouça o trecho e descubra o <b>ano de lançamento</b>, o <b>nome da música</b> e o <b>artista, banda ou musical</b>. <Equalizer bars={4} /></p>
               </div>
             </div>
-            {song ? <SpotifyButton url={song.spotifyUrl} /> : <p className="warn">Esta música foi removida do banco. Use “Trocar música”.</p>}
+            {song ? (spotifyModo === 'connect' && connected ? <PlayOnDevice url={song.spotifyUrl} /> : <SpotifyButton url={song.spotifyUrl} />) : <p className="warn">Esta música foi removida do banco. Use “Trocar música”.</p>}
             {!turn.revealed && !Object.keys(turn.evals).length && (
               <button className="link-btn round-card__skip" onClick={async () => {
                 const ok = await confirm({ titulo: 'Trocar a música?', mensagem: 'Use se o link não abrir ou se alguém já reconheceu a música. Uma nova faixa será sorteada para este turno.', confirmar: 'Sortear outra' });
                 if (ok) { const r = matchActions.skipSong(); toast(r.ok ? 'Nova música sorteada.' : r.erro, r.ok ? 'ok' : 'erro'); }
-              }}>🔄 Trocar música</button>
+              }}>🔄 Sortear outra</button>
+            )}
+            {!turn.revealed && !Object.keys(turn.evals).length && (
+              <button className="link-btn round-card__skip" onClick={() => setPick(true)} data-testid="btn-escolher">🎯 Escolher qualquer música</button>
             )}
           </article>
 

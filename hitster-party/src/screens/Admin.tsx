@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { Modal, useFeedback } from '../components/feedback';
+import { SpotifyLibrary } from '../components/spotify';
 import { DIF_LABEL, DifficultyBadge, Segmented, TeamChip, TopBar } from '../components/ui';
 import { importCsv, importJson, songsToCsv, validateSong, type ImportResult } from '../lib/csv';
 import { download } from '../lib/export';
@@ -10,7 +11,7 @@ import {
 } from '../store/store';
 import type { Dificuldade, Song, Tolerancia } from '../types';
 
-type Tab = 'musicas' | 'importar' | 'partida' | 'equipes';
+type Tab = 'musicas' | 'spotify' | 'importar' | 'partida' | 'equipes';
 let desbloqueado = false;
 
 export function Admin() {
@@ -25,11 +26,12 @@ export function Admin() {
       <h1 className="page__title">🔑 Área do organizador</h1>
       <p className="notice">🙈 Esta área mostra respostas. <strong>Não exiba esta tela na TV</strong> nem para os jogadores.</p>
       <div className="tabs" role="tablist">
-        {([['musicas', '🎵 Banco de músicas'], ['importar', '📥 Importar / exportar'], ['partida', '🎛️ Controle da partida'], ['equipes', '👥 Equipes']] as [Tab, string][]).map(([k, label]) => (
+        {([['musicas', '🎵 Banco de músicas'], ['spotify', '🟢 Spotify'], ['importar', '📥 Importar / exportar'], ['partida', '🎛️ Controle da partida'], ['equipes', '👥 Equipes']] as [Tab, string][]).map(([k, label]) => (
           <button key={k} role="tab" aria-selected={tab === k} className={`tabs__tab ${tab === k ? 'is-active' : ''}`} onClick={() => setTab(k)} data-testid={`tab-${k}`}>{label}</button>
         ))}
       </div>
       {tab === 'musicas' && <SongsTab />}
+      {tab === 'spotify' && <section className="card"><SpotifyLibrary /></section>}
       {tab === 'importar' && <ImportTab />}
       {tab === 'partida' && <MatchTab />}
       {tab === 'equipes' && <TeamsTab />}
@@ -142,7 +144,7 @@ function SongsTab() {
             {filtered.map((s) => (
               <tr key={s.id}>
                 <td title={s.verificacao?.detalhe}>{s.verificacao ? STATUS_ICON[s.verificacao.status] : ''}{s.origem === 'br' ? '🇧🇷' : '🌍'}</td>
-                <td><strong>{s.titulo}</strong>{s.exemplo && <span className="pill pill--sm">exemplo</span>}</td>
+                <td><strong>{s.titulo}</strong>{s.exemplo && <span className="pill pill--sm">exemplo</span>}{s.anoConferir && <span className="pill pill--sm pill--warn" title="Importada de coletânea ou remasterização: confira o ano original">conferir ano</span>}</td>
                 <td>{s.musical ? <>{s.musical} <span className="muted small">({s.artista})</span></> : s.artista}</td>
                 <td>{s.ano}{s.anosAceitos?.length ? <span className="muted small"> / {s.anosAceitos.join(', ')}</span> : null}</td>
                 <td className="small">{s.genero}</td>

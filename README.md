@@ -25,3 +25,9 @@ npm run dev
 - `src/components/layout` — sidebar, header, breadcrumbs, shell da aplicação
 - `src/components/ui` — cards, badges de segredo, blocos revogáveis, modal de nova página
 - `src/pages` — dashboard, coleções, páginas de campanha e de entidades
+
+---
+
+## 🎵 Projeto adicional: HITSTER PARTY
+
+A pasta [`hitster-party/`](hitster-party/) contém um jogo musical de festa independente deste workspace (React + TypeScript + Vite). Para rodar: `cd hitster-party && npm install && npm run dev`. Veja [`hitster-party/README.md`](hitster-party/README.md).

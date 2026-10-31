@@ -2,7 +2,20 @@ import type { Match, Song } from '../types';
 import { toCsv } from './csv';
 import { computeScores, pointsOf } from './scoring';
 
-export function download(filename: string, content: string, mime: string) {
+/**
+ * Oferece um arquivo ao usuário. Dentro do claude.ai usa a capacidade `downloads`
+ * (o visualizador pede confirmação); fora dele, um link de download comum.
+ */
+export async function download(filename: string, content: string, mime: string): Promise<void> {
+  const claude = (window as unknown as { claude?: { use?: (n: string) => Promise<unknown> } }).claude;
+  if (claude?.use) {
+    try {
+      const dl = (await claude.use('downloads')) as { save(r: { filename: string; data: string }): Promise<unknown> } | null;
+      if (dl) { await dl.save({ filename, data: content }); return; }
+    } catch (e) {
+      if ((e as { code?: string })?.code === 'declined') return;
+    }
+  }
   const blob = new Blob([content], { type: `${mime};charset=utf-8` });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

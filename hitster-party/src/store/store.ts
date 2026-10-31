@@ -215,6 +215,18 @@ export const matchActions = {
     return { ok: true };
   },
 
+  /** Palpite recebido de um celular de equipe. Só vale para o turno atual e antes da revelação. */
+  submitRemoteGuess(g: { turnId: string; teamId: string; ano: string; titulo: string; artista: string; em: string }): boolean {
+    const m = state.match; const t = m && currentTurn(m);
+    if (!m || !t || m.status !== 'em_andamento' || t.id !== g.turnId) return false;
+    if (!t.teamIds.includes(g.teamId) || t.revealed || t.evals[g.teamId]) return false;
+    const prev = t.guesses[g.teamId];
+    if (prev && prev.enviadoEm >= g.em) return false;
+    const clean = (v: unknown, max: number) => String(v ?? '').slice(0, max).trim();
+    updateCurrentTurn((turn) => ({ ...turn, guesses: { ...turn.guesses, [g.teamId]: { ano: clean(g.ano, 4).replace(/\D/g, ''), titulo: clean(g.titulo, 120), artista: clean(g.artista, 120), enviadoEm: g.em } } }));
+    return true;
+  },
+
   /** Abre/fecha o gabarito. Na primeira abertura gera a sugestão automática de correção. */
   setRevealed(revealed: boolean) {
     updateCurrentTurn((t, m) => {

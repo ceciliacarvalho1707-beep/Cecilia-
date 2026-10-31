@@ -1,6 +1,7 @@
 import { useFeedback } from '../components/feedback';
 import { EvaluationPanel, GuessPanel, Scoreboard, SecretAnswerCard, SpotifyButton } from '../components/game';
 import { DifficultyBadge, Equalizer, Redirect, TopBar, Vinyl } from '../components/ui';
+import { useTransportKind } from '../components/sync';
 import { navigate } from '../router';
 import { currentRound, currentTurn, hasNextTeam, isLastRound, matchActions, songById, turnComplete, useAppState } from '../store/store';
 
@@ -8,6 +9,7 @@ export function Game() {
   const match = useAppState((s) => s.match);
   useAppState((s) => s.songs); // re-render se o gabarito for editado no painel
   const { toast, confirm } = useFeedback();
+  const kind = useTransportKind();
 
   if (!match) {
     return (
@@ -15,7 +17,8 @@ export function Game() {
         <TopBar />
         <div className="empty">
           <Vinyl />
-          <h2>Nenhuma partida em andamento</h2>
+          <h2>Ainda não tem partida rolando</h2>
+          <p className="muted">Monte as equipes e comece quando todo mundo estiver pronto.</p>
           <button className="btn btn--hero" onClick={() => navigate('nova')}>🎵 NOVA PARTIDA</button>
         </div>
       </main>
@@ -123,7 +126,7 @@ export function Game() {
           <section className="card">
             <h3 className="section-title">🎛️ Controle</h3>
             <div className="stack">
-              <button className="btn btn--ghost btn--sm" onClick={() => navigate('tv')}>📺 Abrir tela pública (TV)</button>
+              <p className="muted small" style={{ margin: 0 }}>{kind === 'nuvem' ? '🟢 TV e celulares de equipe sincronizados.' : '🟡 Sincronização só neste navegador.'} Para usar a TV, abra este jogo nela e toque em “Tela da TV”.</p>
               <button className="btn btn--ghost btn--sm" onClick={async () => {
                 const ok = await confirm({ titulo: 'Encerrar partida?', mensagem: 'A partida será finalizada e enviada ao histórico. Você verá a classificação final.', confirmar: 'Encerrar', perigo: true });
                 if (ok) { matchActions.finish(); navigate('vitoria'); }

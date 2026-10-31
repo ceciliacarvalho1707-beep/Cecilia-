@@ -2,12 +2,14 @@ import { useFeedback } from '../components/feedback';
 import { Equalizer, Logo } from '../components/ui';
 import { navigate } from '../router';
 import { useAppState } from '../store/store';
+import { useTransportKind } from '../components/sync';
 
 export function Home() {
   const match = useAppState((s) => s.match);
   const nSongs = useAppState((s) => s.songs.length);
   const { toast } = useFeedback();
   const emAndamento = match?.status === 'em_andamento';
+  const kind = useTransportKind();
 
   return (
     <main className="home">
@@ -17,7 +19,7 @@ export function Home() {
       <div className="home__hero">
         <Logo size="lg" />
         <p className="home__tagline">Ouça. Adivinhe. Pontue. <Equalizer /></p>
-        <p className="muted home__sub">O jogo de adivinhação musical para festas — várias equipes, um único celular ou TV.</p>
+        <p className="muted home__sub">Junte a galera, separe as equipes e descubra quem manja mais de música. Funciona num celular só ou com TV e celulares.</p>
       </div>
 
       <nav className="home__menu">
@@ -30,12 +32,27 @@ export function Home() {
         <button className="btn btn--menu" onClick={() => navigate('config')} data-testid="btn-config">⚙️ CONFIGURAÇÕES</button>
       </nav>
 
+      <section className="devices" aria-labelledby="devices-title">
+        <h2 id="devices-title">Vai usar mais de um aparelho?</h2>
+        <p className="muted small">Abra este mesmo jogo em cada aparelho e diga qual é o papel dele. Só o celular do organizador vê as respostas.</p>
+        <div className="devices__grid">
+          <button className="device" onClick={() => navigate('jogo')}>
+            <span className="device__icon">📱</span><strong>Celular do organizador</strong><small>Toca a música, abre o gabarito e dá os pontos.</small>
+          </button>
+          <button className="device" onClick={() => navigate('tv')} data-testid="mode-tv">
+            <span className="device__icon">📺</span><strong>Tela da TV</strong><small>Mostra a rodada, de quem é a vez e o placar. Sem spoiler.</small>
+          </button>
+          <button className="device" onClick={() => navigate('equipe')} data-testid="mode-equipe">
+            <span className="device__icon">🙋</span><strong>Celular de equipe</strong><small>A equipe manda o palpite do próprio celular.</small>
+          </button>
+        </div>
+        <p className="muted small">{kind === 'nuvem' ? '🟢 Sincronização entre aparelhos ligada.' : kind === 'local' ? '🟡 Sincronização local: funciona entre abas e janelas deste navegador. Para aparelhos diferentes, use a versão publicada no claude.ai.' : ''}</p>
+      </section>
+
       <div className="home__footer">
         <button className="link-btn" onClick={() => navigate('admin')}>🔑 Área do organizador</button>
         <span className="muted">·</span>
         <button className="link-btn" onClick={() => navigate('historico')}>📜 Histórico</button>
-        <span className="muted">·</span>
-        <button className="link-btn" onClick={() => navigate('tv')}>📺 Abrir tela da TV</button>
         <p className="muted small">{nSongs} músicas no banco</p>
       </div>
     </main>

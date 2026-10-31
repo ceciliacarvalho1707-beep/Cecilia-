@@ -196,24 +196,24 @@ function SongForm({ song, onClose }: { song: Song | null; onClose: () => void })
   return (
     <Modal open onClose={onClose} title={song ? `Editar gabarito — ${song.titulo}` : 'Cadastrar música'} wide>
       <form className="song-form" onSubmit={salvar}>
-        <label className="field"><span>Título *</span><input value={f.titulo} onChange={set('titulo')} required data-testid="sf-titulo" /></label>
-        <label className="field"><span>Artista / banda *</span><input value={f.artista} onChange={set('artista')} required data-testid="sf-artista" /></label>
+        <label className="field"><span>Título <em className="req">obrigatório</em></span><input value={f.titulo} onChange={set('titulo')} required data-testid="sf-titulo" /></label>
+        <label className="field"><span>Artista ou banda <em className="req">obrigatório</em></span><input value={f.artista} onChange={set('artista')} required data-testid="sf-artista" /></label>
         <label className="field"><span>Musical (se houver)</span><input value={f.musical} onChange={set('musical')} placeholder="Aceito como resposta de artista" /></label>
         <label className="field"><span>Filme (se houver)</span><input value={f.filme} onChange={set('filme')} /></label>
-        <label className="field"><span>Ano de lançamento *</span><input inputMode="numeric" value={f.ano} onChange={set('ano')} required data-testid="sf-ano" /></label>
+        <label className="field"><span>Ano de lançamento <em className="req">obrigatório</em></span><input inputMode="numeric" value={f.ano} onChange={set('ano')} required data-testid="sf-ano" /></label>
         <label className="field"><span>Outros anos aceitos</span><input value={f.anosAceitos} onChange={set('anosAceitos')} placeholder="Ex.: 1971, 1972" /></label>
         <label className="field"><span>País</span><input value={f.pais} onChange={set('pais')} /></label>
         <label className="field"><span>Idioma</span><input value={f.idioma} onChange={set('idioma')} /></label>
         <label className="field"><span>Origem</span><select value={f.origem} onChange={set('origem')}><option value="br">Brasileira</option><option value="intl">Internacional</option></select></label>
         <label className="field"><span>Gênero</span><input value={f.genero} onChange={set('genero')} /></label>
         <label className="field"><span>Dificuldade</span><select value={f.dificuldade} onChange={set('dificuldade')}>{(['facil', 'media', 'dificil', 'muito_dificil'] as Dificuldade[]).map((d) => <option key={d} value={d}>{DIF_LABEL[d]}</option>)}</select></label>
-        <label className="field field--full"><span>URL da faixa no Spotify * {f.spotifyUrl && (urlOk ? <em className="pos">✔ link de faixa</em> : <em className="neg">✘ precisa ser open.spotify.com/track/…</em>)}</span>
+        <label className="field field--full"><span>Link da música no Spotify <em className="req">obrigatório</em> {f.spotifyUrl && (urlOk ? <em className="pos">✔ link de faixa</em> : <em className="neg">✘ precisa ser open.spotify.com/track/…</em>)}</span>
           <input value={f.spotifyUrl} onChange={set('spotifyUrl')} placeholder="https://open.spotify.com/track/…" required data-testid="sf-url" /></label>
         <label className="field field--full"><span>Fontes (uma URL por linha)</span><textarea rows={2} value={f.fontes} onChange={set('fontes')} /></label>
         <label className="field field--full"><span>Curiosidade</span><textarea rows={2} value={f.curiosidade} onChange={set('curiosidade')} /></label>
         <label className="field"><span>Títulos alternativos (separe com |)</span><input value={f.altT} onChange={set('altT')} /></label>
         <label className="field"><span>Artistas alternativos (separe com |)</span><input value={f.altA} onChange={set('altA')} /></label>
-        <label className="checkbox field--full"><input type="checkbox" checked={f.temLetra} onChange={(e) => setF({ ...f, temLetra: e.target.checked })} /> A música tem letra (versão com vocal) — obrigatório</label>
+        <label className="checkbox field--full"><input type="checkbox" checked={f.temLetra} onChange={(e) => setF({ ...f, temLetra: e.target.checked })} /> Esta versão tem letra (alguém canta nela)</label>
         <div className="row row--end field--full">
           <button type="button" className="btn btn--ghost" onClick={onClose}>Cancelar</button>
           <button type="submit" className="btn btn--primary" data-testid="sf-salvar">Salvar</button>

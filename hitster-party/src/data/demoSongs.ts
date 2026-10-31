@@ -1,4 +1,5 @@
 import type { Song } from '../types';
+import { EXTRA_SONGS } from './extraSongs';
 
 /**
  * BANCO DE DEMONSTRAÇÃO — músicas reais, todas com letra/vocal.
@@ -13,7 +14,7 @@ import type { Song } from '../types';
  * Mesmo assim, catálogos de streaming mudam: use "Verificar links" no painel do organizador
  * antes da festa. Para adicionar milhares de músicas, importe JSON/CSV pela área administrativa.
  */
-export const DEMO_BANK_VERSION = 1;
+export const DEMO_BANK_VERSION = 2;
 
 type Base = Omit<Song, 'temLetra' | 'exemplo' | 'spotifyUrl'> & { spotify: string };
 
@@ -85,9 +86,12 @@ const raw: Base[] = [
   { id: 'br-bum-bum-tam-tam', titulo: 'Bum Bum Tam Tam', artista: 'MC Fioti', ano: 2017, pais: 'Brasil', idioma: 'Português', origem: 'br', genero: 'Funk carioca', dificuldade: 'facil', spotify: '0WOOUDQSwvpf6gr8JYscyo', fontes: [en('Bum_Bum_Tam_Tam')], curiosidade: 'Usa um trecho de flauta de uma partita de Johann Sebastian Bach e foi o primeiro clipe brasileiro a passar de 1 bilhão de visualizações no YouTube.' },
 ];
 
-export const DEMO_SONGS: Song[] = raw.map(({ spotify, ...s }) => ({
+const MAIN_SONGS: Song[] = raw.map(({ spotify, ...s }) => ({
   ...s,
   spotifyUrl: t(spotify),
   temLetra: true,
   exemplo: true,
 }));
+
+/** Banco completo de exemplo: 58 músicas com verificação detalhada + banco ampliado. */
+export const DEMO_SONGS: Song[] = [...MAIN_SONGS, ...EXTRA_SONGS];

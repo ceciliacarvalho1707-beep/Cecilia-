@@ -1,9 +1,9 @@
 import { useSyncExternalStore } from 'react';
 
 /** Roteador mínimo baseado em hash (#rota; também aceita #/rota): funciona em qualquer hospedagem estática e preserva a tela ao recarregar. */
-export type Route = 'home' | 'nova' | 'jogo' | 'placar' | 'classificacao' | 'historico' | 'vitoria' | 'config' | 'admin' | 'tv';
+export type Route = 'home' | 'nova' | 'jogo' | 'placar' | 'classificacao' | 'historico' | 'vitoria' | 'config' | 'admin' | 'tv' | 'equipe';
 
-const ROUTES: Route[] = ['home', 'nova', 'jogo', 'placar', 'classificacao', 'historico', 'vitoria', 'config', 'admin', 'tv'];
+const ROUTES: Route[] = ['home', 'nova', 'jogo', 'placar', 'classificacao', 'historico', 'vitoria', 'config', 'admin', 'tv', 'equipe'];
 
 function parse(): Route {
   const h = window.location.hash.replace(/^#\/?/, '').split('?')[0];

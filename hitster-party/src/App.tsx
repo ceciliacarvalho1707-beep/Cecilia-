@@ -9,6 +9,8 @@ import { RankingScreen, ScoreScreen } from './screens/ScoreScreens';
 import { SettingsScreen } from './screens/Settings';
 import { Setup } from './screens/Setup';
 import { Tv } from './screens/Tv';
+import { Equipe } from './screens/Equipe';
+import { OrganizerSyncBridge } from './components/sync';
 import { getSaveError, useAppState } from './store/store';
 
 export default function App() {
@@ -21,6 +23,8 @@ export default function App() {
 
   return (
     <FeedbackProvider>
+      {/* Só as telas do organizador publicam o estado público (evita que uma TV com dados antigos sobrescreva a partida). */}
+      {['jogo', 'placar', 'historico', 'admin', 'classificacao', 'vitoria', 'nova'].includes(route) && <OrganizerSyncBridge />}
       <div className="app" key={route}>
         {saveError && <p className="notice notice--error">{saveError}</p>}
         {route === 'home' && <Home />}
@@ -33,6 +37,7 @@ export default function App() {
         {route === 'config' && <SettingsScreen />}
         {route === 'admin' && <Admin />}
         {route === 'tv' && <Tv />}
+        {route === 'equipe' && <Equipe />}
       </div>
     </FeedbackProvider>
   );

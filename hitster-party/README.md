@@ -44,7 +44,24 @@ npm run build && npm run test:e2e   # 22 verificações no navegador real (Playw
 **Pontuação**: música certa +1 · artista, banda ou **nome do musical** certo +1 · ano dentro da tolerância (exato, ±1, ±2 ou ±5; padrão ±1) +1.
 Os pontos nunca são somados de forma incremental. O placar é sempre recalculado a partir das avaliações, então cliques repetidos e correções não duplicam pontos. As correções podem ser feitas na própria avaliação, no **Histórico** (toque em ✔/✘) ou como ajuste avulso no **Placar**.
 
-**Tela da TV** (`#/tv`): abra em outra aba ou janela e espelhe na TV. Ela mostra a rodada, de quem é a vez, quem já respondeu e o placar, e atualiza sozinha. A resposta só aparece quando o organizador ativa "Mostrar a resposta também na tela da TV".
+## Vários aparelhos: TV, celular do organizador e celulares das equipes
+
+Na tela inicial, em "Vai usar mais de um aparelho?", cada aparelho escolhe o seu papel:
+
+| Aparelho | O que mostra | Vê as respostas? |
+|---|---|---|
+| 📱 **Celular do organizador** | O jogo completo: botão do Spotify, gabarito, avaliação e placar | Sim, só ele |
+| 📺 **Tela da TV** (`#tv`) | Rodada, de quem é a vez, categoria, quem já respondeu e placar | Não. A resposta só aparece quando o organizador toca em "Mostrar a resposta também na tela da TV" |
+| 🙋 **Celular de equipe** (`#equipe`) | A equipe escolhe o próprio nome e manda o palpite | Não. Também não vê os palpites das outras equipes |
+
+O celular do organizador é a única fonte da verdade. Ele guarda o banco e o gabarito e publica para os outros aparelhos apenas um **estado público**, sem título, artista nem ano. Os palpites enviados pelos celulares chegam ao organizador e só aparecem na avaliação, depois de revelado o gabarito.
+
+**Como a sincronização funciona** (`src/lib/sync.ts`):
+- **Versão publicada no claude.ai:** usa o banco de dados da página (capacidade `db`). Funciona entre aparelhos diferentes, desde que cada aparelho abra o link logado numa conta Claude com acesso à página. Celulares de equipe precisam de acesso de *Contribuidor* para enviar palpites. Regras de acesso: só o dono escreve o estado público (`sala`), e cada pessoa escreve apenas o próprio palpite (`palpites/{self}`), que só o dono e editores leem.
+- **Rodando localmente (`npm run dev`):** a sincronização acontece entre abas e janelas do **mesmo navegador**. Exemplo: um notebook ligado na TV com uma janela em "Tela da TV" e outra com o organizador. Para aparelhos diferentes sem o claude.ai, seria preciso um backend de tempo real. A interface `Transport` em `sync.ts` já separa essa camada.
+
+### Dá para esconder o nome da música no Spotify?
+Não dentro do Spotify: o app sempre mostra título, artista e capa, e nenhum site consegue mudar isso. A solução prática é dividir as telas. A **TV** mostra o jogo sem spoiler, e o **celular do organizador** toca a música (direto ou por Spotify Connect numa caixa de som) longe da vista dos jogadores. O aviso antes de abrir o Spotify lembra isso.
 
 ## Sigilo das respostas
 
@@ -55,9 +72,9 @@ Os pontos nunca são somados de forma incremental. O placar é sempre recalculad
 
 ## Banco de músicas
 
-O projeto vem com **58 músicas de demonstração** (marcadas como "exemplo"), brasileiras e internacionais, de 1917 a 2024, todas com letra. Para cada uma:
-- `spotifyUrl` aponta para uma **faixa específica** (`open.spotify.com/track/<id>`), encontrada em páginas públicas do Spotify cujo título e artista conferem;
-- ano, autoria e curiosidade foram conferidos na fonte indicada (Wikipédia), e anos legitimamente divergentes (composição × gravação, single × álbum) estão em `anosAceitos`.
+O projeto vem com **181 músicas de exemplo** (marcadas como "exemplo"), 80 brasileiras e 101 internacionais, de 1917 a 2024, todas com letra, incluindo musicais e trilhas de filmes:
+- **58 com verificação detalhada** (`src/data/demoSongs.ts`): o link aponta para uma **faixa específica** encontrada em páginas públicas do Spotify cujo título e artista conferem; ano, autoria e curiosidade foram conferidos no verbete da Wikipédia indicado; anos legitimamente divergentes (composição × gravação, single × álbum) estão em `anosAceitos`.
+- **123 do banco ampliado** (`src/data/extraSongs.ts`): o link também foi conferido em páginas públicas do Spotify (título e intérprete). O ano segue o lançamento original conhecido, com anos alternativos quando há divergência. Aqui a fonte é uma busca na Wikipédia que leva ao verbete, e não há curiosidade cadastrada. Algumas faixas são gravações ao vivo, remasterizações ou coletâneas do próprio artista.
 
 Catálogos de streaming mudam. Antes da festa, use **Área do organizador → 🌐 Verificar links on-line**.
 

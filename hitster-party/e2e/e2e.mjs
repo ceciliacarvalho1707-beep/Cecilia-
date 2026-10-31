@@ -238,6 +238,28 @@ try {
   await page.screenshot({ path: join(shots, '11-simultaneo.png'), fullPage: true });
   check('10b', 'Modo simultâneo: respostas ficam ocultas das outras equipes', !simBody.includes('Palpite Secreto Roxo') && simBody.includes('1 de 3 equipes'));
 
+  // Celular de equipe (outra aba): escolhe a equipe e envia o palpite → chega no organizador sem expor o conteúdo
+  const eq = await ctx.newPage();
+  await eq.goto(BASE + '#equipe');
+  await eq.waitForSelector('[data-testid=pick-team]');
+  await eq.getByRole('button', { name: /Time do Caos/ }).click();
+  await eq.fill('[data-testid=eq-ano]', '2001');
+  await eq.fill('[data-testid=eq-titulo]', 'Palpite do Celular');
+  await eq.fill('[data-testid=eq-artista]', 'Banda do Celular');
+  await eq.click('[data-testid=eq-enviar]');
+  await eq.waitForSelector('[data-testid=equipe-enviado]');
+  await eq.screenshot({ path: join(shots, '15-celular-equipe.png') });
+  await page.waitForFunction(() => document.body.textContent.includes('2 de 3 equipes'), null, { timeout: 8000 });
+  const orgBody = await page.textContent('body');
+  const eqBody = await eq.textContent('body');
+  const st2 = await state();
+  const turnSim = st2.match.rounds[0].turns[0];
+  const caos = st2.match.teams.find((t) => t.nome === 'Time do Caos');
+  check('18', 'Celular de equipe envia palpite que chega ao organizador (sem aparecer na tela)', turnSim.guesses[caos.id]?.titulo === 'Palpite do Celular' && !orgBody.includes('Palpite do Celular') && !eqBody.includes('Palpite Secreto Roxo'));
+  const song5 = await curSong();
+  check('14c', 'Celular de equipe não recebe a resposta antes da revelação', !norm(eqBody).includes(norm(song5.titulo)));
+  await eq.close();
+
   // Admin: cadastrar música + importar JSON
   await page.goto(BASE + '#admin');
   await page.click('[data-testid=song-new]');

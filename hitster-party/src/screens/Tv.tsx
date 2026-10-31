@@ -2,6 +2,7 @@ import { usePublicState } from '../components/sync';
 import { DIF_LABEL, Equalizer, Logo, Vinyl } from '../components/ui';
 import type { PublicScore } from '../lib/sync';
 import { navigate } from '../router';
+import { useWakeLock } from '../lib/app';
 import type { Dificuldade } from '../types';
 
 export function PublicBoard({ placar, compact }: { placar: PublicScore[]; compact?: boolean }) {
@@ -31,6 +32,7 @@ export function PublicBoard({ placar, compact }: { placar: PublicScore[]; compac
  */
 export function Tv() {
   const { state, carregando, kind } = usePublicState();
+  useWakeLock(true);
   const voltar = <button className="btn btn--ghost btn--sm" onClick={() => navigate('home')}>← Sair da TV</button>;
 
   if (!state || state.status === 'sem_partida') {

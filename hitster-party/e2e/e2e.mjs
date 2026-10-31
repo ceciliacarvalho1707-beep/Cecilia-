@@ -310,6 +310,22 @@ try {
   await page.screenshot({ path: join(shots, '14-inicio-celular.png') });
   check(15, 'Funciona em celular, tablet e computador (sem rolagem horizontal)', okLayout, det.join('; '));
 
+  // App instalável (PWA): manifesto, ícones, service worker e abertura sem internet
+  const appCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const app = await appCtx.newPage();
+  await app.goto(BASE);
+  const manifest = await app.evaluate(async () => { const href = document.querySelector('link[rel=manifest]').href; return (await fetch(href)).json(); });
+  const icons = await app.evaluate(async (list) => Promise.all(list.map(async (i) => (await fetch(i.src)).ok)), manifest.icons);
+  const swOk = await app.evaluate(async () => { const r = await navigator.serviceWorker.ready; return !!r.active; });
+  await app.reload(); await app.waitForTimeout(500);
+  await appCtx.setOffline(true);
+  await app.reload();
+  const offlineOk = await app.locator('[data-testid=btn-nova]').isVisible();
+  await appCtx.setOffline(false);
+  await app.screenshot({ path: join(shots, '17-app-celular.png') });
+  await appCtx.close();
+  check('20', 'Vira app no celular: manifesto, ícones, service worker e abre sem internet', manifest.display === 'standalone' && icons.every(Boolean) && manifest.icons.some((i) => i.purpose === 'maskable') && swOk && offlineOk);
+
   check('JS', 'Nenhum erro de JavaScript na página', errors.length === 0, errors.join(' | '));
 } finally {
   await browser.close();

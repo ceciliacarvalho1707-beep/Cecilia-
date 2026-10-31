@@ -1,0 +1,25 @@
+<!doctype html><html><body style="margin:0;background:transparent">
+<canvas id="c"></canvas>
+<script>
+// Desenha o ícone (disco de vinil + nota) em qualquer tamanho. maskable = margem de segurança de 20%.
+window.draw = (size, maskable) => {
+  const c = document.getElementById('c'); c.width = c.height = size; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, size, size); g.addColorStop(0, '#2a1060'); g.addColorStop(1, '#060714');
+  x.fillStyle = g; x.fillRect(0, 0, size, size);
+  const glow = x.createRadialGradient(size*.5, size*.45, 0, size*.5, size*.5, size*.6); glow.addColorStop(0,'rgba(168,85,247,.45)'); glow.addColorStop(1,'rgba(168,85,247,0)');
+  x.fillStyle = glow; x.fillRect(0,0,size,size);
+  const r = size * (maskable ? 0.30 : 0.40), cx = size/2, cy = size/2;
+  x.beginPath(); x.arc(cx, cy, r, 0, 7); x.fillStyle = '#0d0d12'; x.fill();
+  x.strokeStyle = 'rgba(255,255,255,.07)'; x.lineWidth = Math.max(1, size/256);
+  for (let k = .45; k < .98; k += .07) { x.beginPath(); x.arc(cx, cy, r*k, 0, 7); x.stroke(); }
+  x.beginPath(); x.arc(cx, cy, r, 0, 7); x.lineWidth = size/64; x.strokeStyle = '#2a2550'; x.stroke();
+  const lg = x.createLinearGradient(cx-r*.38, cy-r*.38, cx+r*.38, cy+r*.38); lg.addColorStop(0,'#a855f7'); lg.addColorStop(.5,'#6366f1'); lg.addColorStop(1,'#22d3ee');
+  x.beginPath(); x.arc(cx, cy, r*.38, 0, 7); x.fillStyle = lg; x.fill();
+  x.beginPath(); x.arc(cx, cy, r*.07, 0, 7); x.fillStyle = '#060714'; x.fill();
+  x.beginPath(); x.moveTo(cx, cy); x.arc(cx, cy, r*.97, -1.1, -0.55); x.closePath(); x.fillStyle = 'rgba(255,255,255,.06)'; x.fill();
+  // nota musical
+  x.fillStyle = '#ffffff'; x.font = `900 ${r*.62}px Arial`; x.textAlign='center'; x.textBaseline='middle';
+  x.fillText('♪', cx + r*.78, cy - r*.72);
+  return c.toDataURL('image/png');
+};
+</script></body></html>

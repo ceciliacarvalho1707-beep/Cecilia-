@@ -3,6 +3,7 @@ import { Equalizer, Logo } from '../components/ui';
 import { navigate } from '../router';
 import { useAppState } from '../store/store';
 import { useTransportKind } from '../components/sync';
+import { InstallCard } from '../components/install';
 
 export function Home() {
   const match = useAppState((s) => s.match);
@@ -31,6 +32,8 @@ export function Home() {
         <button className="btn btn--menu" onClick={() => navigate('placar')} data-testid="btn-placar">🏆 PLACAR GERAL</button>
         <button className="btn btn--menu" onClick={() => navigate('config')} data-testid="btn-config">⚙️ CONFIGURAÇÕES</button>
       </nav>
+
+      <InstallCard />
 
       <section className="devices" aria-labelledby="devices-title">
         <h2 id="devices-title">Vai usar mais de um aparelho?</h2>

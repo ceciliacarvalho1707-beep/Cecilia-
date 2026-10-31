@@ -529,3 +529,18 @@ textarea.input, .field textarea { min-height: auto; resize: vertical; }
 .sp-play__ctrl { justify-content: center; }
 .sp-play__ctrl select { max-width: 260px; }
 .pill--warn { background: rgba(245, 158, 11, 0.18); color: #fcd34d; }
+
+/* ───────── App instalável ───────── */
+.install { width: 100%; max-width: 440px; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 14px; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--surface); position: relative; }
+.install__icon { border-radius: 12px; }
+.install__text { display: flex; flex-direction: column; min-width: 0; }
+.install__help { grid-column: 1 / -1; }
+.install__help p, .install__help ol { margin: 0; }
+@media (display-mode: standalone) {
+  body { padding-top: env(safe-area-inset-top); }
+  .home { min-height: calc(100vh - env(safe-area-inset-top)); }
+}
+@media (max-width: 520px) {
+  .install { grid-template-columns: auto 1fr; }
+  .install > .btn { grid-column: 1 / -1; width: 100%; }
+}

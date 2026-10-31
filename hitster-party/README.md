@@ -29,6 +29,20 @@ npm test             # 29 testes unitários (pontuação, sorteio, importação,
 npm run build && npm run test:e2e   # 22 verificações no navegador real (Playwright), com capturas em e2e/screenshots/
 ```
 
+## 📲 App no celular
+
+O HITSTER PARTY é um **app instalável (PWA)**: ganha ícone na tela inicial, abre em tela cheia, funciona sem internet depois da primeira visita e mantém a tela acesa durante o jogo.
+
+**Endereço do app:** https://ceciliacarvalho1707-beep.github.io/cecilia-/
+
+**Para ativar o endereço (uma vez só):** no GitHub, abra o repositório → **Settings → Pages** → em *Build and deployment*, escolha **Source: GitHub Actions**. Depois, em **Actions**, rode de novo o workflow *"HITSTER PARTY no GitHub Pages"* (ou faça qualquer push em `hitster-party/`). Daí em diante, cada atualização é publicada sozinha.
+
+**Para instalar no celular:**
+- **Android (Chrome):** abra o endereço e toque em **📲 Instalar** na tela inicial do jogo (ou menu ⋮ → *Instalar app*).
+- **iPhone (Safari):** abra o endereço → **Compartilhar** → **Adicionar à Tela de Início**.
+
+Instalado pelo endereço do GitHub Pages (HTTPS), o app também pode usar a conexão direta com o Spotify. Cadastre `https://ceciliacarvalho1707-beep.github.io/cecilia-/` como *Redirect URI* no app do Spotify.
+
 ## Como jogar
 
 1. **🎵 NOVA PARTIDA**: cadastre de 2 a 12 equipes (nome, cor, emoji e ordem) e escolha o idioma, a dificuldade, o número de rodadas (10, 20, 30, personalizado ou infinito), o modo de jogo e a tolerância do ano.

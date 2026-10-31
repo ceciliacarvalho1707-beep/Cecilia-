@@ -4,6 +4,7 @@ import { DifficultyBadge, Equalizer, Redirect, TopBar, Vinyl } from '../componen
 import { useTransportKind } from '../components/sync';
 import { PickSongModal, PlayOnDevice, useSpotifyAuth } from '../components/spotify';
 import { useState } from 'react';
+import { useWakeLock } from '../lib/app';
 import { navigate } from '../router';
 import { currentRound, currentTurn, hasNextTeam, isLastRound, matchActions, songById, turnComplete, useAppState } from '../store/store';
 
@@ -15,6 +16,7 @@ export function Game() {
   const { connected } = useSpotifyAuth();
   const spotifyModo = useAppState((s) => s.settings.spotifyModo);
   const [pick, setPick] = useState(false);
+  useWakeLock(true);
 
   if (!match) {
     return (

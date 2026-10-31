@@ -20,11 +20,6 @@ export function SpotifyButton({ url }: { url: string }) {
   const web = canonicalTrackUrl(url) ?? url;
   const href = settings.spotifyModo === 'app' ? appUri(url) ?? web : web;
 
-  const abrir = () => {
-    if (settings.spotifyModo === 'app') window.location.href = href;
-    else window.open(href, '_blank', 'noopener,noreferrer');
-  };
-
   return (
     <>
       <a
@@ -50,12 +45,12 @@ export function SpotifyButton({ url }: { url: string }) {
           <li>Dica: use um segundo aparelho para tocar a música, longe da plateia.</li>
         </ul>
         <div className="row row--end">
-          <button className="btn btn--ghost" onClick={() => { settingsActions.update({ mostrarAvisoSpotify: false }); avisoMostradoNestaSessao = true; setAviso(false); abrir(); }}>
+          <a className="btn btn--ghost" href={href} target="_blank" rel="noopener noreferrer" onClick={() => { settingsActions.update({ mostrarAvisoSpotify: false }); avisoMostradoNestaSessao = true; setAviso(false); }}>
             Não mostrar de novo
-          </button>
-          <button className="btn btn--primary" data-testid="spotify-confirm" onClick={() => { avisoMostradoNestaSessao = true; setAviso(false); abrir(); }}>
+          </a>
+          <a className="btn btn--primary" data-testid="spotify-confirm" href={href} target="_blank" rel="noopener noreferrer" onClick={() => { avisoMostradoNestaSessao = true; setAviso(false); }}>
             Entendi, abrir música
-          </button>
+          </a>
         </div>
       </Modal>
     </>

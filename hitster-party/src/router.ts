@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 
-/** Roteador mínimo baseado em hash (#/rota): funciona em qualquer hospedagem estática e preserva a tela ao recarregar. */
+/** Roteador mínimo baseado em hash (#rota; também aceita #/rota): funciona em qualquer hospedagem estática e preserva a tela ao recarregar. */
 export type Route = 'home' | 'nova' | 'jogo' | 'placar' | 'classificacao' | 'historico' | 'vitoria' | 'config' | 'admin' | 'tv';
 
 const ROUTES: Route[] = ['home', 'nova', 'jogo', 'placar', 'classificacao', 'historico', 'vitoria', 'config', 'admin', 'tv'];
@@ -20,7 +20,7 @@ export function useRoute(): Route {
 }
 
 export function navigate(route: Route) {
-  const target = route === 'home' ? '#/' : `#/${route}`;
+  const target = route === 'home' ? '#inicio' : `#${route}`;
   if (window.location.hash !== target) window.location.hash = target;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

@@ -35,7 +35,7 @@ export function Home() {
         <span className="muted">·</span>
         <button className="link-btn" onClick={() => navigate('historico')}>📜 Histórico</button>
         <span className="muted">·</span>
-        <button className="link-btn" onClick={() => window.open(`${window.location.pathname}#/tv`, '_blank')}>📺 Abrir tela da TV</button>
+        <button className="link-btn" onClick={() => navigate('tv')}>📺 Abrir tela da TV</button>
         <p className="muted small">{nSongs} músicas no banco</p>
       </div>
     </main>

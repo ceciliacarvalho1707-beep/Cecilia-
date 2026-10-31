@@ -1,5 +1,6 @@
 import { Scoreboard } from '../components/game';
 import { DifficultyBadge, Equalizer, Logo, Vinyl } from '../components/ui';
+import { navigate } from '../router';
 import { computeScores } from '../lib/scoring';
 import { currentRound, currentTurn, songById, useAppState } from '../store/store';
 
@@ -34,7 +35,7 @@ export function Tv() {
 
   return (
     <main className="tv" data-testid="tv">
-      <div className="tv__top"><Logo size="sm" /><span className="tv__round">RODADA {round.numero}{match.config.totalRodadas ? ` / ${match.config.totalRodadas}` : ''}</span></div>
+      <div className="tv__top"><button className="btn btn--ghost btn--sm" onClick={() => navigate('jogo')}>← Organizador</button><Logo size="sm" /><span className="tv__round">RODADA {round.numero}{match.config.totalRodadas ? ` / ${match.config.totalRodadas}` : ''}</span></div>
       <div className="tv__grid">
         <section className="tv__stage">
           {match.config.modo === 'turno' && teams[0]

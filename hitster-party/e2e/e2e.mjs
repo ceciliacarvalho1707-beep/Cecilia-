@@ -22,7 +22,7 @@ const results = [];
 const check = (n, desc, ok, extra = '') => { results.push({ n, desc, ok }); console.log(`${ok ? '✅' : '❌'} ${n}. ${desc}${extra ? ` — ${extra}` : ''}`); };
 const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
-const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { cwd: root, stdio: 'pipe' });
+const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { cwd: root, stdio: 'pipe', detached: true });
 await new Promise((res, rej) => {
   const t = setTimeout(() => rej(new Error('preview não subiu')), 20000);
   server.stdout.on('data', (d) => { if (String(d).includes(String(PORT))) { clearTimeout(t); res(); } });
@@ -144,14 +144,14 @@ try {
   await page.click('[data-testid=secret-toggle]');
   await page.click('[data-testid=eval-confirm]');
   // ajuste manual pelo histórico: Time do Caos ganha o ano (divergência legítima)
-  await page.goto(BASE + '#/historico');
+  await page.goto(BASE + '#historico');
   await page.locator('.history__round').first().locator('tbody tr').nth(0).waitFor();
   const caosRow = page.locator('.history__turn').nth(1).locator('tbody tr').first();
   await caosRow.locator('.mini-check').nth(2).click();
   await caosRow.locator('.mini-check').nth(2).click();
   await caosRow.locator('.mini-check').nth(2).click();
   await page.screenshot({ path: join(shots, '07-historico.png'), fullPage: true });
-  await page.goto(BASE + '#/jogo');
+  await page.goto(BASE + '#jogo');
   await page.waitForSelector('[data-testid=round-card]');
   t = await totals();
   check(12, 'É possível corrigir pontuações sem duplicá-las', afterUncheck === 2 && afterRecheck === 3 && t['Time do Caos'] === 1 && t['Equipe Roxa'] === 3, JSON.stringify(t));
@@ -193,7 +193,7 @@ try {
 
   // TV: não mostra resposta até autorização
   const tv = await ctx.newPage();
-  await tv.goto(BASE + '#/tv');
+  await tv.goto(BASE + '#tv');
   await tv.waitForSelector('[data-testid=tv]');
   const tvText = norm(await tv.textContent('body'));
   await page.click('[data-testid=public-reveal]');
@@ -217,7 +217,7 @@ try {
   await page.screenshot({ path: join(shots, '09-placar.png'), fullPage: true });
 
   // Encerrar → vitória
-  await page.goto(BASE + '#/jogo');
+  await page.goto(BASE + '#jogo');
   await page.click('[data-testid=btn-encerrar]');
   await page.click('[data-testid=confirm-ok]');
   await page.waitForSelector('[data-testid=winner]');
@@ -226,7 +226,7 @@ try {
   check('16', 'Tela de vitória destaca o 1º lugar', winner.includes('Equipe Roxa'), winner.trim());
 
   // Modo simultâneo: palpites ocultos entre equipes
-  await page.goto(BASE + '#/nova');
+  await page.goto(BASE + '#nova');
   await page.getByRole('radio', { name: /Resposta simultânea/ }).click();
   await page.click('[data-testid=btn-iniciar]');
   await page.waitForSelector('[data-testid=guess-panel]');
@@ -239,7 +239,7 @@ try {
   check('10b', 'Modo simultâneo: respostas ficam ocultas das outras equipes', !simBody.includes('Palpite Secreto Roxo') && simBody.includes('1 de 3 equipes'));
 
   // Admin: cadastrar música + importar JSON
-  await page.goto(BASE + '#/admin');
+  await page.goto(BASE + '#admin');
   await page.click('[data-testid=song-new]');
   await page.fill('[data-testid=sf-titulo]', 'Música Teste');
   await page.fill('[data-testid=sf-artista]', 'Artista Teste');
@@ -268,7 +268,7 @@ try {
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       if (overflow > 1) { okLayout = false; det.push(`${nome} ${r || 'início'}: +${overflow}px`); }
     }
-    await page.goto(BASE + '#/jogo');
+    await page.goto(BASE + '#jogo');
     await page.screenshot({ path: join(shots, `13-jogo-${nome}.png`), fullPage: true });
   }
   await page.setViewportSize({ width: 390, height: 844 });
@@ -279,7 +279,7 @@ try {
   check('JS', 'Nenhum erro de JavaScript na página', errors.length === 0, errors.join(' | '));
 } finally {
   await browser.close();
-  server.kill();
+  try { process.kill(-server.pid); } catch { server.kill(); }
 }
 
 const failed = results.filter((r) => !r.ok);

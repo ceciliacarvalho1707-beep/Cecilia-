@@ -97,7 +97,7 @@ label input{font-weight:400}
 /* conversa */
 .cab{min-width:0;flex:1;display:flex;flex-direction:column;background:none;color:inherit;padding:0;border-radius:8px;text-align:left;min-height:40px;justify-content:center;font-weight:400}
 .cab h1{font-size:1.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.status{font-size:.75rem;color:var(--muted);white-space:nowrap}
+.status{font-size:.75rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .status::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:5px;vertical-align:1px}
 .status.on::before{background:var(--ok)}
 .aviso{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:.85rem;background:var(--other);padding-block:10px;line-height:1.4}
@@ -138,9 +138,9 @@ label input{font-weight:400}
 .fundo{position:absolute;inset:0;background:var(--shade);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .folha{width:100%;max-width:480px;background:var(--surface);border-radius:20px 20px 0 0;padding:14px 12px calc(14px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px;box-shadow:0 -8px 30px rgba(0,0,0,.2)}
 .folha .previa{font-size:.88rem;color:var(--muted);padding:4px 12px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-bottom:1px solid var(--line);margin-bottom:4px}
-.folha button{background:none;color:var(--fg);display:flex;align-items:center;gap:14px;border-radius:12px;padding:12px;font-weight:500;width:100%;text-align:left}
-.folha button svg{width:20px;height:20px;color:var(--accent);flex:none}
-.folha button:hover{background:var(--other)}
+.folha > button{background:none;color:var(--fg);display:flex;align-items:center;gap:14px;border-radius:12px;padding:12px;font-weight:500;width:100%;text-align:left}
+.folha > button svg{width:20px;height:20px;color:var(--accent);flex:none}
+.folha > button:hover{background:var(--other)}
 .av img,.av-mini img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .av-mini{width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;font-family:var(--display);font-weight:700;flex:none;overflow:hidden}
 .perfil{display:flex;align-items:center;gap:14px}
@@ -161,12 +161,13 @@ label input{font-weight:400}
 .emojis{display:flex;justify-content:space-between;gap:4px;padding:2px 6px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
 .folha .emojis button{width:48px;height:48px;min-height:48px;padding:0;font-size:1.6rem;justify-content:center;border-radius:50%;flex:none}
 .folha .emojis button.minha{background:var(--other)}
-.folha button.perigo{color:var(--bad);text-decoration:none;font-weight:500}
-.folha button.perigo svg{color:var(--bad)}
+.folha > button.perigo{color:var(--bad);text-decoration:none;font-weight:500}
+.folha > button.perigo svg{color:var(--bad)}
 .anexo{background:none;color:var(--muted);width:44px;min-height:44px;height:44px;padding:0;display:grid;place-items:center;flex:none;border-radius:50%}
 .anexo svg{width:24px;height:24px}
 .previaFoto{display:flex;align-items:center;gap:10px;padding-block:8px;background:var(--surface);border-top:1px solid var(--line)}
-.previaFoto img{width:56px;height:56px;object-fit:cover;border-radius:10px}
+.previaFotos{display:flex;gap:4px;flex:none}
+.previaFotos img{width:48px;height:48px;object-fit:cover;border-radius:10px;background:var(--line)}
 .previaFoto span{flex:1;font-size:.88rem;color:var(--muted)}
 .previaFoto:not([hidden]) ~ #form, .resp:not([hidden]) ~ #form{border-top:0;padding-top:4px}
 .visor{position:absolute;inset:0;background:#0b0710;z-index:40;display:flex;align-items:center;justify-content:center}
@@ -184,8 +185,8 @@ label input{font-weight:400}
 fieldset{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
 legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
 /* tema */
-.folha button.marcado{background:var(--other)}
-.folha button .ok{margin-left:auto;color:var(--accent)}
+.folha > button.marcado{background:var(--other)}
+.folha > button .ok{margin-left:auto;color:var(--accent)}
 /* vistos */
 .tique{display:inline-flex;color:var(--muted)}
 .tique svg{width:16px;height:11px}
@@ -253,6 +254,106 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
 .busca .ic svg{width:20px;height:20px}
 .msg.achada .bubble{box-shadow:0 0 0 3px var(--accent)}
 @media (prefers-reduced-motion:reduce){.view:not([hidden]),.msg.entra,.fundo:not([hidden]),.fundo:not([hidden]) .folha,.reacoes button{animation:none}}
+/* ── folhas com formulário ── */
+.folha{max-height:88dvh;overflow-y:auto;overscroll-behavior:contain}
+.folha .titulo{font-weight:700;color:var(--fg);font-family:var(--display);font-size:1.05rem;white-space:normal}
+.criar{display:flex;flex-direction:column;gap:12px;padding:4px 8px 8px}
+.criar .ops,.criar .perguntas{display:flex;flex-direction:column;gap:8px}
+.criar label.check{flex-direction:row;align-items:center;gap:8px;font-weight:500;font-size:.9rem}
+.criar label.check input{width:20px;height:20px;accent-color:var(--accent)}
+.criar fieldset.perg{border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.criar fieldset.perg legend{margin:0;padding:0 4px;font-size:.8rem}
+.criar label.resp{flex-direction:row;align-items:center;gap:8px;font-weight:400}
+.criar label.resp input[type=radio]{width:22px;height:22px;accent-color:var(--ok);flex:none;margin:0}
+.criar label.resp input:not([type=radio]){flex:1;min-width:0}
+.criar .hint{margin:0}
+.pequeno{padding:8px 14px!important;min-height:38px!important;font-size:.88rem!important}
+.vaziofolha{color:var(--muted);text-align:center;padding:16px;margin:0;line-height:1.5}
+.folha > button.itemfav,.folha > button.itemenc{flex-direction:column;align-items:flex-start;gap:2px}
+.folha > button.itemenc{flex-direction:row;align-items:center;gap:12px}
+.itemfav b{font-size:.78rem;color:var(--muted);font-weight:600}
+.itemfav span{font-size:.92rem;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-align:left}
+/* ── encaminhada, favorita ── */
+.enc{font-size:.74rem;font-style:italic;opacity:.75;display:flex;gap:4px;align-items:center;margin-bottom:3px}
+.enc svg{width:12px;height:12px}
+.estrela svg{width:11px;height:11px;color:#f59f00}
+/* ── álbum e vídeo ── */
+.album{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:min(260px,62vw);border-radius:12px;overflow:hidden;margin:-4px -8px 4px}
+.album .cel{position:relative;aspect-ratio:1;background:var(--line);cursor:zoom-in}
+.album.n3 .cel:first-child{grid-column:1/3;aspect-ratio:2/1}
+.album .cel img{width:100%;height:100%;object-fit:cover;display:block}
+.album .mais{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);color:#fff;font-size:1.5rem;font-family:var(--display)}
+.bubble.so-midia{padding:4px}
+.bubble.so-midia .album,.bubble.so-midia .video{margin:0}
+.video{display:block;width:min(260px,62vw);max-height:60vh;border-radius:12px;background:#000;margin:-4px -8px 4px;object-fit:contain}
+/* ── enquete e jogos ── */
+.bubble.card{min-width:min(270px,72vw)}
+.enquete,.jogo{display:flex;flex-direction:column;gap:8px;padding:2px 0 4px}
+.enquete .q,.jogo .q{font-family:var(--display);font-size:1.02rem;line-height:1.25}
+.enquete .dica,.jogo .dica{font-size:.75rem;opacity:.8}
+.enquete .op{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 10px;text-align:left;background:color-mix(in srgb,currentColor 7%,transparent);color:inherit;border-radius:12px;padding:10px 12px;min-height:44px;font-weight:500;overflow:hidden;isolation:isolate}
+.enquete .op::before{content:"";position:absolute;inset:0;width:var(--pct,0%);background:color-mix(in srgb,currentColor 17%,transparent);z-index:-1;transition:width .35s ease}
+.enquete .marca{width:18px;height:18px;border-radius:50%;border:2px solid currentColor;opacity:.6;display:grid;place-items:center}
+.enquete .op.minha .marca{opacity:1;background:currentColor}
+.enquete .n{font-variant-numeric:tabular-nums;font-weight:700}
+.enquete .quem{grid-column:2/4;font-size:.72rem;opacity:.75;font-weight:400}
+.grade3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:min(210px,58vw);align-self:center}
+.casa{aspect-ratio:1;min-height:0!important;padding:0;border-radius:12px;background:color-mix(in srgb,currentColor 10%,transparent);color:inherit;font-size:1.7rem;font-weight:700;display:grid;place-items:center}
+.casa:disabled{opacity:1;cursor:default}
+.casa.ganhou{background:color-mix(in srgb,currentColor 30%,transparent)}
+.jogo .st{font-weight:600;text-align:center}
+.jogo > button.sec{align-self:center;background:color-mix(in srgb,currentColor 16%,transparent);color:inherit}
+.desenho{align-self:center;width:130px}
+.desenho svg{width:100%;height:auto;display:block}
+.palavra{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.palavra .let{width:20px;border-bottom:2px solid currentColor;text-align:center;font-weight:700;font-size:1.1rem;min-height:1.6em;line-height:1.6em}
+.palavra .esp{width:12px}
+.teclado{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.teclado button{min-height:36px;padding:0;border-radius:8px;background:color-mix(in srgb,currentColor 12%,transparent);color:inherit;font-weight:700;font-size:.85rem}
+.teclado button.certa{background:var(--ok);color:#fff;opacity:1}
+.teclado button.errada{opacity:.3}
+.quiz .pergunta{font-weight:600;line-height:1.35}
+.quiz .op{text-align:left;background:color-mix(in srgb,currentColor 10%,transparent);color:inherit;border-radius:12px;font-weight:500}
+.quiz .placar{font-family:var(--display);font-size:1.3rem;text-align:center}
+.quiz .linha{font-size:.85rem;line-height:1.35}
+/* ── áudio: velocidade e prévia ── */
+.audio .vel{min-height:28px;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;background:color-mix(in srgb,currentColor 14%,transparent);color:inherit;flex:none}
+#gravOuvir{width:40px;height:40px;min-height:40px;padding:0;border-radius:50%;display:grid;place-items:center;flex:none}
+#gravOuvir svg,#gravParar svg{width:18px;height:18px}
+#gravParar{width:40px;height:40px;min-height:40px;padding:0;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--other);color:var(--gravando)}
+/* ── galeria ── */
+.galeria{position:absolute;inset:0;background:var(--bg);z-index:15;display:flex;flex-direction:column}
+.galeria h1{flex:1}
+.abas{display:flex;gap:6px;padding-block:10px}
+.abas button{background:var(--other);color:var(--fg);padding:8px 14px;min-height:36px;font-size:.88rem}
+.abas button.ativa{background:var(--accent);color:var(--accent-fg)}
+#galGrade{flex:1;overflow-y:auto;padding-block:4px 16px}
+.galfotos{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.galfotos button{padding:0;border-radius:4px;aspect-ratio:1;background:var(--line);min-height:0;position:relative;overflow:hidden}
+.galfotos img{width:100%;height:100%;object-fit:cover;display:block}
+.galfotos .tv{position:absolute;left:6px;bottom:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center}
+.galfotos .tv svg{width:12px;height:12px}
+.galaudio{display:flex;flex-direction:column;gap:6px;padding:10px 0;border-bottom:1px solid var(--line)}
+.galaudio small{color:var(--muted);font-size:.78rem}
+.galaudio .audio{color:var(--fg)}
+/* ── papel de parede ── */
+.fundos{display:flex;gap:10px;flex-wrap:wrap}
+.fundos label{position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:500;font-size:.72rem}
+.fundos input{position:absolute;opacity:0;width:1px;height:1px}
+.fundos .amostra{width:52px;height:52px;border-radius:12px;border:1px solid var(--line);background-color:var(--bg);background-size:30px 30px;display:grid;place-items:center;overflow:hidden;color:var(--muted)}
+.fundos .amostra img{width:100%;height:100%;object-fit:cover}
+.fundos .amostra svg{width:22px;height:22px}
+.fundos input:checked + .amostra{box-shadow:0 0 0 3px var(--accent)}
+.fundos input:focus-visible + .amostra{outline:2px solid var(--fg);outline-offset:2px}
+#list.com-fundo{background-color:var(--bg)}
+/* ── contador de não lidas ── */
+.contador{min-width:22px;height:22px;border-radius:11px;background:var(--accent);color:var(--accent-fg);font-size:.75rem;font-weight:700;display:grid;place-items:center;padding:0 6px;flex:none;font-variant-numeric:tabular-nums}
+/* ── visor com várias fotos ── */
+.visor .vnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;padding:0;display:grid;place-items:center}
+.visor .vnav svg{width:22px;height:22px}
+.visor .vnav.ant{left:max(10px,env(safe-area-inset-left,0px))}
+.visor .vnav.prox{right:max(10px,env(safe-area-inset-right,0px))}
+.visor .vcont{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);color:#fff;font-size:.85rem;font-variant-numeric:tabular-nums}
 .toast{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:.85rem;z-index:30;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.bubble{transition:none}.msg.flash .bubble{animation:none;outline:3px solid var(--accent)}}
 </style>
@@ -299,6 +400,11 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
         <legend>Cor da conversa</legend>
         <div class="cores" id="fCores"></div>
       </fieldset>
+      <fieldset>
+        <legend>Papel de parede</legend>
+        <div class="fundos" id="fFundos"></div>
+        <input type="file" id="fFundoArq" accept="image/*" hidden>
+      </fieldset>
       <label id="fSenhaBox">Senha da conversa
         <input id="fSenha" type="password" minlength="4" placeholder="Pelo menos 4 caracteres">
         <span class="hint">Combinem pessoalmente. Misture letras e números: quem adivinhar a senha consegue ler a conversa.</span>
@@ -324,6 +430,7 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
         <span class="status" id="status">conectando…</span>
       </button>
       <button class="ic" id="buscaBtn" type="button" aria-label="Buscar na conversa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+      <button class="ic" id="maisBtn" type="button" aria-label="Mais opções da conversa"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
       <button class="ic sino" id="sino" type="button" aria-label="Ativar notificações" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
     </header>
     <div class="busca gut" id="busca" hidden>
@@ -350,21 +457,23 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       <button class="ic" id="respFechar" type="button" aria-label="Cancelar resposta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="previaFoto gut" id="previaFoto" hidden>
-      <img id="previaFotoImg" alt="Foto escolhida">
+      <span id="previaFotos" class="previaFotos"></span>
       <span id="previaFotoTxt">Foto pronta. Escreva uma legenda, se quiser, e toque em Enviar.</span>
       <button class="ic" id="previaFotoFechar" type="button" aria-label="Tirar a foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="figs gut" id="figs" hidden></div>
     <div class="gravando gut" id="gravando" hidden>
       <button class="ic" id="gravCancelar" type="button" aria-label="Cancelar gravação"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
-      <span class="bola" aria-hidden="true"></span>
-      <span class="tempo" id="gravTempo">0:00<small>gravando…</small></span>
+      <span class="bola" id="gravBola" aria-hidden="true"></span>
+      <button id="gravOuvir" type="button" aria-label="Ouvir antes de mandar" hidden></button>
+      <span class="tempo" id="gravTempo">0:00<small id="gravRot">gravando…</small></span>
+      <button id="gravParar" type="button" aria-label="Parar e ouvir antes de mandar"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
       <button id="gravEnviar" type="button">Enviar</button>
     </div>
     <form id="form" class="gut">
       <button class="anexo" id="figBtn" type="button" aria-label="Figurinhas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.3 2 3.5 2 3.5-2 3.5-2"/><path d="M9 9.5h.01M15 9.5h.01"/></svg></button>
-      <button class="anexo" id="anexo" type="button" aria-label="Mandar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 15l-5-5-9 9"/></svg></button>
-      <input type="file" id="arquivo" accept="image/*" hidden>
+      <button class="anexo" id="anexo" type="button" aria-label="Mandar fotos, vídeos, enquete ou jogo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v9M7.5 12h9"/></svg></button>
+      <input type="file" id="arquivo" accept="image/*,video/*" multiple hidden>
       <textarea id="text" rows="1" placeholder="Mensagem" aria-label="Mensagem"></textarea>
       <button id="send" type="submit" hidden>Enviar</button>
       <button id="mic" type="button" aria-label="Gravar mensagem de voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
@@ -379,6 +488,8 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       <button type="button" id="aResponder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v6"/></svg>Responder</button>
       <button type="button" id="aFixar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 .7 1.7L15 6.4v4.2l2.7 2.7A1 1 0 0 1 17 15h-4v6l-1 1-1-1v-6H7a1 1 0 0 1-.7-1.7L9 10.6V6.4L7.3 4.7A1 1 0 0 1 8 3z"/></svg><span id="aFixarTxt">Fixar</span></button>
       <button type="button" id="aEditar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Editar</button>
+      <button type="button" id="aFav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span id="aFavTxt">Favoritar</span></button>
+      <button type="button" id="aEnc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0-5 5v6"/></svg>Encaminhar</button>
       <button type="button" id="aCopiar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar texto</button>
       <button type="button" id="aApagar" class="perigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg><span id="aApagarTxt">Apagar para todas</span></button>
       <button type="button" id="aFechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Cancelar</button>
@@ -392,7 +503,20 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       <button type="button" data-tema="dark">Escuro</button>
     </div>
   </div>
-  <div class="visor" id="visor" hidden><img id="visorImg" alt="Foto"><button class="ic" id="visorFechar" type="button" aria-label="Fechar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <section class="galeria" id="galeria" hidden aria-label="Galeria da conversa">
+    <header class="gut">
+      <button class="ic" id="galFechar" type="button" aria-label="Fechar galeria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <h1>Galeria</h1>
+    </header>
+    <div class="abas gut" role="tablist">
+      <button type="button" class="ativa" data-aba="fotos" role="tab">Fotos e vídeos</button>
+      <button type="button" data-aba="audios" role="tab">Áudios</button>
+    </div>
+    <div id="galGrade" class="gut"></div>
+  </section>
+  <div class="visor" id="visor" hidden><img id="visorImg" alt="Foto"><span class="vcont" id="visorCont"></span>
+    <button class="vnav ant" id="visorAnt" type="button" aria-label="Foto anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="vnav prox" id="visorProx" type="button" aria-label="Próxima foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><button class="ic" id="visorFechar" type="button" aria-label="Fechar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="toast" id="toast" hidden></div>
 </div>
 
@@ -404,13 +528,26 @@ const ICON_FIXO = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1
 const ICON_SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v6"/></svg>';
 const toque = matchMedia("(pointer:coarse)").matches;
 const EMOJIS = ["❤️", "😂", "😮", "😢", "🙏", "👍"];
-const resumo = m => m.apagada ? "Mensagem apagada" : m.fig ? "Figurinha" : m.audio ? "🎤 Mensagem de voz" : m.foto ? "📷 " + (m.texto || "Foto") : m.texto;
+function resumo(m){
+  if (m.apagada) return "Mensagem apagada";
+  const x = m.extra || {};
+  if (x.tipo === "album") return "📷 " + (m.texto || (x.fotos || []).length + " fotos");
+  if (x.tipo === "video") return "🎬 " + (m.texto || "Vídeo");
+  if (x.tipo === "enquete") return "📊 " + x.q;
+  if (x.tipo === "velha") return "🎮 Jogo da velha";
+  if (x.tipo === "forca") return "🎮 Forca";
+  if (x.tipo === "quiz") return "🎮 Quiz: quem me conhece mais";
+  if (m.fig) return "Figurinha";
+  if (m.audio) return "🎤 Mensagem de voz";
+  if (m.foto) return "📷 " + (m.texto || "Foto");
+  return m.texto;
+}
 // ── Supabase: guarda as mensagens e entrega na hora (tempo real) ─────────
 // Esta chave é a pública ("anon"): as regras do banco só deixam ver a conversa
 // cujo código (da senha) vai no cabeçalho x-sala de cada pedido.
 const SUPA_URL = "https://diwkjbxialmwjqqvxjdf.supabase.co";
 const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpd2tqYnhpYWxtd2pxcXZ4amRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MTA2NjMsImV4cCI6MjExMDA4NjY2M30.QPacKUSIz6H8HTuaxOX-7RdpaBZFaacUiOfLcasroa0";
-const COLS = "id,nome,texto,em,foto,w,h,audio,dur,tipo,fig,resp,reacoes,editada,apagada";
+const COLS = "id,nome,texto,em,foto,w,h,audio,dur,tipo,fig,resp,reacoes,editada,apagada,extra";
 async function rest(sala, caminho, { method = "GET", body, prefer, keepalive } = {}){
   const h = { apikey: SUPA_KEY, Authorization: "Bearer " + SUPA_KEY, "x-sala": sala };
   if (body !== undefined) h["content-type"] = "application/json";
@@ -430,7 +567,7 @@ function limpa(m){
   return o;
 }
 const semVazios = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== null && v !== undefined));
-const EXT = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "audio/webm": "webm", "audio/mp4": "m4a", "audio/x-m4a": "m4a", "audio/ogg": "ogg", "audio/mpeg": "mp3", "audio/aac": "aac" };
+const EXT = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "audio/webm": "webm", "audio/mp4": "m4a", "audio/x-m4a": "m4a", "audio/ogg": "ogg", "audio/mpeg": "mp3", "audio/aac": "aac", "video/mp4": "mp4", "video/webm": "webm", "video/quicktime": "mov" };
 const nuvem = {
   async mensagens(sala){ return (await rest(sala, `mensagens?select=${COLS}&sala=eq.${sala}&order=em.desc&limit=300`)).reverse().map(limpa); },
   async ultima(sala){ const r = await rest(sala, `mensagens?select=${COLS}&sala=eq.${sala}&order=em.desc&limit=1`); return r && r[0] ? limpa(r[0]) : null; },
@@ -439,6 +576,16 @@ const nuvem = {
     const r = await rest(sala, `mensagens?id=eq.${id}&sala=eq.${sala}&select=${COLS}`, { method: "PATCH", body: campos, prefer: "return=representation" });
     if (!r || !r[0]) throw new Error("mensagem não encontrada");
     return limpa(r[0]);
+  },
+  async uma(sala, id){ const r = await rest(sala, `mensagens?select=${COLS}&id=eq.${id}&sala=eq.${sala}`); return r && r[0] ? limpa(r[0]) : null; },
+  // grava só se a versão (extra.v) ainda for a que eu vi; devolve null se alguém mexeu antes
+  async mudarExtra(sala, id, v, extra){
+    const filtro = v ? `extra->>v=eq.${v}` : "extra->>v=is.null";
+    const r = await rest(sala, `mensagens?id=eq.${id}&sala=eq.${sala}&${filtro}&select=${COLS}`, { method: "PATCH", body: { extra }, prefer: "return=representation" });
+    return r && r[0] ? limpa(r[0]) : null;
+  },
+  async galeria(sala){
+    return ((await rest(sala, `mensagens?select=${COLS}&sala=eq.${sala}&apagada=eq.false&or=(foto.not.is.null,audio.not.is.null,extra.not.is.null)&order=em.desc&limit=500`)) || []).map(limpa);
   },
   async reagir(sala, id, nome, emoji){ return limpa(await rest(sala, "rpc/reagir", { method: "POST", body: { p_id: id, p_nome: nome, p_emoji: emoji } })); },
   async fixadas(sala){ return (await rest(sala, `fixadas?select=id,nome,texto,em&sala=eq.${sala}&order=fixada_em.desc&limit=10`)) || []; },
@@ -569,10 +716,10 @@ function aplicarTema(){
 $("temaBtn").addEventListener("click", () => { aplicarTema(); $("tema").hidden = false; });
 $("tema").addEventListener("click", e => {
   const b = e.target.closest("[data-tema]");
-  if (b){ dados.tema = b.dataset.tema; guardar(); aplicarTema(); }
+  if (b){ dados.tema = b.dataset.tema; guardar(); aplicarTema(); if (atual) aplicarFundo(atual); }
   $("tema").hidden = true;
 });
-matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", atualizarBarra);
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => { atualizarBarra(); if (atual) aplicarFundo(atual); });
 
 // ── Telas ───────────────────────────────────────────────────────────────
 function mostrar(qual){
@@ -587,7 +734,8 @@ let listaT = null;
 let assinaturaLista = "";
 function desenharLista(){
   const box = $("conversas");
-  const sig = JSON.stringify([dados.chats, ultimas]);
+  atualizarIcone();
+  const sig = JSON.stringify([dados.chats, ultimas, naoLidas]);
   if (sig === assinaturaLista && box.childElementCount) return;
   assinaturaLista = sig; box.textContent = "";
   if (!dados.chats.length){
@@ -597,13 +745,15 @@ function desenharLista(){
   const ordem = [...dados.chats].sort((a,b) => ((ultimas[b.sala]||{}).em||b.criado||0) - ((ultimas[a.sala]||{}).em||a.criado||0));
   for (const c of ordem){
     const u = ultimas[c.sala];
-    const novo = u && u.em > (c.visto||0) && u.nome !== c.nome;
+    const n = naoLidas[c.sala] || 0;
+    const novo = n > 0 || (u && u.em > (c.visto||0) && u.nome !== c.nome);
     const it = el("button", "item" + (novo ? " novo" : "")); it.type = "button";
     const av = el("span","av cor"); pintar(av, c.cor); avatar(av, c.fotoOutra, c.titulo); it.appendChild(av);
     const meio = el("span","meio");
     const l1 = el("span","linha"); l1.appendChild(el("span","tit",c.titulo)); if (u) l1.appendChild(el("span","hora",hora(u.em)));
     const l2 = el("span","linha"); l2.appendChild(el("span","prev", u ? (u.nome === c.nome ? "Você: " : u.nome + ": ") + resumo(u) : "Nenhuma mensagem ainda"));
-    if (novo) l2.appendChild(el("span","ponto"));
+    if (n > 0) l2.appendChild(el("span","contador", n > 99 ? "99+" : String(n)));
+    else if (novo) l2.appendChild(el("span","ponto"));
     meio.append(l1,l2); it.appendChild(meio);
     it.addEventListener("click", () => abrir(c.sala));
     box.appendChild(it);
@@ -614,7 +764,8 @@ async function atualizarPrevias(){
   if ($("inicio").hidden) return;
   ligarCanais();
   await Promise.all(dados.chats.map(async c => {
-    try{ const u = await nuvem.ultima(c.sala); if (u) ultimas[c.sala] = u; }catch(_){}
+    try{ const u = await nuvem.ultima(c.sala); const ja = ultimas[c.sala]; if (u && (!ja || u.em >= ja.em)) ultimas[c.sala] = u; }catch(_){}
+    await contarNaoLidas(c);
   }));
   // as novidades chegam pelo tempo real; isto é só uma conferência de segurança
   if (!$("inicio").hidden){ desenharLista(); listaT = setTimeout(atualizarPrevias, 60000); }
@@ -633,7 +784,7 @@ let editorFoto; // undefined: sem mudança; null: tirar; texto: foto nova
     const l = el("label"); l.title = c[0];
     const r = el("input"); r.type = "radio"; r.name = "fCor"; r.value = i; r.id = "fCor" + i; r.setAttribute("aria-label", c[0]);
     const sp = el("span", "cor"); pintar(sp, i);
-    r.addEventListener("change", () => { pintar($("editar"), i); $("editar").classList.add("cor"); });
+    r.addEventListener("change", () => { pintar($("editar"), i); $("editar").classList.add("cor"); const sel = document.querySelector('input[name="fFundo"]:checked'); montarFundos(editando && acharChat(editando)); if (sel) $("fFundo-" + sel.value).checked = true; });
     l.append(r, sp); box.appendChild(l);
   });
 })();
@@ -673,10 +824,10 @@ function abrirEditor(sala){
   $("editarRemover").hidden = !c; $("editarRemover").dataset.certeza = "";
   $("editarRemover").textContent = "Tirar esta conversa da lista";
   $("editarErr").textContent = "";
-  editorFoto = undefined;
+  editorFoto = undefined; editorFundoFoto = undefined;
   const cor = c ? (c.cor || 0) : Math.floor(Math.random() * CORES.length);
   $("fCor" + cor).checked = true; pintar($("editar"), cor); $("editar").classList.add("cor");
-  mostrar("editar"); mostrarFotoEditor();
+  mostrar("editar"); mostrarFotoEditor(); montarFundos(c);
   if (!toque) $("fTitulo").focus();
 }
 $("editarCancelar").addEventListener("click", () => editando ? abrir(editando) : irInicio());
@@ -688,7 +839,7 @@ $("editarForm").addEventListener("submit", async e => {
   dados.ultimoNome = nome;
   if (editando){
     const c = acharChat(editando); const nomeAntigo = c.nome;
-    c.titulo = titulo; c.nome = nome; c.cor = corEscolhida(); guardar();
+    c.titulo = titulo; c.nome = nome; c.cor = corEscolhida(); Object.assign(c, fundoEscolhido(c)); guardar();
     if (editorFoto !== undefined) salvarPerfil(c, editorFoto);
     else if (nomeAntigo !== nome && c.minhaFoto) salvarPerfil(c, c.minhaFoto);
     abrir(c.sala); return;
@@ -696,8 +847,8 @@ $("editarForm").addEventListener("submit", async e => {
   if (senha.trim().length < 4){ $("editarErr").textContent = "A senha precisa ter pelo menos 4 caracteres."; return; }
   const sala = await salaDe(senha);
   let c = acharChat(sala);
-  if (c){ c.titulo = titulo; c.nome = nome; c.cor = corEscolhida(); }
-  else { c = { sala, titulo, nome, cor: corEscolhida(), notif: false, visto: 0, criado: Date.now() }; dados.chats.push(c); }
+  if (c){ c.titulo = titulo; c.nome = nome; c.cor = corEscolhida(); Object.assign(c, fundoEscolhido(c)); }
+  else { c = { sala, titulo, nome, cor: corEscolhida(), notif: false, visto: 0, criado: Date.now(), ...fundoEscolhido(null) }; dados.chats.push(c); }
   guardar();
   if (editorFoto) salvarPerfil(c, editorFoto);
   abrir(sala);
@@ -726,7 +877,7 @@ function atualizarStatus(){
   else if (online === null) txt = "conectando…";
   else if (!online) txt = "sem conexão";
   else if (presOutra && presOutra.online) txt = "online";
-  else if (presOutra && presOutra.visto) txt = "visto por último " + quando(presOutra.visto);
+  else if (presOutra && presOutra.visto) txt = "visto " + quando(presOutra.visto);
   else txt = "ao vivo";
   statusEl.textContent = txt;
   statusEl.classList.toggle("on", !dig && online === true && !!(presOutra && presOutra.online));
@@ -764,7 +915,7 @@ function abrir(sala){
   atual = c; msgs = []; fixadas = []; firstRender = true; fixIdx = 0; online = null; digitando = []; digEm = {}; lidos = {}; lidoEnviado = 0;
   pendentes = []; presOutra = null; pessoas = {}; nos.clear(); divisor = c.visto || 0; novasAbaixo = 0;
   limparResposta(); limparFoto(); fecharFigs(); cancelarGravacao(); sairEdicao(); fecharBusca(); setNote("");
-  pintar($("app"), c.cor); atualizarBarra();
+  pintar($("app"), c.cor); atualizarBarra(); aplicarFundo(c); naoLidas[c.sala] = 0; atualizarIcone();
   $("chatTitulo").textContent = c.titulo;
   avatar($("chatAv"), c.fotoOutra, c.titulo);
   atualizarStatus();
@@ -797,7 +948,14 @@ const canais = new Map(); // sala -> canal
 const canalPronto = sala => { const ch = canais.get(sala); return !!ch && ch.state === "joined"; };
 const meuEstado = sala => ({ nome: (acharChat(sala) || {}).nome, ativo: !!atual && atual.sala === sala && !document.hidden });
 function atualizarTrack(){ for (const [sala, ch] of canais) if (ch.state === "joined") ch.track(meuEstado(sala)).catch?.(() => {}); }
-function avisarCanal(sala, event, payload){ const ch = canais.get(sala); if (ch) ch.send({ type: "broadcast", event, payload }).catch?.(() => {}); }
+// Avisos rápidos (digitando, online, visto) só vão pela conexão aberta; mensagens e mudanças
+// vão de qualquer jeito (se a conexão ainda não abriu, a outra pessoa recebe na próxima conferência).
+const AVISOS_RAPIDOS = new Set(["dig", "estado", "pessoa"]);
+function avisarCanal(sala, event, payload){
+  const ch = canais.get(sala); if (!ch) return;
+  if (ch.state !== "joined" && AVISOS_RAPIDOS.has(event)) return;
+  ch.send({ type: "broadcast", event, payload }).catch?.(() => {});
+}
 const estados = {}; // sala -> nome -> { ativo, em }: avisos rápidos de "entrei/saí da conversa"
 function outrosPresentes(sala){
   const ch = canais.get(sala); if (!ch) return [];
@@ -820,7 +978,11 @@ function ligarCanais(){
 function abrirCanal(sala){
   const c = acharChat(sala);
   const ch = sb.channel("c-" + sala, { config: { broadcast: { self: false }, presence: { key: (c.nome || "") + "-" + dados.aparelho } } });
-  ch.on("broadcast", { event: "msg" }, ({ payload }) => recebeu(sala, payload));
+  ch.on("broadcast", { event: "msg" }, ({ payload }) => {
+    const c2 = acharChat(sala);
+    if (c2 && payload.nome !== c2.nome && !(atual && atual.sala === sala && !document.hidden)){ naoLidas[sala] = (naoLidas[sala] || 0) + 1; atualizarIcone(); }
+    recebeu(sala, payload);
+  });
   ch.on("broadcast", { event: "muda" }, ({ payload }) => recebeu(sala, payload));
   ch.on("broadcast", { event: "fix" }, ({ payload }) => { if (atual && atual.sala === sala) trocarFixadas(payload.lista || []); });
   ch.on("broadcast", { event: "pessoa" }, ({ payload }) => { if (atual && atual.sala === sala) aplicarPessoas([payload], true); });
@@ -856,13 +1018,14 @@ function recebeuDig(p){
   clearTimeout(digT); if (digitando.length) digT = setTimeout(() => recebeuDig({ nome: "", parou: true }), 5200);
 }
 $("voltar").addEventListener("click", () => history.state?.tela === "chat" ? history.back() : irInicio());
-window.addEventListener("popstate", () => { if (!$("visor").hidden){ fecharVisor(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
+window.addEventListener("popstate", () => { if (ignorarPop){ ignorarPop = false; return; } if (folhaAtual){ fecharFolha(true); return; } if (!$("visor").hidden){ fecharVisor(); return; } if (!$("galeria").hidden){ fecharGaleria(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
 $("cab").addEventListener("click", () => atual && abrirEditor(atual.sala));
 
 function marcarVisto(){
   if (!atual || !msgs.length || document.hidden) return;
   const em = msgs[msgs.length-1].em;
   if ((atual.visto||0) < em){ atual.visto = em; guardar(); }
+  if (naoLidas[atual.sala]){ naoLidas[atual.sala] = 0; atualizarIcone(); }
   ultimas[atual.sala] = msgs[msgs.length-1];
   const deOutra = [...msgs].reverse().find(m => m.nome !== atual.nome);
   if (deOutra && deOutra.em > lidoEnviado && deOutra.em > (lidos[atual.nome] || 0)){
@@ -886,7 +1049,7 @@ function rolarProFim(suave){
   list.scrollTo({ top: list.scrollHeight, behavior: suave && !semMovimento.matches ? "smooth" : "auto" });
 }
 
-function montarMsg(m, mostraNome, fixo, viu){
+function montarMsg(m, mostraNome, fixo, viu, fav){
   const d = new Date(m.em), mine = m.nome === atual.nome;
   const box = el("div", "msg" + (mine ? " me" : "") + (m.apagada ? " apagada" : "") + (m.fig ? " fig" : "")
     + (m.pendente ? " pendente" : "") + (m.erro ? " erro" : ""));
@@ -899,12 +1062,20 @@ function montarMsg(m, mostraNome, fixo, viu){
     box.append(b, el("div","time", hora));
     return box;
   }
+  const x = m.extra || {};
+  if (x.enc){ const e = el("span","enc"); e.innerHTML = I.enc; e.appendChild(document.createTextNode("Encaminhada")); b.appendChild(e); }
   if (m.resp){
     const q = el("span","cita"); q.appendChild(el("b",null, m.resp.nome === atual.nome ? "Você" : m.resp.nome)); q.appendChild(el("span",null,m.resp.texto));
     q.addEventListener("click", ev => { ev.stopPropagation(); irPara(m.resp.id); });
     b.appendChild(q);
   }
-  if (m.fig === "foto" && (m.foto || m.figSrc)){
+  if (x.tipo === "album"){ b.appendChild(montarAlbum(m)); if (!m.texto && !m.resp && !x.enc) b.classList.add("so-midia"); }
+  else if (x.tipo === "video"){ b.appendChild(montarVideo(m)); if (!m.texto && !m.resp && !x.enc) b.classList.add("so-midia"); }
+  else if (x.tipo === "enquete"){ b.classList.add("card"); b.appendChild(montarEnquete(m)); }
+  else if (x.tipo === "velha"){ b.classList.add("card"); b.appendChild(montarVelha(m)); }
+  else if (x.tipo === "forca"){ b.classList.add("card"); b.appendChild(montarForca(m)); }
+  else if (x.tipo === "quiz"){ b.classList.add("card"); b.appendChild(montarQuiz(m)); }
+  else if (m.fig === "foto" && (m.foto || m.figSrc)){
     const img = new Image(); img.className = "figfoto"; img.alt = "Figurinha"; img.draggable = false;
     img.src = m.figSrc || fotoUrl(atual.sala, m.foto);
     b.appendChild(img);
@@ -937,6 +1108,7 @@ function montarMsg(m, mostraNome, fixo, viu){
     box.appendChild(r);
   }
   const t = el("div","time");
+  if (fav){ const s = el("span","estrela"); s.innerHTML = I.estrelaCheia; s.title = "Favorita"; t.appendChild(s); }
   if (fixo){ const s = el("span"); s.innerHTML = ICON_FIXO; s.title = "Fixada"; t.appendChild(s); }
   if (m.editada) t.appendChild(el("span","editada","editada ·"));
   if (m.erro){
@@ -979,7 +1151,8 @@ function render(){
     }
     const mostraNome = m.nome !== atual.nome && m.nome !== lastNome;
     const fixo = fixos.has(m.id), viu = m.nome === atual.nome && lidoPelaOutra >= m.em;
-    linhas.push({ k: m.id, msg: m, sig: JSON.stringify([m, mostraNome, fixo, viu]), fazer: () => montarMsg(m, mostraNome, fixo, viu) });
+    const fav = ehFav(m.id);
+    linhas.push({ k: m.id, msg: m, sig: JSON.stringify([m, mostraNome, fixo, viu, fav]), fazer: () => montarMsg(m, mostraNome, fixo, viu, fav) });
     lastNome = m.nome;
   }
   const vivos = new Set();
@@ -1136,21 +1309,8 @@ text.addEventListener("input", () => {
 });
 text.addEventListener("blur", () => avisarDigitando(true));
 
-// Foto
-$("anexo").addEventListener("click", () => $("arquivo").click());
-$("arquivo").addEventListener("change", async () => {
-  const f = $("arquivo").files[0]; $("arquivo").value = "";
-  if (!f) return;
-  try{
-    const r = await comprimir(f, 1600, 0.82, false);
-    limparFoto();
-    fotoPend = { ...r, url: URL.createObjectURL(r.blob) };
-    $("previaFotoImg").src = fotoPend.url; $("previaFoto").hidden = false; podeEnviar();
-  }catch(_){ toast("Não deu para abrir essa foto. Tente outra."); }
-});
-function limparFoto(){ if (fotoPend) URL.revokeObjectURL(fotoPend.url); fotoPend = null; $("previaFoto").hidden = true; podeEnviar(); }
 $("previaFotoFechar").addEventListener("click", limparFoto);
-function abrirVisor(src){ $("visorImg").src = src; $("visor").hidden = false; history.pushState({ tela: "chat", visor: 1 }, ""); }
+function abrirVisor(lista, i = 0){ visorLista = Array.isArray(lista) ? lista : [lista]; visorIdx = Math.max(0, i); mostrarVisor(); $("visor").hidden = false; history.pushState({ tela: "chat", visor: 1 }, ""); }
 function fecharVisor(){ $("visor").hidden = true; $("visorImg").removeAttribute("src"); }
 $("visor").addEventListener("click", () => history.back());
 text.addEventListener("keydown", e => {
@@ -1202,20 +1362,16 @@ $("form").addEventListener("submit", async e => {
   }
   send.disabled = true;
   try{
-    const corpo = { texto: v, nome: c.nome, resp: resposta ? { id: resposta.id, nome: resposta.nome, texto: resumo(resposta).slice(0, 140) } : null };
-    if (foto){
-      $("previaFotoTxt").textContent = "Enviando foto…";
-      corpo.foto = await nuvem.subir(c.sala, foto.blob, "image/jpeg"); corpo.w = foto.w; corpo.h = foto.h;
-    }
-    const msg = await publicar(c, corpo);
+    const resp = resposta ? { id: resposta.id, nome: resposta.nome, texto: resumo(resposta).slice(0, 140) } : null;
+    await enviarMidias(c, foto, v, resp);
     ultimoDig = 0;
-    if (atual === c){ juntar([msg]); rolarProFim(true); }
+    if (atual === c) rolarProFim(true);
     limparCaixa(); setNote(""); limparResposta(); limparFoto();
   }catch(err){
-    setNote(foto ? "A foto não foi enviada. Confira a internet e tente de novo." : "A mensagem não foi enviada. Confira a internet e tente de novo.");
+    setNote("Não deu para enviar. Confira a internet e tente de novo.");
     send.disabled = false;
+    if (fotoPend) mostrarPrevia();
   }
-  $("previaFotoTxt").textContent = "Foto pronta. Escreva uma legenda, se quiser, e toque em Enviar.";
   if (!toque) text.focus();
 });
 
@@ -1285,7 +1441,9 @@ function playerAudio(m){
   const bt = el("button","play"); bt.type = "button"; bt.setAttribute("aria-label","Tocar mensagem de voz");
   const barra = el("span","barra"); barra.appendChild(el("i"));
   const dur = el("span","dur", mmss(m.dur));
-  box.append(bt, barra, dur);
+  const vb = el("button","vel", fmtVel()); vb.type = "button"; vb.setAttribute("aria-label", "Velocidade do áudio");
+  vb.addEventListener("click", ev => { ev.stopPropagation(); trocarVel(); });
+  box.append(bt, barra, dur, vb);
   bt.addEventListener("click", ev => { ev.stopPropagation(); alternarAudio(m); });
   barra.addEventListener("click", ev => {
     ev.stopPropagation();
@@ -1296,8 +1454,17 @@ function playerAudio(m){
   pintarPlayer(m.audio, box);
   return box;
 }
+const VELS = [1, 1.5, 2];
+const vel = () => dados.vel || 1;
+const fmtVel = () => String(vel()).replace(".", ",") + "x";
+function trocarVel(){
+  dados.vel = VELS[(VELS.indexOf(vel()) + 1) % VELS.length]; guardar();
+  if (tocando) tocando.audio.playbackRate = dados.vel;
+  if (gravPronta && gravPronta.audio) gravPronta.audio.playbackRate = dados.vel;
+  document.querySelectorAll(".audio .vel").forEach(b => b.textContent = fmtVel());
+}
 function pintarPlayer(id, box){
-  box = box || list.querySelector(`[data-audio="${id}"]`); if (!box) return;
+  if (!box){ document.querySelectorAll(`[data-audio="${CSS.escape(id)}"]`).forEach(b => pintarPlayer(id, b)); return; }
   const t = tocando && tocando.id === id ? tocando.audio : null;
   const tocandoAgora = t && !t.paused;
   box.querySelector(".play").innerHTML = tocandoAgora ? ICON_PAUSE : ICON_PLAY;
@@ -1318,10 +1485,10 @@ async function alternarAudio(m){
     }catch(_){ toast("Não deu para carregar o áudio"); return; }
   }
   if (atual !== c) return;
-  const a = new Audio(url); tocando = { id: m.audio, audio: a };
+  const a = new Audio(url); a.playbackRate = vel(); tocando = { id: m.audio, audio: a };
   const att = () => pintarPlayer(m.audio);
   a.addEventListener("timeupdate", att); a.addEventListener("play", att); a.addEventListener("pause", att);
-  a.addEventListener("ended", () => { const id = m.audio; tocando = null; const b = list.querySelector(`[data-audio="${id}"]`); if (b){ pintarPlayer(id, b); b.querySelector(".dur").textContent = mmss(m.dur); } });
+  a.addEventListener("ended", () => { const id = m.audio; tocando = null; document.querySelectorAll(`[data-audio="${CSS.escape(id)}"]`).forEach(b => { pintarPlayer(id, b); b.querySelector(".dur").textContent = mmss(m.dur); }); });
   a.play().catch(() => toast("Este celular não conseguiu tocar o áudio"));
 }
 function pararAudio(){ if (tocando){ const id = tocando.id; tocando.audio.pause(); tocando = null; pintarPlayer(id); } }
@@ -1346,6 +1513,7 @@ $("mic").addEventListener("click", async () => {
   grav = { rec, stream, partes: [], inicio: Date.now(), tipo: rec.mimeType || tipo || "audio/webm" };
   rec.ondataavailable = e => { if (e.data && e.data.size) grav && grav.partes.push(e.data); };
   rec.start(250);
+  modoGravando();
   $("form").hidden = true; $("figs").hidden = true; $("gravando").hidden = false;
   avisarDigitando(false);
   const tick = () => {
@@ -1356,25 +1524,60 @@ $("mic").addEventListener("click", async () => {
   };
   tick();
 });
-function encerrarGravacao(){
+function encerrarGravacao(manter){
   return new Promise(ok => {
     const g = grav; if (!g) return ok(null);
     grav = null; clearTimeout(g.tick);
     const fim = () => { g.stream.getTracks().forEach(t => t.stop()); ok(g); };
     if (g.rec.state === "inactive") return fim();
     g.rec.onstop = fim; g.rec.stop();
-  }).finally(() => { $("gravando").hidden = true; $("form").hidden = false; });
+  }).finally(() => { if (!manter){ $("gravando").hidden = true; $("form").hidden = false; } });
 }
-function cancelarGravacao(){ if (grav) encerrarGravacao(); }
+// Parar a gravação e ouvir antes de mandar
+let gravPronta = null; // { blob, tipo, dur, url, audio }
+function modoGravando(){
+  $("gravBola").hidden = false; $("gravParar").hidden = false; $("gravOuvir").hidden = true;
+  $("gravRot").textContent = "gravando…"; $("gravTempo").firstChild.textContent = "0:00";
+}
+$("gravParar").addEventListener("click", async () => {
+  const g = await encerrarGravacao(true); if (!g) return;
+  const dur = (Date.now() - g.inicio) / 1000;
+  if (dur < 0.8){ toast("Áudio curto demais"); descartarPrevia(); return; }
+  const tipo = g.tipo.split(";")[0], blob = new Blob(g.partes, { type: tipo });
+  gravPronta = { blob, tipo, dur, url: URL.createObjectURL(blob) };
+  $("gravBola").hidden = true; $("gravParar").hidden = true; $("gravOuvir").hidden = false; $("gravOuvir").innerHTML = ICON_PLAY;
+  $("gravTempo").firstChild.textContent = mmss(dur); $("gravRot").textContent = "ouça antes de mandar";
+});
+$("gravOuvir").addEventListener("click", () => {
+  const p = gravPronta; if (!p) return;
+  if (!p.audio){
+    p.audio = new Audio(p.url); p.audio.playbackRate = vel();
+    p.audio.addEventListener("timeupdate", () => { $("gravTempo").firstChild.textContent = mmss(p.audio.currentTime); });
+    p.audio.addEventListener("play", () => { $("gravOuvir").innerHTML = ICON_PAUSE; });
+    p.audio.addEventListener("pause", () => { $("gravOuvir").innerHTML = ICON_PLAY; });
+    p.audio.addEventListener("ended", () => { $("gravOuvir").innerHTML = ICON_PLAY; $("gravTempo").firstChild.textContent = mmss(p.dur); });
+  }
+  p.audio.paused ? p.audio.play().catch(() => {}) : p.audio.pause();
+});
+function descartarPrevia(){
+  if (gravPronta){ if (gravPronta.audio) gravPronta.audio.pause(); URL.revokeObjectURL(gravPronta.url); }
+  gravPronta = null; modoGravando();
+  $("gravando").hidden = true; $("form").hidden = false;
+}
+function cancelarGravacao(){ if (grav) encerrarGravacao(); if (gravPronta) descartarPrevia(); }
 $("gravCancelar").addEventListener("click", () => { cancelarGravacao(); avisarDigitando(true); });
 $("gravEnviar").addEventListener("click", enviarGravacao);
 async function enviarGravacao(){
+  if (gravPronta){ const p = gravPronta; if (p.audio) p.audio.pause(); gravPronta = null; descartarPrevia(); return enviarAudio(p.blob, p.tipo, p.dur); }
   const c = atual;
   const g = await encerrarGravacao(); if (!g || !c) return;
   const dur = (Date.now() - g.inicio) / 1000;
   if (dur < 0.8){ toast("Áudio curto demais"); return; }
   const tipo = g.tipo.split(";")[0];
-  const blob = new Blob(g.partes, { type: tipo });
+  return enviarAudio(new Blob(g.partes, { type: tipo }), tipo, dur);
+}
+async function enviarAudio(blob, tipo, dur){
+  const c = atual; if (!c) return;
   toast("Enviando áudio…");
   try{
     const id = await nuvem.subir(c.sala, blob, tipo);
@@ -1492,7 +1695,7 @@ function ligarGestos(box, bubble, m){
   let toqueT = null;
   bubble.addEventListener("click", e => {
     if (arrastou || segurou){ arrastou = segurou = false; e.stopPropagation(); return; }
-    if (e.target.closest(".cita,.audio")) return; // a citação leva à mensagem; o áudio toca
+    if (e.target.closest(".cita,.audio,.video,.album,.enquete,.jogo")) return; // partes com toque próprio
     const naFoto = !!e.target.closest(".foto");
     if (toqueT){ clearTimeout(toqueT); toqueT = null; e.stopPropagation(); coracao(m, bubble); return; } // toque duplo
     if (naFoto) e.stopPropagation();
@@ -1514,7 +1717,10 @@ function abrirAcoes(m){
   $("acoesPrevia").textContent = (m.nome === atual.nome ? "Você" : m.nome) + ": " + resumo(m);
   $("aFixarTxt").textContent = fixadas.some(f => f.id === m.id) ? "Desafixar" : "Fixar no topo";
   $("aCopiar").hidden = !m.texto || !!m.fig;
-  $("aEditar").hidden = m.nome !== atual.nome || !!m.fig || !!m.audio;
+  const tipoX = (m.extra || {}).tipo;
+  $("aEditar").hidden = m.nome !== atual.nome || !!m.fig || !!m.audio || ["enquete","velha","forca","quiz"].includes(tipoX);
+  $("aFavTxt").textContent = ehFav(m.id) ? "Tirar das favoritas" : "Favoritar";
+  $("aEnc").hidden = ["velha","forca","quiz"].includes(tipoX);
   $("aApagar").hidden = m.nome !== atual.nome; $("aApagar").dataset.certeza = ""; $("aApagarTxt").textContent = "Apagar para todas";
   const box = $("emojis"); box.textContent = "";
   for (const e of EMOJIS){
@@ -1564,6 +1770,8 @@ document.addEventListener("keydown", e => { if (e.key === "Escape"){ if (!$("vis
 $("aFechar").addEventListener("click", fecharAcoes);
 $("aResponder").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); responder(m); });
 $("aEditar").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); entrarEdicao(m); });
+$("aFav").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); alternarFav(m); });
+$("aEnc").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); encaminhar(m); });
 $("aCopiar").addEventListener("click", async () => {
   const m = acaoMsg; fecharAcoes();
   try{ await navigator.clipboard.writeText(m.texto); toast("Texto copiado"); }catch(_){ toast("Não deu para copiar"); }
@@ -1580,6 +1788,627 @@ $("aFixar").addEventListener("click", async () => {
     toast(fixar ? "Mensagem fixada" : "Mensagem desafixada");
   }catch(_){ toast("Não deu. Tente de novo."); }
 });
+
+// ════════════════════════════════════════════════════════════════════════
+// Recursos novos: folhas, fotos e vídeos, enquete, jogos, encaminhar,
+// favoritas, galeria, papel de parede e número no ícone
+// ════════════════════════════════════════════════════════════════════════
+const I = {
+  foto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 15l-5-5-9 9"/></svg>',
+  enq: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>',
+  velha: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>',
+  forca: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h10M7 21V3h9v3"/><circle cx="16" cy="9" r="2.5"/><path d="M16 11.5V16M14 19l2-3 2 3"/></svg>',
+  quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01"/></svg>',
+  gal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>',
+  estrela: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>',
+  estrelaCheia: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>',
+  fundo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.9 1.8-1.9 0-.5-.2-.9-.5-1.3-.3-.3-.5-.8-.5-1.3 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.4 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7.5" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>',
+  enc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0-5 5v6"/></svg>',
+  mais: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+};
+
+// ── Folhas (menus que sobem de baixo) ───────────────────────────────────
+let folhaAtual = null, ignorarPop = false;
+function abrirFolha(titulo, montar){
+  fecharFolha(true);
+  const fundo = el("div","fundo"), f = el("div","folha");
+  f.setAttribute("role","dialog"); f.setAttribute("aria-label", titulo || "Opções");
+  if (titulo) f.appendChild(el("div","previa titulo", titulo));
+  fundo.appendChild(f); $("app").appendChild(fundo);
+  fundo.addEventListener("click", e => { if (e.target === fundo) fecharFolha(); });
+  folhaAtual = fundo;
+  if (history.state && history.state.folha) history.replaceState({ tela: "chat", folha: 1 }, "");
+  else history.pushState({ tela: "chat", folha: 1 }, "");
+  montar(f, () => fecharFolha());
+  return f;
+}
+function fecharFolha(semVoltar){
+  if (!folhaAtual) return;
+  folhaAtual.remove(); folhaAtual = null;
+  if (!semVoltar && history.state && history.state.folha){ ignorarPop = true; history.back(); }
+}
+function opcao(f, icone, txt, acao, cls){
+  const b = el("button", cls || ""); b.type = "button";
+  if (icone) b.innerHTML = icone;
+  if (txt) b.appendChild(document.createTextNode(txt));
+  b.addEventListener("click", acao); f.appendChild(b); return b;
+}
+function campo(form, rotulo, ph, max){
+  const l = el("label", null, rotulo); const i = el("input"); i.placeholder = ph; i.maxLength = max; i.autocomplete = "off";
+  l.appendChild(i); form.appendChild(l); return i;
+}
+function botao(txt, cls, acao){ const b = el("button", cls || "", txt); b.type = "button"; if (acao) b.addEventListener("click", ev => { ev.stopPropagation(); acao(); }); return b; }
+
+// Menu do "+" da caixa de mensagem
+$("anexo").addEventListener("click", () => abrirFolha("Mandar", (f, fechar) => {
+  opcao(f, I.foto, "Fotos e vídeos", () => { fechar(); $("arquivo").click(); });
+  opcao(f, I.enq, "Enquete", () => criarEnquete());
+  opcao(f, I.velha, "Jogo da velha", () => { fechar(); novoJogoVelha(); });
+  opcao(f, I.forca, "Forca", () => criarForca());
+  opcao(f, I.quiz, "Quiz: quem me conhece mais", () => criarQuiz());
+}));
+// Menu dos três pontinhos da conversa
+$("maisBtn").addEventListener("click", () => abrirFolha("", (f, fechar) => {
+  opcao(f, I.gal, "Galeria: fotos, vídeos e áudios", () => { fechar(); abrirGaleria(); });
+  opcao(f, I.estrela, "Mensagens favoritas", () => verFavoritas());
+  opcao(f, I.fundo, "Papel de parede e cor", () => { fechar(); abrirEditor(atual.sala); });
+}));
+
+// Mensagem com conteúdo especial (enquete, jogo): aparece na hora, envia por trás
+function mandarExtra(extra){
+  const c = atual; if (!c) return;
+  const corpo = { nome: c.nome, texto: "", extra: { v: 1, ...extra } };
+  const ult = msgs.length ? msgs[msgs.length-1].em : 0;
+  const p = { id: "tmp-" + Date.now(), nome: c.nome, texto: "", extra: corpo.extra, em: Math.max(Date.now(), ult + 1), corpo };
+  pendentes.push(p); rolarProFim(false);
+  enviarTexto(p);
+}
+// Muda o conteúdo especial (votar, jogar) sem atropelar a outra pessoa:
+// grava só se ninguém mexeu antes; se mexeu, pega a versão nova e tenta de novo.
+async function atualizarExtra(m, fn){
+  const c = atual; if (!c || m.pendente || String(m.id).startsWith("tmp-")) return;
+  let base = msgs.find(x => x.id === m.id) || m;
+  for (let t = 0; t < 5; t++){
+    const x = base.extra || {}, novo = fn(x);
+    if (!novo) return;
+    novo.v = (x.v || 0) + 1;
+    if (atual === c) juntar([{ ...base, extra: novo }]); // mostra na hora
+    try{
+      const r = await nuvem.mudarExtra(c.sala, m.id, x.v || 0, novo);
+      if (r){ avisarCanal(c.sala, "muda", r); if (atual === c) juntar([r]); return r; }
+      base = await nuvem.uma(c.sala, m.id); if (!base) break;
+    }catch(_){ break; }
+  }
+  toast("Não deu. Tente de novo.");
+  if (atual === c) buscar();
+}
+
+// ── Fotos e vídeos ──────────────────────────────────────────────────────
+$("arquivo").addEventListener("change", async () => {
+  const arqs = [...$("arquivo").files].slice(0, 10); $("arquivo").value = "";
+  if (!arqs.length) return;
+  limparFoto();
+  $("previaFoto").hidden = false; $("previaFotos").textContent = ""; $("previaFotoTxt").textContent = "Preparando…";
+  const itens = [];
+  for (const f of arqs){
+    try{
+      if (f.type.startsWith("video/")) itens.push(await prepararVideo(f));
+      else { const r = await comprimir(f, 1600, 0.82, false); itens.push({ tipo: "foto", ...r, url: URL.createObjectURL(r.blob) }); }
+    }catch(err){ toast(err && err.message && /^Vídeo/.test(err.message) ? err.message : "Não deu para abrir um dos arquivos"); }
+  }
+  if (!itens.length){ limparFoto(); return; }
+  fotoPend = itens; mostrarPrevia();
+});
+async function prepararVideo(f){
+  if (f.size > 20 * 1024 * 1024) throw new Error("Vídeo grande demais: o limite é 20 MB. Mande um mais curto.");
+  const url = URL.createObjectURL(f);
+  const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.preload = "auto"; v.src = url;
+  await new Promise(ok => { v.onloadeddata = ok; v.onerror = ok; setTimeout(ok, 5000); });
+  try{ v.currentTime = Math.min(0.3, (v.duration || 1) / 2); await new Promise(ok => { v.onseeked = ok; setTimeout(ok, 1500); }); }catch(_){}
+  const W = v.videoWidth || 640, H = v.videoHeight || 360, k = Math.min(1, 640 / Math.max(W, H));
+  let poster = null;
+  try{
+    const cv = document.createElement("canvas"); cv.width = Math.round(W * k); cv.height = Math.round(H * k);
+    cv.getContext("2d").drawImage(v, 0, 0, cv.width, cv.height);
+    poster = await new Promise(ok => cv.toBlob(ok, "image/jpeg", 0.75));
+  }catch(_){}
+  const mime = ["video/mp4", "video/webm", "video/quicktime"].includes(f.type) ? f.type : "video/mp4";
+  return { tipo: "video", blob: f, mime, w: W, h: H, dur: isFinite(v.duration) ? v.duration : 0, poster, url, thumb: poster ? URL.createObjectURL(poster) : null };
+}
+function mostrarPrevia(){
+  const box = $("previaFotos"); box.textContent = "";
+  for (const it of fotoPend.slice(0, 4)){ const i = new Image(); i.alt = ""; if (it.tipo === "foto" ? it.url : it.thumb) i.src = it.tipo === "foto" ? it.url : it.thumb; box.appendChild(i); }
+  const nf = fotoPend.filter(x => x.tipo === "foto").length, nv = fotoPend.length - nf;
+  const partes = [nf ? nf + (nf > 1 ? " fotos" : " foto") : "", nv ? nv + (nv > 1 ? " vídeos" : " vídeo") : ""].filter(Boolean);
+  $("previaFotoTxt").textContent = partes.join(" e ") + ". Escreva uma legenda, se quiser.";
+  $("previaFoto").hidden = false; podeEnviar();
+}
+function limparFoto(){
+  if (fotoPend) for (const it of fotoPend){ URL.revokeObjectURL(it.url); if (it.thumb) URL.revokeObjectURL(it.thumb); }
+  fotoPend = null; $("previaFoto").hidden = true; podeEnviar();
+}
+async function enviarMidias(c, itens, legenda, resp){
+  const fotos = itens.filter(x => x.tipo === "foto"), videos = itens.filter(x => x.tipo === "video");
+  const total = fotos.length + videos.length * 2; let feito = 0;
+  const prog = () => { $("previaFotoTxt").textContent = `Enviando… ${Math.round(feito / Math.max(1, total) * 100)}%`; };
+  prog();
+  const linhas = [];
+  if (fotos.length === 1){
+    const p = await nuvem.subir(c.sala, fotos[0].blob, "image/jpeg"); feito++; prog();
+    linhas.push({ foto: p, w: fotos[0].w, h: fotos[0].h });
+  } else if (fotos.length > 1){
+    const lista = await Promise.all(fotos.map(async f => { const p = await nuvem.subir(c.sala, f.blob, "image/jpeg"); feito++; prog(); return { p, w: f.w, h: f.h }; }));
+    linhas.push({ extra: { v: 1, tipo: "album", fotos: lista } });
+  }
+  for (const vd of videos){
+    const p = await nuvem.subir(c.sala, vd.blob, vd.mime); feito++; prog();
+    const poster = vd.poster ? await nuvem.subir(c.sala, vd.poster, "image/jpeg") : null; feito++; prog();
+    linhas.push({ extra: { v: 1, tipo: "video", p, poster, w: vd.w, h: vd.h, dur: Math.round(vd.dur) } });
+  }
+  for (let i = 0; i < linhas.length; i++){
+    const msg = await publicar(c, { nome: c.nome, texto: i === 0 ? legenda : "", resp: i === 0 ? resp : null, ...linhas[i] });
+    if (atual === c) juntar([msg]);
+  }
+}
+function montarAlbum(m){
+  const fs = m.extra.fotos || [], box = el("div", "album n" + Math.min(fs.length, 4));
+  const urls = fs.map(x => fotoUrl(atual.sala, x.p));
+  fs.slice(0, 4).forEach((f, i) => {
+    const cel = el("span","cel"), im = new Image();
+    im.src = urls[i]; im.alt = "Foto " + (i + 1) + " de " + fs.length; im.draggable = false; im.decoding = "async";
+    cel.appendChild(im);
+    if (i === 3 && fs.length > 4) cel.appendChild(el("b","mais","+" + (fs.length - 4)));
+    cel.addEventListener("click", ev => { ev.stopPropagation(); abrirVisor(urls, i); });
+    box.appendChild(cel);
+  });
+  return box;
+}
+function montarVideo(m){
+  const x = m.extra, v = document.createElement("video");
+  v.className = "video"; v.controls = true; v.playsInline = true; v.preload = "none";
+  v.src = fotoUrl(atual.sala, x.p); if (x.poster) v.poster = fotoUrl(atual.sala, x.poster);
+  v.style.aspectRatio = (x.w || 16) + " / " + (x.h || 9);
+  return v;
+}
+// Visor de fotos: passa para o lado com as setas ou arrastando
+let visorLista = [], visorIdx = 0, visorX = null;
+function mostrarVisor(){
+  $("visorImg").src = visorLista[visorIdx];
+  const varias = visorLista.length > 1;
+  $("visorAnt").hidden = $("visorProx").hidden = !varias;
+  $("visorCont").textContent = varias ? `${visorIdx + 1} de ${visorLista.length}` : "";
+}
+function passarVisor(d){ if (visorLista.length < 2) return; visorIdx = (visorIdx + d + visorLista.length) % visorLista.length; mostrarVisor(); }
+$("visorAnt").addEventListener("click", e => { e.stopPropagation(); passarVisor(-1); });
+$("visorProx").addEventListener("click", e => { e.stopPropagation(); passarVisor(1); });
+$("visor").addEventListener("touchstart", e => { visorX = e.touches[0].clientX; }, { passive: true });
+$("visor").addEventListener("touchend", e => {
+  if (visorX === null) return; const dx = e.changedTouches[0].clientX - visorX; visorX = null;
+  if (Math.abs(dx) > 50){ e.preventDefault(); passarVisor(dx < 0 ? 1 : -1); }
+});
+document.addEventListener("keydown", e => { if (!$("visor").hidden){ if (e.key === "ArrowLeft") passarVisor(-1); if (e.key === "ArrowRight") passarVisor(1); } });
+
+// ── Enquete ─────────────────────────────────────────────────────────────
+function criarEnquete(){
+  abrirFolha("Nova enquete", (f, fechar) => {
+    const form = el("form","criar"); form.noValidate = true;
+    const q = campo(form, "Pergunta", "Ex.: Pizza ou hambúrguer?", 120);
+    const ops = el("div","ops");
+    const lbl = el("label", null, "Opções"); lbl.appendChild(ops); form.appendChild(lbl);
+    const maisBt = botao("+ Adicionar opção", "sec pequeno");
+    const add = () => {
+      if (ops.children.length >= 6) return;
+      const i = el("input"); i.maxLength = 60; i.placeholder = "Opção " + (ops.children.length + 1); i.autocomplete = "off";
+      ops.appendChild(i); maisBt.hidden = ops.children.length >= 6; return i;
+    };
+    maisBt.addEventListener("click", () => { const i = add(); if (i) i.focus(); });
+    add(); add(); form.appendChild(maisBt);
+    const lb = el("label","check"); const cb = el("input"); cb.type = "checkbox";
+    lb.append(cb, document.createTextNode("Deixar escolher mais de uma")); form.appendChild(lb);
+    const err = el("p","err"); form.appendChild(err);
+    const ok = el("button", null, "Mandar enquete"); ok.type = "submit"; form.appendChild(ok);
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const opcoes = [...ops.querySelectorAll("input")].map(i => i.value.trim()).filter(Boolean);
+      if (!q.value.trim()){ err.textContent = "Escreva a pergunta."; return; }
+      if (opcoes.length < 2){ err.textContent = "Coloque pelo menos duas opções."; return; }
+      fechar(); mandarExtra({ tipo: "enquete", q: q.value.trim(), ops: opcoes, multi: cb.checked, votos: {} });
+    });
+    f.appendChild(form);
+    if (!toque) q.focus();
+  });
+}
+function montarEnquete(m){
+  const x = m.extra, box = el("div","enquete"), votos = x.votos || {};
+  box.appendChild(el("b","q", x.q));
+  box.appendChild(el("span","dica", x.multi ? "Escolha uma ou mais" : "Escolha uma"));
+  const votaram = Object.keys(votos).filter(n => (votos[n] || []).length), total = votaram.length;
+  x.ops.forEach((op, i) => {
+    const quem = votaram.filter(n => votos[n].includes(i)), minha = quem.includes(atual.nome);
+    const bt = el("button", "op" + (minha ? " minha" : "")); bt.type = "button";
+    bt.style.setProperty("--pct", (total ? Math.round(quem.length / total * 100) : 0) + "%");
+    bt.setAttribute("aria-pressed", minha ? "true" : "false");
+    bt.append(el("span","marca"), el("span","rot", op), el("span","n", quem.length ? String(quem.length) : ""));
+    if (quem.length) bt.appendChild(el("span","quem", quem.map(n => n === atual.nome ? "Você" : n).join(", ")));
+    bt.addEventListener("click", ev => { ev.stopPropagation(); votar(m, i); });
+    box.appendChild(bt);
+  });
+  box.appendChild(el("span","dica", total ? `${total} ${total > 1 ? "pessoas votaram" : "pessoa votou"}` : "Ninguém votou ainda"));
+  return box;
+}
+function votar(m, i){
+  atualizarExtra(m, x => {
+    const votos = { ...(x.votos || {}) }, meus = votos[atual.nome] || [];
+    const novos = meus.includes(i) ? meus.filter(k => k !== i) : (x.multi ? [...meus, i] : [i]);
+    if (novos.length) votos[atual.nome] = novos; else delete votos[atual.nome];
+    return { ...x, votos };
+  });
+}
+
+// ── Jogo da velha ───────────────────────────────────────────────────────
+const LINHAS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function novoJogoVelha(){ mandarExtra({ tipo: "velha", x: atual.nome, o: null, casas: Array(9).fill(""), vez: "x", fim: null }); }
+const meuSimbolo = (x, eu) => x.x === eu ? "x" : (x.o === eu || !x.o) ? "o" : null;
+function montarVelha(m){
+  const x = m.extra, eu = atual.nome, meu = meuSimbolo(x, eu), box = el("div","jogo velha");
+  box.appendChild(el("b","q","Jogo da velha"));
+  const nomeDe = s => s === "x" ? (x.x === eu ? "Você" : x.x) : (x.o ? (x.o === eu ? "Você" : x.o) : "?");
+  box.appendChild(el("span","dica", `✕ ${nomeDe("x")}   ·   ◯ ${nomeDe("o")}`));
+  const vencedora = x.fim && x.fim !== "empate" ? LINHAS.find(l => l.every(k => x.casas[k] === x.fim)) : null;
+  const grade = el("div","grade3");
+  x.casas.forEach((v, k) => {
+    const b = el("button", "casa" + (vencedora && vencedora.includes(k) ? " ganhou" : ""), v === "x" ? "✕" : v === "o" ? "◯" : ""); b.type = "button";
+    b.setAttribute("aria-label", "Casa " + (k + 1) + (v ? ", marcada com " + (v === "x" ? "xis" : "bola") : ", vazia"));
+    b.disabled = !!v || !!x.fim || !meu || x.vez !== meu;
+    b.addEventListener("click", ev => { ev.stopPropagation(); jogarVelha(m, k); });
+    grade.appendChild(b);
+  });
+  box.appendChild(grade);
+  let st;
+  if (x.fim === "empate") st = "Deu velha! Empate.";
+  else if (x.fim){ const quem = x.fim === "x" ? x.x : x.o; st = quem === eu ? "Você venceu! 🎉" : quem + " venceu!"; }
+  else { const vez = x.vez === "x" ? x.x : x.o; st = (meu && x.vez === meu) ? "Sua vez" : vez ? "Vez de " + vez : "Esperando alguém jogar o ◯"; }
+  box.appendChild(el("span","st", st));
+  if (x.fim) box.appendChild(botao("Jogar de novo", "sec pequeno", novoJogoVelha));
+  return box;
+}
+function jogarVelha(m, k){
+  atualizarExtra(m, x => {
+    const eu = atual.nome, meu = meuSimbolo(x, eu);
+    if (!meu || x.fim || x.casas[k] || x.vez !== meu) return null;
+    const casas = [...x.casas]; casas[k] = meu;
+    const ganhou = LINHAS.some(l => l.every(i => casas[i] === meu));
+    return { ...x, casas, o: meu === "o" ? eu : x.o, vez: meu === "x" ? "o" : "x", fim: ganhou ? meu : casas.every(Boolean) ? "empate" : null };
+  });
+}
+
+// ── Forca ───────────────────────────────────────────────────────────────
+const MAX_ERROS = 6;
+function criarForca(){
+  abrirFolha("Forca", (f, fechar) => {
+    const form = el("form","criar"); form.noValidate = true;
+    form.appendChild(el("p","hint","Escolha uma palavra para a outra pessoa adivinhar, letra por letra. Ela pode errar 6 vezes."));
+    const pal = campo(form, "Palavra secreta", "Ex.: Praia", 24); pal.autocapitalize = "characters";
+    const dica = campo(form, "Dica (opcional)", "Ex.: lugar favorito nas férias", 60);
+    const err = el("p","err"); form.appendChild(err);
+    const ok = el("button", null, "Mandar forca"); ok.type = "submit"; form.appendChild(ok);
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const p = normal(pal.value).toUpperCase().replace(/[^A-Z ]/g, "").replace(/\s+/g, " ").trim();
+      if (p.replace(/ /g, "").length < 3){ err.textContent = "Use uma palavra com pelo menos 3 letras."; return; }
+      fechar(); mandarExtra({ tipo: "forca", criador: atual.nome, palavra: p, dica: dica.value.trim(), letras: [], fim: null });
+    });
+    f.appendChild(form);
+    if (!toque) pal.focus();
+  });
+}
+function desenhoForca(erros){
+  const partes = [
+    '<circle cx="80" cy="30" r="9"/>', '<path d="M80 39v26"/>', '<path d="M80 46l-12 10"/>',
+    '<path d="M80 46l12 10"/>', '<path d="M80 65l-10 16"/>', '<path d="M80 65l10 16"/>',
+  ];
+  const d = el("div","desenho");
+  d.innerHTML = `<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="${erros} de ${MAX_ERROS} erros"><path d="M14 94h56M34 94V8h46v13" opacity=".55"/>${partes.slice(0, erros).join("")}</svg>`;
+  return d;
+}
+function montarForca(m){
+  const x = m.extra, eu = atual.nome, minha = x.criador === eu;
+  const erros = x.letras.filter(l => !x.palavra.includes(l)).length;
+  const box = el("div","jogo forca");
+  box.appendChild(el("b","q", minha ? "Forca (você escolheu a palavra)" : "Forca de " + x.criador));
+  if (x.dica) box.appendChild(el("span","dica","Dica: " + x.dica));
+  box.appendChild(desenhoForca(erros));
+  const pal = el("div","palavra");
+  for (const ch of x.palavra) pal.appendChild(el("span", ch === " " ? "esp" : "let", ch === " " ? "" : (x.letras.includes(ch) || x.fim || minha) ? ch : ""));
+  box.appendChild(pal);
+  let st;
+  if (x.fim === "ganhou") st = minha ? "Acertaram a palavra!" : "Você acertou! 🎉";
+  else if (x.fim === "perdeu") st = minha ? "Ninguém acertou. Ponto pra você!" : "Não foi dessa vez. Era " + x.palavra + ".";
+  else st = `Erros: ${erros} de ${MAX_ERROS}`;
+  box.appendChild(el("span","st", st));
+  if (!minha && !x.fim){
+    const tec = el("div","teclado");
+    for (const L of "ABCDEFGHIJKLMNOPQRSTUVWXYZ"){
+      const usada = x.letras.includes(L);
+      const b = el("button", usada ? (x.palavra.includes(L) ? "certa" : "errada") : "", L); b.type = "button";
+      b.disabled = usada; b.setAttribute("aria-label", "Letra " + L);
+      b.addEventListener("click", ev => { ev.stopPropagation(); chutar(m, L); });
+      tec.appendChild(b);
+    }
+    box.appendChild(tec);
+  }
+  if (x.fim) box.appendChild(botao("Nova forca", "sec pequeno", criarForca));
+  return box;
+}
+function chutar(m, L){
+  atualizarExtra(m, x => {
+    if (x.fim || x.letras.includes(L) || x.criador === atual.nome) return null;
+    const letras = [...x.letras, L];
+    const erros = letras.filter(l => !x.palavra.includes(l)).length;
+    const ganhou = [...x.palavra].every(ch => ch === " " || letras.includes(ch));
+    return { ...x, letras, fim: ganhou ? "ganhou" : erros >= MAX_ERROS ? "perdeu" : null };
+  });
+}
+
+// ── Quiz: quem me conhece mais ──────────────────────────────────────────
+function criarQuiz(){
+  abrirFolha("Quiz: quem me conhece mais", (f, fechar) => {
+    const form = el("form","criar"); form.noValidate = true;
+    form.appendChild(el("p","hint","Escreva perguntas sobre você, três respostas para cada uma, e marque a certa na bolinha verde."));
+    const lista = el("div","perguntas"); form.appendChild(lista);
+    const maisBt = botao("+ Adicionar pergunta", "sec pequeno");
+    let n = 0;
+    const add = () => {
+      if (lista.children.length >= 5) return;
+      const i = n++, bloco = el("fieldset","perg");
+      bloco.appendChild(el("legend", null, "Pergunta " + (lista.children.length + 1)));
+      const q = el("input"); q.placeholder = "Ex.: Qual minha comida favorita?"; q.maxLength = 100; q.className = "pq"; q.autocomplete = "off";
+      bloco.appendChild(q);
+      for (let k = 0; k < 3; k++){
+        const lin = el("label","resp"), r = el("input"), o = el("input");
+        r.type = "radio"; r.name = "certa" + i; r.value = k; r.checked = k === 0; r.setAttribute("aria-label", "Marcar a resposta " + (k + 1) + " como certa");
+        o.placeholder = "Resposta " + (k + 1); o.maxLength = 60; o.className = "po"; o.autocomplete = "off";
+        lin.append(r, o); bloco.appendChild(lin);
+      }
+      lista.appendChild(bloco); maisBt.hidden = lista.children.length >= 5;
+    };
+    maisBt.addEventListener("click", add);
+    add(); add(); add(); form.appendChild(maisBt);
+    const err = el("p","err"); form.appendChild(err);
+    const ok = el("button", null, "Mandar quiz"); ok.type = "submit"; form.appendChild(ok);
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const ps = [];
+      for (const bloco of lista.children){
+        const q = bloco.querySelector(".pq").value.trim(), ops = [...bloco.querySelectorAll(".po")].map(o => o.value.trim());
+        if (!q && ops.every(o => !o)) continue;
+        if (!q || ops.some(o => !o)){ err.textContent = "Complete a pergunta e as três respostas, ou deixe o bloco todo vazio."; return; }
+        ps.push({ q, ops, c: +bloco.querySelector("input[type=radio]:checked").value });
+      }
+      if (!ps.length){ err.textContent = "Escreva pelo menos uma pergunta."; return; }
+      fechar(); mandarExtra({ tipo: "quiz", criador: atual.nome, ps, resp: {} });
+    });
+    f.appendChild(form);
+  });
+}
+function montarQuiz(m){
+  const x = m.extra, eu = atual.nome, total = x.ps.length, box = el("div","jogo quiz");
+  box.appendChild(el("b","q", "Quiz: quem conhece mais " + (x.criador === eu ? "você" : x.criador) + "?"));
+  const acertos = rs => rs.filter((r, i) => x.ps[i] && r === x.ps[i].c).length;
+  if (x.criador === eu){
+    const quem = Object.entries(x.resp || {});
+    box.appendChild(el("span","dica", `${total} ${total > 1 ? "perguntas" : "pergunta"} sobre você`));
+    if (!quem.length) box.appendChild(el("span","st","Ninguém respondeu ainda."));
+    for (const [n, rs] of quem)
+      box.appendChild(el("span","linha", rs.length < total ? `${n}: respondendo (${rs.length} de ${total})` : `${n} acertou ${acertos(rs)} de ${total}`));
+    return box;
+  }
+  const rs = (x.resp || {})[eu] || [];
+  if (rs.length >= total){
+    const ac = acertos(rs);
+    box.appendChild(el("span","placar", `Você acertou ${ac} de ${total}`));
+    box.appendChild(el("span","dica", ac === total ? "Melhor amiga oficial! 🏆" : ac >= total / 2 ? "Mandou bem!" : "Precisam conversar mais, hein 😅"));
+    x.ps.forEach((p, i) => box.appendChild(el("span","linha", `${rs[i] === p.c ? "✓" : "✕"} ${p.q} ${p.ops[p.c]}`)));
+    return box;
+  }
+  const i = rs.length, p = x.ps[i];
+  box.appendChild(el("span","dica", `Pergunta ${i + 1} de ${total}`));
+  if (i > 0){ const a = x.ps[i - 1]; box.appendChild(el("span","dica", rs[i - 1] === a.c ? "Acertou a anterior ✓" : `A anterior era: ${a.ops[a.c]}`)); }
+  box.appendChild(el("span","pergunta", p.q));
+  p.ops.forEach((op, k) => {
+    const b = el("button","op", op); b.type = "button";
+    b.addEventListener("click", ev => { ev.stopPropagation(); responderQuiz(m, i, k); });
+    box.appendChild(b);
+  });
+  return box;
+}
+function responderQuiz(m, i, k){
+  atualizarExtra(m, x => {
+    const r = { ...(x.resp || {}) }, meus = r[atual.nome] || [];
+    if (meus.length !== i || x.criador === atual.nome) return null;
+    r[atual.nome] = [...meus, k];
+    return { ...x, resp: r };
+  });
+}
+
+// ── Encaminhar ──────────────────────────────────────────────────────────
+function encaminhar(m){
+  const x = m.extra || {};
+  if (["velha","forca","quiz"].includes(x.tipo)){ toast("Jogos não dá para encaminhar"); return; }
+  if ([m.foto, m.audio].some(a => a && !String(a).includes("/"))){ toast("Essa mensagem é da versão antiga do app e não dá para encaminhar"); return; }
+  abrirFolha("Encaminhar para", (f, fechar) => {
+    for (const d of dados.chats){
+      const b = el("button","itemenc"); b.type = "button";
+      const av = el("span","av-mini cor"); pintar(av, d.cor); avatar(av, d.fotoOutra, d.titulo);
+      b.append(av, document.createTextNode(d.titulo + (atual && d.sala === atual.sala ? " (esta conversa)" : "")));
+      b.addEventListener("click", async () => {
+        fechar();
+        let extra = x.tipo === "enquete" ? { ...x, votos: {}, v: 1 } : (x.tipo ? { ...x } : {});
+        extra.enc = true;
+        const linha = { nome: d.nome, texto: m.texto || "", foto: m.foto, w: m.w, h: m.h, audio: m.audio, dur: m.dur, tipo: m.tipo, fig: m.fig, extra };
+        try{
+          const msg = await publicar(d, linha);
+          if (atual && atual.sala === d.sala) juntar([msg]);
+          toast("Encaminhada para " + d.titulo);
+        }catch(_){ toast("Não deu para encaminhar. Tente de novo."); }
+      });
+      f.appendChild(b);
+    }
+  });
+}
+
+// ── Favoritas (guardadas neste aparelho) ────────────────────────────────
+const favs = () => (dados.favs = dados.favs || {});
+const ehFav = id => !!(atual && favs()[atual.sala] && favs()[atual.sala][id]);
+function alternarFav(m){
+  const s = favs()[atual.sala] = favs()[atual.sala] || {};
+  if (s[m.id]){ delete s[m.id]; toast("Tirada das favoritas"); }
+  else { s[m.id] = { nome: m.nome, texto: resumo(m).slice(0, 200), em: m.em }; toast("Guardada nas favoritas"); }
+  guardar(); render();
+}
+function verFavoritas(){
+  abrirFolha("Mensagens favoritas", (f, fechar) => {
+    const s = favs()[atual.sala] || {}, itens = Object.entries(s).sort((a, b) => b[1].em - a[1].em);
+    if (!itens.length){ f.appendChild(el("p","vaziofolha","Nenhuma ainda. Segure uma mensagem e toque em “Favoritar”.")); return; }
+    for (const [id, it] of itens){
+      const b = el("button","itemfav"); b.type = "button";
+      b.append(el("b", null, (it.nome === atual.nome ? "Você" : it.nome) + " · " + hora(it.em)), el("span", null, it.texto));
+      b.addEventListener("click", () => { fechar(); setTimeout(() => irPara(id), 80); });
+      f.appendChild(b);
+    }
+  });
+}
+
+// ── Galeria da conversa ─────────────────────────────────────────────────
+let galItens = [], galAba = "fotos";
+async function abrirGaleria(){
+  const c = atual; if (!c) return;
+  $("galeria").hidden = false; history.pushState({ tela: "chat", galeria: 1 }, "");
+  $("galGrade").innerHTML = '<p class="vaziofolha">Carregando…</p>';
+  try{ galItens = await nuvem.galeria(c.sala); }
+  catch(_){ galItens = [...msgs].reverse().filter(m => !m.apagada && (m.foto || m.audio || m.extra)); }
+  if (atual === c) desenharGaleria();
+}
+function fecharGaleria(){ $("galeria").hidden = true; }
+$("galFechar").addEventListener("click", () => history.state && history.state.galeria ? history.back() : fecharGaleria());
+document.querySelectorAll("#galeria [data-aba]").forEach(b => b.addEventListener("click", () => {
+  galAba = b.dataset.aba;
+  document.querySelectorAll("#galeria [data-aba]").forEach(x => { x.classList.toggle("ativa", x === b); x.setAttribute("aria-selected", x === b); });
+  desenharGaleria();
+}));
+function desenharGaleria(){
+  const g = $("galGrade"), sala = atual.sala; g.textContent = "";
+  if (galAba === "fotos"){
+    const itens = [];
+    for (const m of galItens){
+      const x = m.extra || {};
+      if (m.foto && !m.fig) itens.push({ src: fotoUrl(sala, m.foto), id: m.id });
+      if (x.tipo === "album") for (const f of x.fotos || []) itens.push({ src: fotoUrl(sala, f.p), id: m.id });
+      if (x.tipo === "video") itens.push({ src: x.poster ? fotoUrl(sala, x.poster) : "", id: m.id, video: true });
+    }
+    if (!itens.length){ g.innerHTML = '<p class="vaziofolha">Nenhuma foto ou vídeo ainda.</p>'; return; }
+    const fotos = itens.filter(i => !i.video).map(i => i.src);
+    const grade = el("div","galfotos");
+    for (const it of itens){
+      const b = el("button"); b.type = "button"; b.setAttribute("aria-label", it.video ? "Vídeo: abrir na conversa" : "Abrir foto");
+      if (it.src){ const im = new Image(); im.src = it.src; im.alt = ""; im.loading = "lazy"; b.appendChild(im); }
+      if (it.video){ const t = el("span","tv"); t.innerHTML = ICON_PLAY; b.appendChild(t); }
+      b.addEventListener("click", () => {
+        if (it.video){ history.back(); setTimeout(() => irPara(it.id), 120); }
+        else abrirVisor(fotos, fotos.indexOf(it.src));
+      });
+      grade.appendChild(b);
+    }
+    g.appendChild(grade);
+  } else {
+    const audios = galItens.filter(m => m.audio);
+    if (!audios.length){ g.innerHTML = '<p class="vaziofolha">Nenhum áudio ainda.</p>'; return; }
+    for (const m of audios){
+      const lin = el("div","galaudio");
+      lin.appendChild(el("small", null, (m.nome === atual.nome ? "Você" : m.nome) + " · " + hora(m.em)));
+      lin.appendChild(playerAudio(m));
+      g.appendChild(lin);
+    }
+  }
+}
+
+// ── Papel de parede ─────────────────────────────────────────────────────
+const FUNDOS = { nada: "Nenhum", coracoes: "Corações", estrelas: "Estrelas", bolinhas: "Bolinhas", ondas: "Ondas", foto: "Foto" };
+function padrao(tipo, cor){
+  const f = {
+    coracoes: `<path d='M15 22s-7-4.4-7-8.8A3.8 3.8 0 0 1 15 11a3.8 3.8 0 0 1 7 2.2C22 17.6 15 22 15 22z'/><path d='M45 52s-5-3.1-5-6.2A2.7 2.7 0 0 1 45 44a2.7 2.7 0 0 1 5 1.8C50 48.9 45 52 45 52z'/>`,
+    estrelas: `<path d='M15 6l2.6 5.6 6 .7-4.5 4.1 1.2 6L15 19.4l-5.3 3 1.2-6-4.5-4.1 6-.7z'/><path d='M46 38l1.6 3.4 3.7.4-2.8 2.5.8 3.7-3.3-1.9-3.3 1.9.8-3.7-2.8-2.5 3.7-.4z'/>`,
+    bolinhas: `<circle cx='15' cy='15' r='4'/><circle cx='45' cy='45' r='4'/><circle cx='45' cy='15' r='2'/><circle cx='15' cy='45' r='2'/>`,
+    ondas: `<path d='M0 18c7.5-7 15-7 22.5 0S37.5 25 45 18s15-7 15 0M0 48c7.5-7 15-7 22.5 0S37.5 55 45 48s15-7 15 0' fill='none' stroke='${cor}' stroke-width='2.5'/>`,
+  }[tipo] || "";
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='${cor}' opacity='.16'>${f}</g></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+const corDe = elm => getComputedStyle(elm).getPropertyValue("--accent").trim() || "#7b3fe4";
+function aplicarFundo(c){
+  const L = list;
+  L.classList.remove("com-fundo"); L.style.backgroundImage = ""; L.style.backgroundSize = ""; L.style.backgroundPosition = "";
+  if (!c || !c.fundo || c.fundo === "nada") return;
+  if (c.fundo === "foto"){
+    if (!c.fundoFoto) return;
+    const veu = "color-mix(in srgb, var(--bg) 55%, transparent)";
+    L.style.backgroundImage = `linear-gradient(${veu}, ${veu}), url("${c.fundoFoto}")`;
+    L.style.backgroundSize = "cover"; L.style.backgroundPosition = "center";
+  } else {
+    L.style.backgroundImage = padrao(c.fundo, corDe($("app")));
+    L.style.backgroundSize = "60px 60px";
+  }
+  L.classList.add("com-fundo");
+}
+let editorFundoFoto; // undefined: sem mudança; texto: foto nova
+function montarFundos(c){
+  const box = $("fFundos"); box.textContent = "";
+  const atualF = (c && c.fundo) || "nada", cor = corDe($("editar"));
+  for (const [k, nome] of Object.entries(FUNDOS)){
+    const l = el("label"), r = el("input"), am = el("span","amostra");
+    r.type = "radio"; r.name = "fFundo"; r.value = k; r.id = "fFundo-" + k; r.checked = k === atualF;
+    if (k === "foto"){
+      const src = editorFundoFoto || (c && c.fundoFoto);
+      if (src){ const im = new Image(); im.src = src; im.alt = ""; am.appendChild(im); } else am.innerHTML = I.mais;
+      r.addEventListener("click", () => $("fFundoArq").click());
+    } else if (k !== "nada"){ am.style.backgroundImage = padrao(k, cor); }
+    l.append(r, am, document.createTextNode(nome));
+    box.appendChild(l);
+  }
+}
+const lerComoDataURL = blob => new Promise((ok, erro) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = erro; fr.readAsDataURL(blob); });
+$("fFundoArq").addEventListener("change", async () => {
+  const f = $("fFundoArq").files[0]; $("fFundoArq").value = "";
+  if (!f) return;
+  try{
+    const r = await comprimir(f, 1280, 0.7, false);
+    editorFundoFoto = await lerComoDataURL(r.blob);
+    montarFundos(editando && acharChat(editando)); $("fFundo-foto").checked = true;
+  }catch(_){ $("editarErr").textContent = "Não deu para abrir essa foto. Tente outra."; }
+});
+function fundoEscolhido(c){
+  const r = document.querySelector('input[name="fFundo"]:checked'), k = r ? r.value : "nada";
+  if (k === "foto" && !(editorFundoFoto || (c && c.fundoFoto))) return { fundo: "nada" };
+  return k === "foto" ? { fundo: "foto", fundoFoto: editorFundoFoto || c.fundoFoto } : { fundo: k };
+}
+
+// ── Número de não lidas no ícone do app ─────────────────────────────────
+const naoLidas = {}; // sala -> quantidade
+async function contarNaoLidas(c){
+  try{
+    const q = `mensagens?select=id&sala=eq.${c.sala}&em=gt.${c.visto || 0}&nome=neq.${encodeURIComponent(c.nome)}&apagada=eq.false&limit=1`;
+    const r = await fetch(`${SUPA_URL}/rest/v1/${q}`, { method: "HEAD", cache: "no-store",
+      headers: { apikey: SUPA_KEY, Authorization: "Bearer " + SUPA_KEY, "x-sala": c.sala, Prefer: "count=exact" } });
+    const cr = r.headers.get("content-range");
+    // se chegou mensagem enquanto contava, fica o número maior
+    if (r.ok && cr) naoLidas[c.sala] = Math.max(+cr.split("/")[1] || 0, naoLidas[c.sala] || 0);
+  }catch(_){}
+}
+function atualizarIcone(){
+  const total = dados.chats.reduce((s, c) => s + (atual && atual.sala === c.sala && !document.hidden ? 0 : (naoLidas[c.sala] || 0)), 0);
+  if (navigator.setAppBadge) Promise.resolve().then(() => total ? navigator.setAppBadge(total) : navigator.clearAppBadge()).catch(() => {});
+  if (window.caches) caches.open("cantinho-badge").then(k => k.put("/badge", new Response(String(total)))).catch(() => {});
+}
 
 // ── Notificações ────────────────────────────────────────────────────────
 const temPush = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;

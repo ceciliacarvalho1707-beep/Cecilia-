@@ -1,5 +1,5 @@
 // Service worker do Nosso Cantinho: abre o app sem internet e mostra as notificações.
-const CACHE = "cantinho-v7";
+const CACHE = "cantinho-v8";
 const BASE = ["/", "/supabase.js", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (e) => {
@@ -7,7 +7,7 @@ self.addEventListener("install", (e) => {
 });
 self.addEventListener("activate", (e) => {
   e.waitUntil(
-    caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+    caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== "cantinho-badge").map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
@@ -21,10 +21,20 @@ self.addEventListener("fetch", (e) => {
   );
 });
 
+// Soma 1 no número do ícone do app a cada notificação (o app corrige ao abrir)
+async function somarBadge() {
+  try {
+    const k = await caches.open("cantinho-badge");
+    const r = await k.match("/badge");
+    const n = (r ? Number(await r.text()) || 0 : 0) + 1;
+    await k.put("/badge", new Response(String(n)));
+    if (self.navigator.setAppBadge) await self.navigator.setAppBadge(n);
+  } catch (_) {}
+}
 self.addEventListener("push", (e) => {
   let d = {};
   try { d = e.data.json(); } catch { d = { titulo: "Nosso Cantinho", texto: "Mensagem nova" }; }
-  e.waitUntil(
+  e.waitUntil(Promise.all([somarBadge(),
     self.registration.showNotification(d.titulo || "Nosso Cantinho", {
       body: d.texto || "Mensagem nova",
       icon: "/icon-192.png",
@@ -32,7 +42,7 @@ self.addEventListener("push", (e) => {
       tag: "cantinho-" + (d.sala || ""),
       renotify: true,
       data: { sala: d.sala || "" },
-    }),
+    })]),
   );
 });
 self.addEventListener("notificationclick", (e) => {

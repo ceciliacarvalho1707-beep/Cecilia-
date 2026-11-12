@@ -163,3 +163,25 @@ update storage.buckets
 drop policy if exists "midia: enviar" on storage.objects;
 create policy "midia: enviar" on storage.objects for insert to anon
   with check (bucket_id = 'midia' and name ~ '^[0-9a-f]{64}/[0-9a-f-]{36}\.(jpg|png|webp|webm|m4a|ogg|mp3|aac|mp4|mov)$');
+
+-- ============================================================================
+-- Atualização 3: "entregue" (dois tracinhos) e grupos
+-- ============================================================================
+-- Até que mensagem cada pessoa já recebeu no celular (dois tracinhos cinza).
+alter table public.pessoas add column if not exists entregue bigint not null default 0;
+
+-- Nome e foto do grupo, iguais para todo mundo do grupo.
+create table if not exists public.grupos (
+  sala        text primary key check (sala ~ '^[0-9a-f]{64}$'),
+  nome        text not null check (char_length(nome) between 1 and 40),
+  foto        text check (foto is null or char_length(foto) <= 80000),
+  atualizado  bigint not null default 0
+);
+alter table public.grupos enable row level security;
+drop policy if exists "ler grupo"     on public.grupos;
+drop policy if exists "criar grupo"   on public.grupos;
+drop policy if exists "mudar grupo"   on public.grupos;
+create policy "ler grupo"   on public.grupos for select to anon using (sala = public.sala_pedida());
+create policy "criar grupo" on public.grupos for insert to anon with check (sala = public.sala_pedida());
+create policy "mudar grupo" on public.grupos for update to anon using (sala = public.sala_pedida()) with check (sala = public.sala_pedida());
+grant select, insert, update on public.grupos to anon;

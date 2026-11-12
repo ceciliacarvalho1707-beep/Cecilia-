@@ -2,10 +2,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#7b3fe4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cantinho">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="robots" content="noindex,nofollow">
 <title>Nosso Cantinho</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%237b3fe4'/%3E%3Cpath d='M9 11h14v9h-8l-4 3v-3H9z' fill='white'/%3E%3C/svg%3E">
+<link rel="icon" href="/icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap">
 <style>
 :root{
@@ -20,17 +27,25 @@
   --accent:#9d6bff; --accent-fg:#14091f; --other:#2b2440; --line:#332b47; --bad:#ff7a92; color-scheme:dark}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;
-  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.app{height:100%;display:flex;flex-direction:column;max-width:720px;margin:0 auto}
+html,body{height:100%;margin:0;overscroll-behavior:none}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;-webkit-tap-highlight-color:transparent;
+  padding-top:env(safe-area-inset-top,0px)}
+.app{height:100%;height:100dvh;display:flex;flex-direction:column;max-width:720px;margin:0 auto}
 .gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 header{display:flex;align-items:center;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
 h1{font-family:var(--display);font-size:1.35rem;margin:0;letter-spacing:-.01em}
 .status{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
 .status::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--muted);margin-right:6px;vertical-align:1px}
 .status.on::before{background:#2fb36b}
-.link{background:none;color:var(--muted);padding:4px 6px;font-weight:500;font-size:.8rem;text-decoration:underline}
+.link{background:none;color:var(--muted);padding:4px 8px;min-height:40px;font-weight:500;font-size:.85rem;text-decoration:underline}
+.sino{background:var(--other);color:var(--fg);padding:0;width:40px;min-height:40px;height:40px;border-radius:50%;display:grid;place-items:center}
+.sino svg{width:20px;height:20px}
+.sino.on{background:var(--accent);color:var(--accent-fg)}
+.aviso{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:.85rem;background:var(--other);padding-block:10px;line-height:1.4}
+.aviso button{padding:8px 14px;min-height:36px;font-size:.85rem;flex:none}
+header{position:relative}
+#list{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 #list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-block:16px}
 .day{align-self:center;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 6px}
 .msg{max-width:78%;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -42,11 +57,11 @@ h1{font-family:var(--display);font-size:1.35rem;margin:0;letter-spacing:-.01em}
 .msg:not(.me) .bubble{border-bottom-left-radius:6px}
 .empty{margin:auto;text-align:center;color:var(--muted);max-width:30ch;line-height:1.5}
 .empty b{display:block;font-family:var(--display);font-size:1.15rem;color:var(--fg);margin-bottom:4px}
-#form{display:flex;gap:8px;align-items:flex-end;padding-block:10px;border-top:1px solid var(--line);background:var(--surface)}
-textarea,input{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:10px 14px}
+#form{display:flex;gap:8px;align-items:flex-end;padding-top:10px;padding-bottom:max(10px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
+textarea,input{font:inherit;font-size:16px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:10px 14px}
 textarea{flex:1;min-width:0;resize:none;max-height:140px;line-height:1.35}
 textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-button{font:inherit;font-weight:600;border:0;border-radius:20px;padding:10px 18px;background:var(--accent);color:var(--accent-fg);cursor:pointer}
+button{font:inherit;font-weight:600;border:0;border-radius:22px;padding:11px 18px;min-height:44px;touch-action:manipulation;background:var(--accent);color:var(--accent-fg);cursor:pointer}
 button:disabled{opacity:.45;cursor:default}
 button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .note{font-size:.8rem;color:var(--bad);text-align:center;padding:6px 16px}
@@ -56,7 +71,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 #entrar h1{font-size:2rem;text-wrap:balance}
 #entrar p{margin:0;color:var(--muted);line-height:1.5}
 label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:.85rem}
-label input{font-weight:400;font-size:15px}
+label input{font-weight:400}
 .hint{font-weight:400;color:var(--muted);font-size:.78rem}
 .err{color:var(--bad);font-size:.85rem;min-height:1.2em;margin:0}
 </style>
@@ -72,8 +87,8 @@ label input{font-weight:400;font-size:15px}
         <input id="nome" maxlength="30" required placeholder="Como você quer aparecer">
       </label>
       <label>Senha da conversa
-        <input id="senha" type="password" minlength="8" required placeholder="Pelo menos 8 caracteres">
-        <span class="hint">Combinem pessoalmente. Quem souber a senha consegue ler a conversa.</span>
+        <input id="senha" type="password" minlength="4" required placeholder="Pelo menos 4 caracteres" autocomplete="off">
+        <span class="hint">Combinem pessoalmente. Misture letras e números: quem adivinhar a senha consegue ler a conversa. Você só digita uma vez neste aparelho.</span>
       </label>
       <p class="err" id="entrarErr"></p>
       <button type="submit">Entrar</button>
@@ -84,8 +99,10 @@ label input{font-weight:400;font-size:15px}
     <header class="gut">
       <h1>Nosso Cantinho</h1>
       <span class="status" id="status">conectando…</span>
+      <button class="sino" id="sino" type="button" aria-label="Ativar notificações" title="Notificações" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
       <button class="link" id="sair" type="button">Sair</button>
     </header>
+    <div class="aviso gut" id="aviso" hidden><span id="avisoTxt"></span><button type="button" id="avisoBtn">Ativar</button></div>
     <div id="list" class="gut" aria-live="polite"></div>
     <div class="note" id="note" hidden></div>
     <form id="form" class="gut">
@@ -115,12 +132,13 @@ $("entrarForm").addEventListener("submit", async e => {
   e.preventDefault();
   const nome = $("nome").value.trim(), senha = $("senha").value;
   if (!nome){ $("entrarErr").textContent = "Escreva seu nome."; return; }
-  if (senha.trim().length < 8){ $("entrarErr").textContent = "A senha precisa ter pelo menos 8 caracteres."; return; }
+  if (senha.trim().length < 4){ $("entrarErr").textContent = "A senha precisa ter pelo menos 4 caracteres."; return; }
   const v = { nome, sala: await salaDe(senha) };
   save(v); abrir(v);
 });
 
-$("sair").addEventListener("click", () => {
+$("sair").addEventListener("click", async () => {
+  await desativarPush();
   ativo = false; clearTimeout(timer); save(null); me = null;
   $("senha").value = ""; $("chat").hidden = true; $("entrar").hidden = false;
 });
@@ -189,7 +207,8 @@ function abrir(v){
   $("entrar").hidden = true; $("chat").hidden = false;
   statusEl.textContent = "conectando…"; statusEl.classList.remove("on");
   list.textContent = "";
-  buscar(); text.focus();
+  buscar(); atualizarSino();
+  if (!matchMedia("(pointer:coarse)").matches) text.focus();
 }
 
 text.addEventListener("input", () => {
@@ -204,7 +223,7 @@ $("form").addEventListener("submit", async e => {
   const v = text.value.trim(); if (!v || !me) return;
   send.disabled = true;
   try{
-    const r = await fetch(`${API}?sala=${me.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ texto: v, nome: me.nome }) });
+    const r = await fetch(`${API}?sala=${me.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ texto: v, nome: me.nome, endpoint: minhaSub ? minhaSub.endpoint : undefined }) });
     if (!r.ok) throw new Error(r.status);
     const { msg } = await r.json();
     juntar([msg]); list.scrollTop = list.scrollHeight;
@@ -213,7 +232,83 @@ $("form").addEventListener("submit", async e => {
     setNote("A mensagem não foi enviada. Confira a internet e tente de novo.");
     send.disabled = false;
   }
-  text.focus();
+  if (!matchMedia("(pointer:coarse)").matches) text.focus();
+});
+
+// ── App de celular e notificações ─────────────────────────────────────────
+const temPush = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+const ehIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const instalado = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+let swReg = null, minhaSub = null;
+
+if ("serviceWorker" in navigator){
+  navigator.serviceWorker.register("/sw.js").then(r => { swReg = r; atualizarSino(); }).catch(() => {});
+}
+
+function b64(base64){
+  const pad = "=".repeat((4 - base64.length % 4) % 4);
+  const raw = atob((base64 + pad).replace(/-/g, "+").replace(/_/g, "/"));
+  return Uint8Array.from(raw, c => c.charCodeAt(0));
+}
+function dispensado(){ try{ return sessionStorage.getItem("cantinho:aviso") === "1" }catch(_){ return false } }
+function mostrarAviso(txt, acao){
+  const a = $("aviso"); $("avisoTxt").textContent = txt;
+  const btn = $("avisoBtn");
+  btn.textContent = acao ? "Ativar" : "Entendi";
+  btn.onclick = () => { try{ sessionStorage.setItem("cantinho:aviso","1") }catch(_){}; a.hidden = true; if (acao) acao(); };
+  a.hidden = false;
+}
+
+async function atualizarSino(){
+  if (!me) return;
+  const sino = $("sino"), aviso = $("aviso");
+  if (!temPush){
+    sino.hidden = true;
+    if (ehIOS && !instalado && !dispensado())
+      mostrarAviso("Para receber notificações no iPhone: toque em Compartilhar, depois em “Adicionar à Tela de Início”, e abra o app por lá.", null);
+    return;
+  }
+  sino.hidden = false;
+  const reg = swReg || await navigator.serviceWorker.getRegistration();
+  minhaSub = reg ? await reg.pushManager.getSubscription() : null;
+  const on = !!minhaSub && Notification.permission === "granted";
+  sino.classList.toggle("on", on);
+  sino.setAttribute("aria-label", on ? "Desativar notificações" : "Ativar notificações");
+  sino.title = on ? "Notificações ligadas" : "Notificações desligadas";
+  if (!on && Notification.permission === "default" && !dispensado()) mostrarAviso("Quer ser avisada quando chegar mensagem nova?", ativarPush);
+  else if (on) aviso.hidden = true;
+}
+
+async function ativarPush(){
+  try{
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted"){
+      setNote("As notificações estão bloqueadas. Libere nas configurações do navegador para este site.");
+      return atualizarSino();
+    }
+    const reg = swReg || await navigator.serviceWorker.ready;
+    const { publicKey } = await (await fetch("/api/vapid")).json();
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(publicKey) });
+    const r = await fetch(`/api/push?sala=${me.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sub, nome: me.nome }) });
+    if (!r.ok) throw new Error(r.status);
+    minhaSub = sub; setNote("");
+  }catch(err){
+    setNote("Não deu para ativar as notificações. Tente de novo pelo sininho.");
+  }
+  atualizarSino();
+}
+
+async function desativarPush(){
+  const sub = minhaSub; if (!sub || !me) return;
+  try{ await fetch(`/api/push?sala=${me.sala}`, { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ sub }) }); }catch(_){}
+  try{ await sub.unsubscribe(); }catch(_){}
+  minhaSub = null; atualizarSino();
+}
+
+$("sino").addEventListener("click", () => {
+  if (Notification.permission === "denied") return setNote("As notificações estão bloqueadas. Libere nas configurações do navegador para este site.");
+  $("sino").classList.contains("on") ? desativarPush() : ativarPush();
 });
 
 const salvo = load();

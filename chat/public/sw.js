@@ -1,5 +1,5 @@
 // Service worker do Nosso Cantinho: abre o app sem internet e mostra as notificações.
-const CACHE = "cantinho-v2";
+const CACHE = "cantinho-v3";
 const BASE = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (e) => {
@@ -29,17 +29,19 @@ self.addEventListener("push", (e) => {
       body: d.texto || "Mensagem nova",
       icon: "/icon-192.png",
       badge: "/icon-192.png",
-      tag: "cantinho",
+      tag: "cantinho-" + (d.sala || ""),
       renotify: true,
+      data: { sala: d.sala || "" },
     }),
   );
 });
 self.addEventListener("notificationclick", (e) => {
   e.notification.close();
+  const sala = (e.notification.data && e.notification.data.sala) || "";
   e.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((cs) => {
-      for (const c of cs) if ("focus" in c) return c.focus();
-      return self.clients.openWindow("/");
+      for (const c of cs) if ("focus" in c) { if (sala) c.postMessage({ abrir: sala }); return c.focus(); }
+      return self.clients.openWindow(sala ? "/?c=" + sala : "/");
     }),
   );
 });

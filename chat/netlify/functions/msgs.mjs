@@ -6,6 +6,7 @@ import webpush from "web-push";
 
 const MAX_MSGS = 500;
 const MAX_INSCRICOES = 20;
+const MAX_FIXADAS = 3;
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -43,7 +44,7 @@ async function avisar(store, sala, msg, endpointQuemMandou) {
   if (!alvos.length) return;
   const k = await chavesVapid(store);
   webpush.setVapidDetails("https://netlify.app", k.publicKey, k.privateKey);
-  const payload = JSON.stringify({ titulo: msg.nome, texto: msg.texto.slice(0, 180) });
+  const payload = JSON.stringify({ titulo: msg.nome, texto: msg.texto.slice(0, 180), sala: sala.slice(0, 16) });
   const mortos = [];
   await Promise.allSettled(
     alvos.map((s) =>
@@ -88,11 +89,30 @@ export default async (req) => {
   }
 
   const key = "sala-" + sala;
+  const keyFix = "fix-" + sala;
+
+  if (url.pathname === "/api/fixar") {
+    if (req.method !== "POST") return json({ erro: "método não permitido" }, 405);
+    let body;
+    try { body = await req.json(); } catch { return json({ erro: "corpo inválido" }, 400); }
+    const id = typeof body.id === "string" ? body.id : "";
+    const msgs = (await store.get(key, { type: "json" })) || [];
+    const m = msgs.find((x) => x.id === id);
+    if (body.fixar && !m) return json({ erro: "mensagem não encontrada" }, 404);
+    const fixadas = await alterar(store, keyFix, (lista) => {
+      const outras = (lista || []).filter((f) => f.id !== id);
+      const nova = body.fixar ? [{ id: m.id, nome: m.nome, texto: m.texto.slice(0, 200), em: m.em }, ...outras].slice(0, MAX_FIXADAS) : outras;
+      return { valor: nova, resultado: nova };
+    });
+    return json({ fixadas });
+  }
 
   if (req.method === "GET") {
-    const depois = Number(url.searchParams.get("depois")) || 0;
     const msgs = (await store.get(key, { type: "json" })) || [];
-    return json({ msgs: msgs.filter((m) => m.em > depois) });
+    if (url.searchParams.get("ultima")) return json({ msgs: msgs.slice(-1) });
+    const depois = Number(url.searchParams.get("depois")) || 0;
+    const fixadas = (await store.get(keyFix, { type: "json" })) || [];
+    return json({ msgs: msgs.filter((m) => m.em > depois), fixadas });
   }
 
   if (req.method === "POST") {
@@ -106,6 +126,8 @@ export default async (req) => {
         msgs = msgs || [];
         const ultimo = msgs.length ? msgs[msgs.length - 1].em : 0;
         const msg = { id: crypto.randomUUID(), nome, texto, em: Math.max(Date.now(), ultimo + 1) };
+        const orig = typeof body.respId === "string" && msgs.find((m) => m.id === body.respId);
+        if (orig) msg.resp = { id: orig.id, nome: orig.nome, texto: orig.texto.slice(0, 140) };
         return { valor: [...msgs, msg].slice(-MAX_MSGS), resultado: msg };
       });
       await avisar(store, sala, msg, body.endpoint).catch((e) => console.error("push", e));
@@ -118,4 +140,4 @@ export default async (req) => {
   return json({ erro: "método não permitido" }, 405);
 };
 
-export const config = { path: ["/api/msgs", "/api/push", "/api/vapid"] };
+export const config = { path: ["/api/msgs", "/api/push", "/api/vapid", "/api/fixar"] };

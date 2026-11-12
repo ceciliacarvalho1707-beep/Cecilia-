@@ -18,109 +18,225 @@
 :root{
   --bg:#f6f3fb; --surface:#ffffff; --fg:#231a33; --muted:#6f6582;
   --accent:#7b3fe4; --accent-fg:#ffffff; --other:#ece6f6; --line:#e0d8ee; --bad:#c2334d;
+  --quote-me:rgba(255,255,255,.18); --quote-other:rgba(123,63,228,.10); --shade:rgba(20,10,35,.45);
   --display:"Bricolage Grotesque",system-ui,sans-serif;
   --body:"DM Sans",system-ui,-apple-system,sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#16121e; --surface:#1f1a2b; --fg:#eee8f8; --muted:#a49bb6;
-  --accent:#9d6bff; --accent-fg:#14091f; --other:#2b2440; --line:#332b47; --bad:#ff7a92; color-scheme:dark}}
+  --accent:#9d6bff; --accent-fg:#14091f; --other:#2b2440; --line:#332b47; --bad:#ff7a92;
+  --quote-me:rgba(20,9,31,.16); --quote-other:rgba(157,107,255,.14); --shade:rgba(0,0,0,.6); color-scheme:dark}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;overscroll-behavior:none}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;-webkit-tap-highlight-color:transparent;
   padding-top:env(safe-area-inset-top,0px)}
-.app{height:100%;height:100dvh;display:flex;flex-direction:column;max-width:720px;margin:0 auto}
+.app{height:100%;height:100dvh;display:flex;flex-direction:column;max-width:720px;margin:0 auto;position:relative}
+.view{flex:1;display:flex;flex-direction:column;min-height:0}
 .gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-header{display:flex;align-items:center;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
+header{display:flex;align-items:center;gap:10px;padding-block:12px;border-bottom:1px solid var(--line);min-height:64px}
 h1{font-family:var(--display);font-size:1.35rem;margin:0;letter-spacing:-.01em}
-.status{margin-left:auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
-.status::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--muted);margin-right:6px;vertical-align:1px}
-.status.on::before{background:#2fb36b}
-.link{background:none;color:var(--muted);padding:4px 8px;min-height:40px;font-weight:500;font-size:.85rem;text-decoration:underline}
-.sino{background:var(--other);color:var(--fg);padding:0;width:40px;min-height:40px;height:40px;border-radius:50%;display:grid;place-items:center}
+h2{font-family:var(--display);font-size:1.5rem;margin:0;text-wrap:balance}
+
+button{font:inherit;font-weight:600;border:0;border-radius:22px;padding:11px 18px;min-height:44px;touch-action:manipulation;background:var(--accent);color:var(--accent-fg);cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible,.item:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+button.sec{background:var(--other);color:var(--fg)}
+button.perigo{background:none;color:var(--bad);text-decoration:underline;font-weight:500}
+.ic{background:none;color:var(--fg);padding:0;width:40px;min-height:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ic svg{width:22px;height:22px}
+.sino{background:var(--other)}
 .sino svg{width:20px;height:20px}
 .sino.on{background:var(--accent);color:var(--accent-fg)}
+textarea,input{font:inherit;font-size:16px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:10px 14px}
+textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.note{font-size:.8rem;color:var(--bad);text-align:center;padding:6px 16px}
+
+/* lista de conversas */
+#conversas{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding-block:8px}
+.item{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;background:none;color:inherit;text-align:left;border-radius:0;font-weight:400;min-height:72px;width:100%}
+.av{width:48px;height:48px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;font-family:var(--display);font-size:1.2rem;font-weight:700;flex:none}
+.item .meio{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.item .linha{display:flex;align-items:baseline;gap:8px}
+.item .tit{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .hora{font-size:.75rem;color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
+.item .prev{font-size:.88rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.item.novo .prev{color:var(--fg);font-weight:600}
+.item.novo .hora{color:var(--accent);font-weight:600}
+.ponto{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
+.fab{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(80,30,160,.3);padding:14px 20px}
+.fab svg{width:20px;height:20px}
+.vazio{margin:auto;text-align:center;color:var(--muted);max-width:32ch;line-height:1.5;padding-block:24px}
+.vazio b{display:block;font-family:var(--display);font-size:1.2rem;color:var(--fg);margin-bottom:6px}
+
+/* formulário */
+#editar{overflow-y:auto}
+#editarForm{width:100%;max-width:400px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding-block:24px 32px}
+#editarForm p{margin:0;color:var(--muted);line-height:1.5}
+label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:.85rem}
+label input{font-weight:400}
+.hint{font-weight:400;color:var(--muted);font-size:.78rem;line-height:1.4}
+.err{color:var(--bad);font-size:.85rem;min-height:1.2em;margin:0}
+.botoes{display:flex;gap:10px;flex-wrap:wrap}
+.botoes button{flex:1}
+
+/* conversa */
+.cab{min-width:0;flex:1;display:flex;flex-direction:column;background:none;color:inherit;padding:0;border-radius:8px;text-align:left;min-height:40px;justify-content:center;font-weight:400}
+.cab h1{font-size:1.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.status{font-size:.75rem;color:var(--muted);white-space:nowrap}
+.status::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:5px;vertical-align:1px}
+.status.on::before{background:#2fb36b}
 .aviso{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:.85rem;background:var(--other);padding-block:10px;line-height:1.4}
 .aviso button{padding:8px 14px;min-height:36px;font-size:.85rem;flex:none}
-header{position:relative}
-#list{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-#list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-block:16px}
+.fixada{display:flex;align-items:center;gap:10px;padding-block:8px;border-bottom:1px solid var(--line);background:var(--surface);cursor:pointer;width:100%;border-radius:0;color:var(--fg);font-weight:400;text-align:left;min-height:52px}
+.fixada svg{width:18px;height:18px;color:var(--accent);flex:none}
+.fixada .meio{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.fixada .rot{font-size:.72rem;color:var(--accent);font-weight:600;letter-spacing:.02em}
+.fixada .txt{font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#list{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:4px;padding-block:16px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .day{align-self:center;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 6px}
-.msg{max-width:78%;display:flex;flex-direction:column;gap:2px;min-width:0}
+.msg{max-width:80%;display:flex;flex-direction:column;gap:2px;min-width:0;align-self:flex-start;align-items:flex-start;position:relative;touch-action:pan-y}
 .msg .who{font-size:.75rem;color:var(--muted);font-weight:600;margin:6px 10px 0}
-.bubble{padding:9px 13px;border-radius:18px;background:var(--other);line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
-.msg .time{font-size:.68rem;color:var(--muted);margin:0 10px}
+.bubble{padding:8px 12px;border-radius:18px;background:var(--other);line-height:1.4;max-width:100%;cursor:pointer;transition:transform .15s ease;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.bubble .t{white-space:pre-wrap;overflow-wrap:anywhere}
+.msg .time{font-size:.68rem;color:var(--muted);margin:0 10px;display:flex;gap:4px;align-items:center}
+.msg .time svg{width:11px;height:11px}
 .msg.me{align-self:flex-end;align-items:flex-end}
 .msg.me .bubble{background:var(--accent);color:var(--accent-fg);border-bottom-right-radius:6px}
 .msg:not(.me) .bubble{border-bottom-left-radius:6px}
+.cita{display:block;border-left:3px solid var(--accent);background:var(--quote-other);border-radius:8px;padding:5px 9px;margin:2px 0 6px;font-size:.84rem;cursor:pointer;max-width:100%}
+.msg.me .cita{border-left-color:var(--accent-fg);background:var(--quote-me)}
+.cita b{display:block;font-size:.75rem;color:var(--accent)}
+.msg.me .cita b{color:inherit}
+.cita span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;opacity:.85;overflow-wrap:anywhere}
+.msg.flash .bubble{animation:flash 1.2s ease}
+@keyframes flash{0%,40%{box-shadow:0 0 0 4px var(--accent)}100%{box-shadow:0 0 0 0 transparent}}
+.seta{position:absolute;left:-34px;top:50%;width:28px;height:28px;margin-top:-14px;border-radius:50%;background:var(--other);color:var(--accent);display:grid;place-items:center;opacity:0}
+.seta svg{width:16px;height:16px}
 .empty{margin:auto;text-align:center;color:var(--muted);max-width:30ch;line-height:1.5}
 .empty b{display:block;font-family:var(--display);font-size:1.15rem;color:var(--fg);margin-bottom:4px}
+.resp{display:flex;align-items:center;gap:10px;padding-block:8px;background:var(--surface);border-top:1px solid var(--line)}
+.resp .cita{flex:1;min-width:0;margin:0}
 #form{display:flex;gap:8px;align-items:flex-end;padding-top:10px;padding-bottom:max(10px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
-textarea,input{font:inherit;font-size:16px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:10px 14px}
-textarea{flex:1;min-width:0;resize:none;max-height:140px;line-height:1.35}
-textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-button{font:inherit;font-weight:600;border:0;border-radius:22px;padding:11px 18px;min-height:44px;touch-action:manipulation;background:var(--accent);color:var(--accent-fg);cursor:pointer}
-button:disabled{opacity:.45;cursor:default}
-button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
-.note{font-size:.8rem;color:var(--bad);text-align:center;padding:6px 16px}
-/* entrada */
-#entrar{flex:1;display:flex;align-items:center;justify-content:center;padding-block:32px}
-#entrar form{width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px}
-#entrar h1{font-size:2rem;text-wrap:balance}
-#entrar p{margin:0;color:var(--muted);line-height:1.5}
-label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:.85rem}
-label input{font-weight:400}
-.hint{font-weight:400;color:var(--muted);font-size:.78rem}
-.err{color:var(--bad);font-size:.85rem;min-height:1.2em;margin:0}
+.resp:not([hidden]) + #form{border-top:0;padding-top:4px}
+#text{flex:1;min-width:0;resize:none;max-height:140px;line-height:1.35}
+
+/* menu de ações da mensagem */
+.fundo{position:absolute;inset:0;background:var(--shade);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.folha{width:100%;max-width:480px;background:var(--surface);border-radius:20px 20px 0 0;padding:14px 12px calc(14px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:4px;box-shadow:0 -8px 30px rgba(0,0,0,.2)}
+.folha .previa{font-size:.88rem;color:var(--muted);padding:4px 12px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-bottom:1px solid var(--line);margin-bottom:4px}
+.folha button{background:none;color:var(--fg);display:flex;align-items:center;gap:14px;border-radius:12px;padding:12px;font-weight:500;width:100%;text-align:left}
+.folha button svg{width:20px;height:20px;color:var(--accent);flex:none}
+.folha button:hover{background:var(--other)}
+.toast{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:.85rem;z-index:30;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.bubble{transition:none}.msg.flash .bubble{animation:none;outline:3px solid var(--accent)}}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
 
-  <section id="entrar" class="gut">
-    <form id="entrarForm" autocomplete="off">
-      <h1>Nosso Cantinho</h1>
-      <p>O chat só de vocês duas. Usem a mesma senha para cair na mesma conversa.</p>
+  <!-- Lista de conversas salvas -->
+  <section id="inicio" class="view">
+    <header class="gut"><h1>Nosso Cantinho</h1></header>
+    <div id="conversas" class="gut"></div>
+    <button class="fab" id="novaBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      Nova conversa
+    </button>
+  </section>
+
+  <!-- Nova conversa / editar conversa -->
+  <section id="editar" class="view gut" hidden>
+    <form id="editarForm" autocomplete="off">
+      <h2 id="editarTit">Nova conversa</h2>
+      <p id="editarSub">Quem usar a mesma senha cai na mesma conversa. Cada pessoa dá o nome que quiser para a conversa no próprio celular.</p>
+      <label>Nome da conversa
+        <input id="fTitulo" maxlength="40" required placeholder="Ex.: Eu e a Bia">
+      </label>
       <label>Seu nome
-        <input id="nome" maxlength="30" required placeholder="Como você quer aparecer">
+        <input id="fNome" maxlength="30" required placeholder="Como você aparece para a outra pessoa">
       </label>
-      <label>Senha da conversa
-        <input id="senha" type="password" minlength="4" required placeholder="Pelo menos 4 caracteres" autocomplete="off">
-        <span class="hint">Combinem pessoalmente. Misture letras e números: quem adivinhar a senha consegue ler a conversa. Você só digita uma vez neste aparelho.</span>
+      <label id="fSenhaBox">Senha da conversa
+        <input id="fSenha" type="password" minlength="4" placeholder="Pelo menos 4 caracteres">
+        <span class="hint">Combinem pessoalmente. Misture letras e números: quem adivinhar a senha consegue ler a conversa.</span>
       </label>
-      <p class="err" id="entrarErr"></p>
-      <button type="submit">Entrar</button>
+      <p class="err" id="editarErr"></p>
+      <div class="botoes">
+        <button type="button" class="sec" id="editarCancelar">Cancelar</button>
+        <button type="submit" id="editarSalvar">Salvar conversa</button>
+      </div>
+      <button type="button" class="perigo" id="editarRemover" hidden>Tirar esta conversa da lista</button>
     </form>
   </section>
 
-  <section id="chat" hidden style="flex:1;display:flex;flex-direction:column;min-height:0">
+  <!-- Conversa aberta -->
+  <section id="chat" class="view" hidden>
     <header class="gut">
-      <h1>Nosso Cantinho</h1>
-      <span class="status" id="status">conectando…</span>
-      <button class="sino" id="sino" type="button" aria-label="Ativar notificações" title="Notificações" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
-      <button class="link" id="sair" type="button">Sair</button>
+      <button class="ic" id="voltar" type="button" aria-label="Voltar para as conversas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="cab" id="cab" type="button" aria-label="Editar conversa">
+        <h1 id="chatTitulo">Conversa</h1>
+        <span class="status" id="status">conectando…</span>
+      </button>
+      <button class="ic sino" id="sino" type="button" aria-label="Ativar notificações" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
     </header>
+    <button class="fixada gut" id="fixada" type="button" hidden>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 .7 1.7L15 6.4v4.2l2.7 2.7A1 1 0 0 1 17 15h-4v6l-1 1-1-1v-6H7a1 1 0 0 1-.7-1.7L9 10.6V6.4L7.3 4.7A1 1 0 0 1 8 3z"/></svg>
+      <span class="meio"><span class="rot" id="fixadaRot">Mensagem fixada</span><span class="txt" id="fixadaTxt"></span></span>
+    </button>
     <div class="aviso gut" id="aviso" hidden><span id="avisoTxt"></span><button type="button" id="avisoBtn">Ativar</button></div>
     <div id="list" class="gut" aria-live="polite"></div>
     <div class="note" id="note" hidden></div>
+    <div class="resp gut" id="resp" hidden>
+      <span class="cita"><b id="respNome"></b><span id="respTxt"></span></span>
+      <button class="ic" id="respFechar" type="button" aria-label="Cancelar resposta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
     <form id="form" class="gut">
       <textarea id="text" rows="1" placeholder="Escreva uma mensagem…" aria-label="Mensagem"></textarea>
       <button id="send" type="submit" disabled>Enviar</button>
     </form>
   </section>
 
+  <!-- Ações da mensagem -->
+  <div class="fundo" id="acoes" hidden>
+    <div class="folha" role="dialog" aria-label="Ações da mensagem">
+      <div class="previa" id="acoesPrevia"></div>
+      <button type="button" id="aResponder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v6"/></svg>Responder</button>
+      <button type="button" id="aFixar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 .7 1.7L15 6.4v4.2l2.7 2.7A1 1 0 0 1 17 15h-4v6l-1 1-1-1v-6H7a1 1 0 0 1-.7-1.7L9 10.6V6.4L7.3 4.7A1 1 0 0 1 8 3z"/></svg><span id="aFixarTxt">Fixar</span></button>
+      <button type="button" id="aCopiar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar texto</button>
+      <button type="button" id="aFechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Cancelar</button>
+    </div>
+  </div>
+  <div class="toast" id="toast" hidden></div>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
-const KEY = "cantinho:v1";
 const API = "/api/msgs";
-let me = null, msgs = [], ultimo = 0, timer = null, ativo = false;
+const ICON_FIXO = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 .7 1.7L15 6.4v4.2l2.7 2.7A1 1 0 0 1 17 15h-4v6l-1 1-1-1v-6H7a1 1 0 0 1-.7-1.7L9 10.6V6.4L7.3 4.7A1 1 0 0 1 8 3z"/></svg>';
+const ICON_SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v6"/></svg>';
+const toque = matchMedia("(pointer:coarse)").matches;
 
-function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) }catch(_){ return null } }
-function save(v){ try{ v ? localStorage.setItem(KEY, JSON.stringify(v)) : localStorage.removeItem(KEY) }catch(_){} }
+// ── Conversas salvas neste aparelho ─────────────────────────────────────
+const KEY = "cantinho:v2";
+function carregar(){
+  let d = null;
+  try{ d = JSON.parse(localStorage.getItem(KEY)) }catch(_){}
+  if (!d){
+    d = { chats: [] };
+    try{ // versão antiga guardava uma conversa só
+      const v1 = JSON.parse(localStorage.getItem("cantinho:v1"));
+      if (v1 && v1.sala) d.chats.push({ sala: v1.sala, titulo: "Nossa conversa", nome: v1.nome, notif: false, visto: 0 });
+    }catch(_){}
+  }
+  return d;
+}
+let dados = carregar();
+function guardar(){ try{ localStorage.setItem(KEY, JSON.stringify(dados)) }catch(_){} }
+const acharChat = sala => dados.chats.find(c => c.sala === sala);
 
 async function salaDe(senha){
   const bytes = new TextEncoder().encode("nosso-cantinho|" + senha.trim());
@@ -128,114 +244,328 @@ async function salaDe(senha){
   return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("");
 }
 
-$("entrarForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  const nome = $("nome").value.trim(), senha = $("senha").value;
-  if (!nome){ $("entrarErr").textContent = "Escreva seu nome."; return; }
-  if (senha.trim().length < 4){ $("entrarErr").textContent = "A senha precisa ter pelo menos 4 caracteres."; return; }
-  const v = { nome, sala: await salaDe(senha) };
-  save(v); abrir(v);
-});
-
-$("sair").addEventListener("click", async () => {
-  await desativarPush();
-  ativo = false; clearTimeout(timer); save(null); me = null;
-  $("senha").value = ""; $("chat").hidden = true; $("entrar").hidden = false;
-});
-
-const list = $("list"), text = $("text"), send = $("send"), statusEl = $("status"), note = $("note");
-function setNote(t){ note.textContent = t; note.hidden = !t; }
-function setOnline(ok){ statusEl.textContent = ok ? "ao vivo" : "sem conexão"; statusEl.classList.toggle("on", ok); }
+function hora(ts){
+  const d = new Date(ts), hoje = new Date();
+  if (d.toDateString() === hoje.toDateString()) return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  const ontem = new Date(); ontem.setDate(hoje.getDate()-1);
+  if (d.toDateString() === ontem.toDateString()) return "Ontem";
+  return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+}
 function dayLabel(d){
   const hoje = new Date(), ontem = new Date(); ontem.setDate(hoje.getDate()-1);
   if (d.toDateString()===hoje.toDateString()) return "Hoje";
   if (d.toDateString()===ontem.toDateString()) return "Ontem";
   return d.toLocaleDateString("pt-BR",{day:"numeric",month:"long"});
 }
+function el(tag, cls, txt){ const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+let toastT = null;
+function toast(t){ const e = $("toast"); e.textContent = t; e.hidden = false; clearTimeout(toastT); toastT = setTimeout(()=>e.hidden = true, 2200); }
 
-let firstRender = true;
+// ── Telas ───────────────────────────────────────────────────────────────
+function mostrar(qual){
+  for (const v of ["inicio","editar","chat"]) $(v).hidden = v !== qual;
+  $("acoes").hidden = true;
+}
+
+// Lista
+const ultimas = {}; // sala -> última mensagem
+let listaT = null;
+function desenharLista(){
+  const box = $("conversas"); box.textContent = "";
+  if (!dados.chats.length){
+    box.innerHTML = '<div class="vazio"><b>Nenhuma conversa salva</b>Toque em “Nova conversa”, dê um nome e combine a senha com a sua amiga.</div>';
+    return;
+  }
+  const ordem = [...dados.chats].sort((a,b) => ((ultimas[b.sala]||{}).em||b.criado||0) - ((ultimas[a.sala]||{}).em||a.criado||0));
+  for (const c of ordem){
+    const u = ultimas[c.sala];
+    const novo = u && u.em > (c.visto||0) && u.nome !== c.nome;
+    const it = el("button", "item" + (novo ? " novo" : "")); it.type = "button";
+    it.appendChild(el("span","av",(c.titulo||"?").trim().charAt(0).toUpperCase()));
+    const meio = el("span","meio");
+    const l1 = el("span","linha"); l1.appendChild(el("span","tit",c.titulo)); if (u) l1.appendChild(el("span","hora",hora(u.em)));
+    const l2 = el("span","linha"); l2.appendChild(el("span","prev", u ? (u.nome === c.nome ? "Você: " : u.nome + ": ") + u.texto : "Nenhuma mensagem ainda"));
+    if (novo) l2.appendChild(el("span","ponto"));
+    meio.append(l1,l2); it.appendChild(meio);
+    it.addEventListener("click", () => abrir(c.sala));
+    box.appendChild(it);
+  }
+}
+async function atualizarPrevias(){
+  clearTimeout(listaT);
+  if ($("inicio").hidden) return;
+  await Promise.all(dados.chats.map(async c => {
+    try{
+      const r = await fetch(`${API}?sala=${c.sala}&ultima=1`, { cache: "no-store" });
+      if (r.ok){ const j = await r.json(); if (j.msgs[0]) ultimas[c.sala] = j.msgs[0]; }
+    }catch(_){}
+  }));
+  if (!$("inicio").hidden){ desenharLista(); listaT = setTimeout(atualizarPrevias, 20000); }
+}
+function irInicio(){
+  pararChat(); mostrar("inicio"); desenharLista(); atualizarPrevias();
+}
+$("novaBtn").addEventListener("click", () => abrirEditor(null));
+
+// Nova / editar
+let editando = null; // sala ou null
+function abrirEditor(sala){
+  editando = sala; const c = sala && acharChat(sala);
+  $("editarTit").textContent = c ? "Editar conversa" : "Nova conversa";
+  $("editarSub").hidden = !!c;
+  $("fTitulo").value = c ? c.titulo : "";
+  $("fNome").value = c ? c.nome : (dados.ultimoNome || "");
+  $("fSenhaBox").hidden = !!c; $("fSenha").value = ""; $("fSenha").required = !c;
+  $("editarSalvar").textContent = c ? "Salvar" : "Salvar conversa";
+  $("editarRemover").hidden = !c; $("editarRemover").dataset.certeza = "";
+  $("editarRemover").textContent = "Tirar esta conversa da lista";
+  $("editarErr").textContent = "";
+  mostrar("editar");
+  if (!toque) $("fTitulo").focus();
+}
+$("editarCancelar").addEventListener("click", () => editando ? abrir(editando) : irInicio());
+$("editarForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const titulo = $("fTitulo").value.trim(), nome = $("fNome").value.trim(), senha = $("fSenha").value;
+  if (!titulo){ $("editarErr").textContent = "Dê um nome para a conversa."; return; }
+  if (!nome){ $("editarErr").textContent = "Escreva seu nome."; return; }
+  dados.ultimoNome = nome;
+  if (editando){
+    const c = acharChat(editando); c.titulo = titulo; c.nome = nome; guardar(); abrir(c.sala); return;
+  }
+  if (senha.trim().length < 4){ $("editarErr").textContent = "A senha precisa ter pelo menos 4 caracteres."; return; }
+  const sala = await salaDe(senha);
+  let c = acharChat(sala);
+  if (c){ c.titulo = titulo; c.nome = nome; }
+  else { c = { sala, titulo, nome, notif: false, visto: 0, criado: Date.now() }; dados.chats.push(c); }
+  guardar(); abrir(sala);
+});
+$("editarRemover").addEventListener("click", async () => {
+  const b = $("editarRemover");
+  if (!b.dataset.certeza){ b.dataset.certeza = "1"; b.textContent = "Toque de novo para confirmar"; return; }
+  const c = acharChat(editando);
+  if (c && c.notif) await desligarNotif(c);
+  dados.chats = dados.chats.filter(x => x.sala !== editando); guardar();
+  editando = null; irInicio(); toast("Conversa tirada da lista");
+});
+
+// ── Conversa aberta ─────────────────────────────────────────────────────
+const list = $("list"), text = $("text"), send = $("send"), statusEl = $("status"), note = $("note");
+let atual = null, msgs = [], fixadas = [], ultimo = 0, timer = null, firstRender = true, resposta = null, fixIdx = 0;
+function setNote(t){ note.textContent = t; note.hidden = !t; }
+function setOnline(ok){ statusEl.textContent = ok ? "ao vivo" : "sem conexão"; statusEl.classList.toggle("on", ok); }
+
+function abrir(sala){
+  const c = acharChat(sala); if (!c) return irInicio();
+  if (!$("chat").hidden && atual && atual.sala === sala){ return; }
+  pararChat();
+  atual = c; msgs = []; fixadas = []; ultimo = 0; firstRender = true; fixIdx = 0;
+  limparResposta(); setNote("");
+  $("chatTitulo").textContent = c.titulo;
+  statusEl.textContent = "conectando…"; statusEl.classList.remove("on");
+  list.textContent = ""; $("fixada").hidden = true; $("aviso").hidden = true;
+  mostrar("chat");
+  if (history.state?.tela !== "chat") history.pushState({ tela: "chat" }, "");
+  buscar(); atualizarSino();
+}
+function pararChat(){ clearTimeout(timer); atual = null; }
+$("voltar").addEventListener("click", () => history.state?.tela === "chat" ? history.back() : irInicio());
+window.addEventListener("popstate", () => { if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
+$("cab").addEventListener("click", () => atual && abrirEditor(atual.sala));
+
+function marcarVisto(){
+  if (!atual || !msgs.length || document.hidden) return;
+  const em = msgs[msgs.length-1].em;
+  if ((atual.visto||0) < em){ atual.visto = em; guardar(); }
+  ultimas[atual.sala] = msgs[msgs.length-1];
+}
+
 function render(){
   const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 80;
   list.textContent = "";
   if (!msgs.length){
-    list.innerHTML = '<div class="empty"><b>Nenhuma mensagem ainda</b>Escreva a primeira aí embaixo. Ela aparece em segundos pra vocês duas.</div>';
+    list.innerHTML = '<div class="empty"><b>Nenhuma mensagem ainda</b>Escreva a primeira aí embaixo. Ela aparece em segundos para a outra pessoa.</div>';
     return;
   }
+  const fixos = new Set(fixadas.map(f => f.id));
   let lastDay = "", lastNome = null;
   for (const m of msgs){
     const d = new Date(m.em), day = d.toDateString();
-    if (day !== lastDay){ const s=document.createElement("div"); s.className="day"; s.textContent=dayLabel(d); list.appendChild(s); lastDay=day; lastNome=null; }
-    const mine = m.nome === me.nome;
-    const el = document.createElement("div"); el.className = "msg" + (mine ? " me" : "");
-    if (!mine && m.nome !== lastNome){ const w=document.createElement("div"); w.className="who"; w.textContent=m.nome||"Amiga"; el.appendChild(w); }
-    const b = document.createElement("div"); b.className="bubble"; b.textContent = m.texto; el.appendChild(b);
-    const t = document.createElement("div"); t.className="time"; t.textContent = d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); el.appendChild(t);
-    list.appendChild(el); lastNome = m.nome;
+    if (day !== lastDay){ list.appendChild(el("div","day",dayLabel(d))); lastDay = day; lastNome = null; }
+    const mine = m.nome === atual.nome;
+    const box = el("div", "msg" + (mine ? " me" : "")); box.dataset.id = m.id;
+    if (!mine && m.nome !== lastNome) box.appendChild(el("div","who",m.nome || "Amiga"));
+    const b = el("div","bubble");
+    if (m.resp){
+      const q = el("span","cita"); q.appendChild(el("b",null, m.resp.nome === atual.nome ? "Você" : m.resp.nome)); q.appendChild(el("span",null,m.resp.texto));
+      q.addEventListener("click", ev => { ev.stopPropagation(); irPara(m.resp.id); });
+      b.appendChild(q);
+    }
+    b.appendChild(el("span","t",m.texto));
+    const seta = el("span","seta"); seta.innerHTML = ICON_SETA; box.appendChild(seta);
+    box.appendChild(b);
+    const t = el("div","time");
+    if (fixos.has(m.id)){ const s = el("span"); s.innerHTML = ICON_FIXO; s.title = "Fixada"; t.appendChild(s); }
+    t.appendChild(document.createTextNode(d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})));
+    box.appendChild(t);
+    ligarGestos(box, b, m);
+    list.appendChild(box); lastNome = m.nome;
   }
   if (atBottom || firstRender){ list.scrollTop = list.scrollHeight; firstRender = false; }
+}
+
+function desenharFixada(){
+  const f = $("fixada");
+  if (!fixadas.length){ f.hidden = true; return; }
+  if (fixIdx >= fixadas.length) fixIdx = 0;
+  const m = fixadas[fixIdx];
+  $("fixadaRot").textContent = fixadas.length > 1 ? `Mensagem fixada ${fixIdx+1} de ${fixadas.length}` : "Mensagem fixada";
+  $("fixadaTxt").textContent = (m.nome === atual.nome ? "Você" : m.nome) + ": " + m.texto;
+  f.hidden = false;
+}
+$("fixada").addEventListener("click", () => {
+  if (!fixadas.length) return;
+  irPara(fixadas[fixIdx].id);
+  fixIdx = (fixIdx + 1) % fixadas.length; desenharFixada();
+});
+
+function irPara(id){
+  const alvo = list.querySelector(`[data-id="${CSS.escape(id)}"]`);
+  if (!alvo){ toast("Essa mensagem é antiga demais e não está mais aqui"); return; }
+  alvo.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth" });
+  alvo.classList.remove("flash"); void alvo.offsetWidth; alvo.classList.add("flash");
 }
 
 function juntar(novas){
   const ids = new Set(msgs.map(m=>m.id));
   let mudou = false;
   for (const m of novas){ if (!ids.has(m.id)){ msgs.push(m); mudou = true; } if (m.em > ultimo) ultimo = m.em; }
-  if (mudou){ msgs.sort((a,b)=>a.em-b.em); render(); }
+  if (mudou){ msgs.sort((a,b)=>a.em-b.em); render(); marcarVisto(); }
+  return mudou;
+}
+function trocarFixadas(nova){
+  if (JSON.stringify(nova.map(f=>f.id)) === JSON.stringify(fixadas.map(f=>f.id))) return;
+  fixadas = nova; desenharFixada(); render();
 }
 
 async function buscar(){
-  if (!ativo || !me) return;
-  const sala = me.sala;
+  const c = atual; if (!c) return;
   try{
-    const r = await fetch(`${API}?sala=${sala}&depois=${ultimo}`, { cache: "no-store" });
+    const r = await fetch(`${API}?sala=${c.sala}&depois=${ultimo}`, { cache: "no-store" });
     if (!r.ok) throw new Error(r.status);
-    const { msgs: novas } = await r.json();
-    if (!me || me.sala !== sala) return;
-    setOnline(true); setNote("");
-    if (firstRender && !novas.length) render();
-    juntar(novas);
+    const j = await r.json();
+    if (atual !== c) return;
+    setOnline(true);
+    if (firstRender && !j.msgs.length) render();
+    juntar(j.msgs); trocarFixadas(j.fixadas || []);
   }catch(err){
-    setOnline(false);
+    if (atual === c) setOnline(false);
   }
   agendar();
 }
-// Confere novas mensagens a cada 3 s com a página aberta; para quando ela fica em segundo plano.
-function agendar(){ clearTimeout(timer); if (ativo && !document.hidden) timer = setTimeout(buscar, 3000); }
-document.addEventListener("visibilitychange", () => { if (!document.hidden && ativo){ clearTimeout(timer); buscar(); } });
+// Confere novas mensagens a cada 3 s com a conversa aberta; para quando o app fica em segundo plano.
+function agendar(){ clearTimeout(timer); if (atual && !document.hidden) timer = setTimeout(buscar, 3000); }
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) return;
+  if (atual){ clearTimeout(timer); buscar(); marcarVisto(); }
+  else if (!$("inicio").hidden) atualizarPrevias();
+});
 
-function abrir(v){
-  me = v; msgs = []; ultimo = 0; firstRender = true; ativo = true;
-  $("entrar").hidden = true; $("chat").hidden = false;
-  statusEl.textContent = "conectando…"; statusEl.classList.remove("on");
-  list.textContent = "";
-  buscar(); atualizarSino();
-  if (!matchMedia("(pointer:coarse)").matches) text.focus();
-}
-
+// Escrever e enviar
 text.addEventListener("input", () => {
   text.style.height = "auto"; text.style.height = Math.min(text.scrollHeight,140)+"px";
   send.disabled = !text.value.trim();
 });
 text.addEventListener("keydown", e => {
-  if (e.key==="Enter" && !e.shiftKey && !matchMedia("(pointer:coarse)").matches){ e.preventDefault(); $("form").requestSubmit(); }
+  if (e.key==="Enter" && !e.shiftKey && !toque){ e.preventDefault(); $("form").requestSubmit(); }
+  if (e.key==="Escape" && resposta) limparResposta();
 });
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
-  const v = text.value.trim(); if (!v || !me) return;
+  const v = text.value.trim(), c = atual; if (!v || !c) return;
   send.disabled = true;
   try{
-    const r = await fetch(`${API}?sala=${me.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ texto: v, nome: me.nome, endpoint: minhaSub ? minhaSub.endpoint : undefined }) });
+    const r = await fetch(`${API}?sala=${c.sala}`, { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ texto: v, nome: c.nome, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined }) });
     if (!r.ok) throw new Error(r.status);
     const { msg } = await r.json();
-    juntar([msg]); list.scrollTop = list.scrollHeight;
-    text.value = ""; text.style.height = "auto"; setNote("");
+    if (atual === c){ juntar([msg]); list.scrollTop = list.scrollHeight; }
+    text.value = ""; text.style.height = "auto"; setNote(""); limparResposta();
   }catch(err){
     setNote("A mensagem não foi enviada. Confira a internet e tente de novo.");
     send.disabled = false;
   }
-  if (!matchMedia("(pointer:coarse)").matches) text.focus();
+  if (!toque) text.focus();
 });
 
-// ── App de celular e notificações ─────────────────────────────────────────
+// Responder
+function responder(m){
+  resposta = m;
+  $("respNome").textContent = m.nome === atual.nome ? "Respondendo a você mesma" : "Respondendo a " + m.nome;
+  $("respTxt").textContent = m.texto;
+  $("resp").hidden = false; text.focus();
+}
+function limparResposta(){ resposta = null; $("resp").hidden = true; }
+$("respFechar").addEventListener("click", limparResposta);
+
+// Toque abre o menu; arrastar para a direita responde (como no WhatsApp)
+function ligarGestos(box, bubble, m){
+  let x0 = null, y0 = 0, dx = 0, arrastou = false;
+  const seta = box.querySelector(".seta");
+  bubble.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse") return;
+    x0 = e.clientX; y0 = e.clientY; dx = 0; arrastou = false; bubble.style.transition = "none";
+  });
+  bubble.addEventListener("pointermove", e => {
+    if (x0 === null) return;
+    const ddx = e.clientX - x0, ddy = e.clientY - y0;
+    if (!arrastou && Math.abs(ddy) > 12 && Math.abs(ddy) > Math.abs(ddx)){ x0 = null; bubble.style.transform = ""; return; }
+    if (ddx > 8) arrastou = true;
+    if (!arrastou) return;
+    dx = Math.max(0, Math.min(ddx, 80));
+    bubble.style.transform = `translateX(${dx}px)`;
+    seta.style.opacity = Math.min(1, dx/60); seta.style.transform = `translateX(${dx}px)`;
+  });
+  const fim = () => {
+    if (x0 === null) return;
+    x0 = null; bubble.style.transition = ""; bubble.style.transform = ""; seta.style.opacity = 0; seta.style.transform = "";
+    if (dx >= 60){ if (navigator.vibrate) navigator.vibrate(10); responder(m); }
+  };
+  bubble.addEventListener("pointerup", fim);
+  bubble.addEventListener("pointercancel", fim);
+  bubble.addEventListener("click", () => { if (arrastou){ arrastou = false; return; } abrirAcoes(m); });
+}
+
+// Menu de ações
+let acaoMsg = null;
+function abrirAcoes(m){
+  acaoMsg = m;
+  $("acoesPrevia").textContent = (m.nome === atual.nome ? "Você" : m.nome) + ": " + m.texto;
+  $("aFixarTxt").textContent = fixadas.some(f => f.id === m.id) ? "Desafixar" : "Fixar no topo";
+  $("acoes").hidden = false; $("aResponder").focus();
+}
+function fecharAcoes(){ $("acoes").hidden = true; acaoMsg = null; }
+$("acoes").addEventListener("click", e => { if (e.target.id === "acoes") fecharAcoes(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("acoes").hidden) fecharAcoes(); });
+$("aFechar").addEventListener("click", fecharAcoes);
+$("aResponder").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); responder(m); });
+$("aCopiar").addEventListener("click", async () => {
+  const m = acaoMsg; fecharAcoes();
+  try{ await navigator.clipboard.writeText(m.texto); toast("Texto copiado"); }catch(_){ toast("Não deu para copiar"); }
+});
+$("aFixar").addEventListener("click", async () => {
+  const m = acaoMsg, c = atual; fecharAcoes();
+  const fixar = !fixadas.some(f => f.id === m.id);
+  try{
+    const r = await fetch(`/api/fixar?sala=${c.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: m.id, fixar }) });
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json();
+    if (atual === c){ fixIdx = 0; trocarFixadas(j.fixadas); }
+    toast(fixar ? "Mensagem fixada" : "Mensagem desafixada");
+  }catch(_){ toast("Não deu. Tente de novo."); }
+});
+
+// ── Notificações ────────────────────────────────────────────────────────
 const temPush = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
 const ehIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const instalado = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
@@ -243,7 +573,9 @@ let swReg = null, minhaSub = null;
 
 if ("serviceWorker" in navigator){
   navigator.serviceWorker.register("/sw.js").then(r => { swReg = r; atualizarSino(); }).catch(() => {});
+  navigator.serviceWorker.addEventListener("message", e => { if (e.data && e.data.abrir) abrirPorPrefixo(e.data.abrir); });
 }
+function abrirPorPrefixo(p){ const c = dados.chats.find(c => c.sala.startsWith(p)); if (c) abrir(c.sala); }
 
 function b64(base64){
   const pad = "=".repeat((4 - base64.length % 4) % 4);
@@ -260,7 +592,7 @@ function mostrarAviso(txt, acao){
 }
 
 async function atualizarSino(){
-  if (!me) return;
+  const c = atual; if (!c) return;
   const sino = $("sino"), aviso = $("aviso");
   if (!temPush){
     sino.hidden = true;
@@ -271,15 +603,17 @@ async function atualizarSino(){
   sino.hidden = false;
   const reg = swReg || await navigator.serviceWorker.getRegistration();
   minhaSub = reg ? await reg.pushManager.getSubscription() : null;
-  const on = !!minhaSub && Notification.permission === "granted";
+  if (atual !== c) return;
+  const on = !!minhaSub && Notification.permission === "granted" && c.notif;
   sino.classList.toggle("on", on);
-  sino.setAttribute("aria-label", on ? "Desativar notificações" : "Ativar notificações");
+  sino.setAttribute("aria-label", on ? "Desativar notificações desta conversa" : "Ativar notificações desta conversa");
   sino.title = on ? "Notificações ligadas" : "Notificações desligadas";
-  if (!on && Notification.permission === "default" && !dispensado()) mostrarAviso("Quer ser avisada quando chegar mensagem nova?", ativarPush);
+  if (!on && Notification.permission === "default" && !dispensado()) mostrarAviso("Quer ser avisada quando chegar mensagem nova?", ligarNotif);
   else if (on) aviso.hidden = true;
 }
 
-async function ativarPush(){
+async function ligarNotif(){
+  const c = atual; if (!c) return;
   try{
     const perm = await Notification.requestPermission();
     if (perm !== "granted"){
@@ -287,32 +621,42 @@ async function ativarPush(){
       return atualizarSino();
     }
     const reg = swReg || await navigator.serviceWorker.ready;
-    const { publicKey } = await (await fetch("/api/vapid")).json();
     let sub = await reg.pushManager.getSubscription();
-    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(publicKey) });
-    const r = await fetch(`/api/push?sala=${me.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sub, nome: me.nome }) });
+    if (!sub){
+      const { publicKey } = await (await fetch("/api/vapid")).json();
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(publicKey) });
+    }
+    const r = await fetch(`/api/push?sala=${c.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sub, nome: c.nome }) });
     if (!r.ok) throw new Error(r.status);
-    minhaSub = sub; setNote("");
+    minhaSub = sub; c.notif = true; guardar(); setNote(""); toast("Notificações ligadas");
   }catch(err){
     setNote("Não deu para ativar as notificações. Tente de novo pelo sininho.");
   }
   atualizarSino();
 }
 
-async function desativarPush(){
-  const sub = minhaSub; if (!sub || !me) return;
-  try{ await fetch(`/api/push?sala=${me.sala}`, { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ sub }) }); }catch(_){}
-  try{ await sub.unsubscribe(); }catch(_){}
-  minhaSub = null; atualizarSino();
+async function desligarNotif(c){
+  const reg = swReg || (navigator.serviceWorker && await navigator.serviceWorker.getRegistration());
+  const sub = minhaSub || (reg && await reg.pushManager.getSubscription());
+  c.notif = false; guardar();
+  if (!sub) return;
+  try{ await fetch(`/api/push?sala=${c.sala}`, { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ sub }) }); }catch(_){}
+  if (!dados.chats.some(x => x.notif && x.sala !== c.sala)){ try{ await sub.unsubscribe(); }catch(_){} minhaSub = null; }
 }
 
-$("sino").addEventListener("click", () => {
+$("sino").addEventListener("click", async () => {
   if (Notification.permission === "denied") return setNote("As notificações estão bloqueadas. Libere nas configurações do navegador para este site.");
-  $("sino").classList.contains("on") ? desativarPush() : ativarPush();
+  if ($("sino").classList.contains("on")){ await desligarNotif(atual); toast("Notificações desligadas"); atualizarSino(); }
+  else ligarNotif();
 });
 
-const salvo = load();
-if (salvo && salvo.sala && salvo.nome){ $("nome").value = salvo.nome; abrir(salvo); }
+// ── Começo ──────────────────────────────────────────────────────────────
+guardar();
+history.replaceState({ tela: "inicio" }, "");
+const pedido = new URLSearchParams(location.search).get("c");
+if (pedido){ history.replaceState({ tela: "inicio" }, "", "/"); }
+irInicio();
+if (pedido) abrirPorPrefixo(pedido);
 </script>
 </body>
 </html>

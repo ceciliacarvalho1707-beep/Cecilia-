@@ -3449,8 +3449,9 @@ async function carregarAmigos(){
   const { data, error } = await sbConta.from("amizades").select("de,para,aceita,criado");
   if (error) return;
   amizades = data || [];
-  const faltam = [...new Set(amizades.map(outroLado))].filter(id => !perfisCache.has(id));
-  if (faltam.length){ const r = await sbConta.from("perfis").select("id,usuario,nome,foto,bio,humor").in("id", faltam); (r.data || []).forEach(p => perfisCache.set(p.id, p)); }
+  // busca de novo o perfil de todas (foto, humor e bio podem ter mudado)
+  const ids = [...new Set(amizades.map(outroLado))];
+  if (ids.length){ const r = await sbConta.from("perfis").select("id,usuario,nome,foto,bio,humor").in("id", ids); (r.data || []).forEach(p => perfisCache.set(p.id, p)); }
   const pedidos = amizades.filter(a => !a.aceita && a.para === eu.id).length;
   $("pedidosN").hidden = !pedidos; $("pedidosN").textContent = pedidos;
   if (!$("abaAmigos").hidden) desenharAmigos();
@@ -3553,8 +3554,10 @@ function semContaAviso(txt){
 // ── Perfil (de uma amiga ou de qualquer pessoa) ─────────────────────────
 async function abrirPerfilDe(id){
   if (eu && id === eu.id){ trocarAba("Eu"); return; }
+  // sempre a versão mais nova do perfil (se a internet falhar, mostra a que já tinha)
   let p = perfisCache.get(id);
-  if (!p){ const r = await sbConta.from("perfis").select("id,usuario,nome,foto,bio,humor").eq("id", id).maybeSingle(); p = r.data; if (!p) return; perfisCache.set(id, p); }
+  try{ const r = await sbConta.from("perfis").select("id,usuario,nome,foto,bio,humor").eq("id", id).maybeSingle(); if (r.data){ p = r.data; perfisCache.set(id, p); } }catch(_){}
+  if (!p) return;
   const corpo = $("perfilCorpo"); corpo.textContent = "";
   const av = el("span","av cor"); pintar(av, corNome(p.nome)); avatar(av, p.foto, p.nome); corpo.appendChild(av);
   corpo.appendChild(el("h2", null, p.nome));

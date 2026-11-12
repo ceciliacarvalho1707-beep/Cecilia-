@@ -11,6 +11,8 @@ const MAX_MSGS = 500;
 const MAX_INSCRICOES = 20;
 const MAX_FIXADAS = 3;
 const MAX_FOTO = 2.5 * 1024 * 1024;
+const MAX_AUDIO = 4 * 1024 * 1024;
+const TIPOS = /^(image\/(jpeg|webp|png)|audio\/(webm|mp4|ogg|mpeg|aac|x-m4a))$/;
 const MAX_PERFIL = 80 * 1024;
 const EMOJIS = ["❤️", "😂", "😮", "😢", "🙏", "👍"];
 const DIGITANDO_MS = 7000;
@@ -55,7 +57,7 @@ async function avisar(store, sala, msg, endpointQuemMandou) {
   if (!alvos.length) return;
   const k = await chavesVapid(store);
   webpush.setVapidDetails("https://netlify.app", k.publicKey, k.privateKey);
-  const texto = msg.foto ? "📷 " + (msg.texto || "Foto") : msg.texto;
+  const texto = resumo(msg);
   const payload = JSON.stringify({ titulo: msg.nome, texto: texto.slice(0, 180), sala: sala.slice(0, 16) });
   const mortos = [];
   await Promise.allSettled(
@@ -72,7 +74,14 @@ async function avisar(store, sala, msg, endpointQuemMandou) {
   }
 }
 
-const resumo = (m) => (m.foto ? "📷 " + (m.texto || "Foto") : m.texto);
+function resumo(m) {
+  if (m.apagada) return "Mensagem apagada";
+  if (m.fig) return "Figurinha";
+  if (m.audio) return "🎤 Mensagem de voz";
+  if (m.foto) return "📷 " + (m.texto || "Foto");
+  return m.texto;
+}
+const ehId = (x) => typeof x === "string" && /^[0-9a-f-]{36}$/.test(x);
 
 export default async (req) => {
   const url = new URL(req.url);
@@ -87,26 +96,28 @@ export default async (req) => {
 
   const sala = url.searchParams.get("sala") || "";
   if (!/^[0-9a-f]{64}$/.test(sala)) return json({ erro: "sala inválida" }, 400);
-  const key = "sala-" + sala, keyFix = "fix-" + sala, keyDig = "dig-" + sala, keyPerfis = "perfis-" + sala;
+  const key = "sala-" + sala, keyFix = "fix-" + sala, keyPres = "pres-" + sala, keyPerfis = "perfis-" + sala;
 
-  // Fotos: guardadas à parte; o endereço só funciona com o código da conversa.
-  if (rota === "foto") {
+  // Fotos e áudios: guardados à parte; o endereço só funciona com o código da conversa.
+  if (rota === "foto" || rota === "midia") {
     if (req.method === "GET") {
       const id = url.searchParams.get("id") || "";
-      if (!/^[0-9a-f-]{36}$/.test(id)) return json({ erro: "foto inválida" }, 400);
-      const dados = await fotos.get(sala + "/" + id, { type: "arrayBuffer" });
-      if (!dados) return json({ erro: "foto não encontrada" }, 404);
-      return new Response(dados, {
-        headers: { "content-type": "image/jpeg", "cache-control": "private, max-age=31536000, immutable" },
+      if (!ehId(id)) return json({ erro: "arquivo inválido" }, 400);
+      const r = await fotos.getWithMetadata(sala + "/" + id, { type: "arrayBuffer" });
+      if (!r || !r.data) return json({ erro: "arquivo não encontrado" }, 404);
+      const tipo = (r.metadata && r.metadata.tipo) || "image/jpeg";
+      return new Response(r.data, {
+        headers: { "content-type": tipo, "content-length": String(r.data.byteLength), "cache-control": "private, max-age=31536000, immutable" },
       });
     }
     if (req.method === "POST") {
-      const tipo = req.headers.get("content-type") || "";
-      if (!/^image\/(jpeg|webp|png)$/.test(tipo)) return json({ erro: "envie uma imagem" }, 400);
+      const tipo = (req.headers.get("content-type") || "").split(";")[0].trim();
+      if (!TIPOS.test(tipo)) return json({ erro: "tipo de arquivo não aceito" }, 400);
       const dados = await req.arrayBuffer();
-      if (!dados.byteLength || dados.byteLength > MAX_FOTO) return json({ erro: "foto grande demais" }, 413);
+      const max = tipo.startsWith("audio/") ? MAX_AUDIO : MAX_FOTO;
+      if (!dados.byteLength || dados.byteLength > max) return json({ erro: "arquivo grande demais" }, 413);
       const id = crypto.randomUUID();
-      await fotos.set(sala + "/" + id, dados);
+      await fotos.set(sala + "/" + id, dados, { metadata: { tipo } });
       return json({ id });
     }
     return json({ erro: "método não permitido" }, 405);
@@ -134,17 +145,19 @@ export default async (req) => {
     const desde = Number(url.searchParams.get("desde"));
     const eu = limpaNome(url.searchParams.get("eu") || "");
     const pv = Number(url.searchParams.get("pv")) || 0;
-    const [fixadas, dig, perfis] = await Promise.all([
+    const [fixadas, pres, perfis] = await Promise.all([
       store.get(keyFix, { type: "json" }),
-      store.get(keyDig, { type: "json" }),
+      store.get(keyPres, { type: "json" }),
       store.get(keyPerfis, { type: "json" }),
     ]);
+    const dig = pres && pres.dig;
     const agora = Date.now();
     const resp = {
       rev: s.rev,
       msgs: Number.isFinite(desde) && desde >= 0 ? s.msgs.filter((m) => (m.rev || 0) > desde) : s.msgs,
       fixadas: fixadas || [],
       digitando: Object.entries(dig || {}).filter(([n, t]) => n !== eu && agora - t < DIGITANDO_MS).map(([n]) => n),
+      lidos: (pres && pres.lidos) || {},
     };
     if (perfis && perfis.v !== pv) resp.perfis = perfis;
     return json(resp);
@@ -155,13 +168,21 @@ export default async (req) => {
   if (req.method !== "POST") return json({ erro: "método não permitido" }, 405);
   const nome = limpaNome(body.nome);
 
-  if (rota === "digitando") {
+  // Presença: quem está digitando e até onde cada pessoa já leu ("visto").
+  if (rota === "digitando" || rota === "lido") {
     if (!nome) return json({ erro: "faltou nome" }, 400);
-    await alterar(store, keyDig, (d) => {
-      const agora = Date.now(), novo = {};
-      for (const [n, t] of Object.entries(d || {})) if (agora - t < DIGITANDO_MS) novo[n] = t;
-      if (body.parou) delete novo[nome]; else novo[nome] = agora;
-      return { valor: novo };
+    await alterar(store, keyPres, (p) => {
+      p = p || {};
+      const agora = Date.now(), dig = {};
+      for (const [n, t] of Object.entries(p.dig || {})) if (agora - t < DIGITANDO_MS) dig[n] = t;
+      const lidos = { ...(p.lidos || {}) };
+      if (rota === "digitando") { if (body.parou) delete dig[nome]; else dig[nome] = agora; }
+      else {
+        const em = Number(body.em) || 0;
+        if (em <= (lidos[nome] || 0)) return {};
+        lidos[nome] = Math.min(em, agora + 60000);
+      }
+      return { valor: { dig, lidos } };
     }).catch(() => {});
     return json({ ok: true });
   }
@@ -209,8 +230,8 @@ export default async (req) => {
         if (m.apagada) return { resultado: { erro: "mensagem apagada", status: 409 } };
         if (rota === "apagar") {
           if (m.nome !== nome) return { resultado: { erro: "só dá para apagar as suas mensagens", status: 403 } };
-          fotoApagada = m.foto || null;
-          for (const k of ["texto", "foto", "w", "h", "resp", "reacoes"]) delete m[k];
+          fotoApagada = m.foto || m.audio || null;
+          for (const k of ["texto", "foto", "w", "h", "resp", "reacoes", "audio", "dur", "fig"]) delete m[k];
           m.apagada = true; m.texto = "";
         } else {
           const reacoes = {};
@@ -240,22 +261,26 @@ export default async (req) => {
 
   if (rota === "msgs") {
     const texto = typeof body.texto === "string" ? body.texto.trim().slice(0, 2000) : "";
-    const foto = typeof body.foto === "string" && /^[0-9a-f-]{36}$/.test(body.foto) ? body.foto : null;
-    if ((!texto && !foto) || !nome) return json({ erro: "faltou texto ou nome" }, 400);
+    const foto = ehId(body.foto) ? body.foto : null;
+    const audio = ehId(body.audio) ? body.audio : null;
+    const fig = typeof body.fig === "string" && /^[a-z0-9-]{1,24}$/.test(body.fig) ? body.fig : null;
+    if ((!texto && !foto && !audio && !fig) || !nome) return json({ erro: "faltou texto ou nome" }, 400);
     try {
       const { msg, removidas } = await alterar(store, key, (d) => {
         const s = abrirSala(d);
         const ultimo = s.msgs.length ? s.msgs[s.msgs.length - 1].em : 0;
         const msg = { id: crypto.randomUUID(), nome, texto, em: Math.max(Date.now(), ultimo + 1), rev: s.rev + 1 };
         if (foto) { msg.foto = foto; msg.w = Math.min(4096, Math.max(1, body.w | 0)); msg.h = Math.min(4096, Math.max(1, body.h | 0)); }
+        if (audio) { msg.audio = audio; msg.dur = Math.min(600, Math.max(0, Number(body.dur) || 0)); msg.tipo = String(body.tipo || "").slice(0, 40); }
+        if (fig) { msg.fig = fig; msg.texto = ""; }
         const orig = typeof body.respId === "string" && s.msgs.find((m) => m.id === body.respId && !m.apagada);
         if (orig) msg.resp = { id: orig.id, nome: orig.nome, texto: resumo(orig).slice(0, 140) };
         const todas = [...s.msgs, msg];
         const removidas = todas.slice(0, Math.max(0, todas.length - MAX_MSGS));
         return { valor: { rev: msg.rev, msgs: todas.slice(-MAX_MSGS) }, resultado: { msg, removidas } };
       });
-      for (const m of removidas) if (m.foto) await fotos.delete(sala + "/" + m.foto).catch(() => {});
-      await alterar(store, keyDig, (dg) => (dg && dg[nome] ? { valor: { ...dg, [nome]: 0 } } : {})).catch(() => {});
+      for (const m of removidas) for (const f of [m.foto, m.audio]) if (f) await fotos.delete(sala + "/" + f).catch(() => {});
+      await alterar(store, keyPres, (p) => (p && p.dig && p.dig[nome] ? { valor: { ...p, dig: { ...p.dig, [nome]: 0 } } } : {})).catch(() => {});
       await avisar(store, sala, msg, body.endpoint).catch((e) => console.error("push", e));
       return json({ msg });
     } catch {
@@ -267,5 +292,5 @@ export default async (req) => {
 };
 
 export const config = {
-  path: ["/api/msgs", "/api/push", "/api/vapid", "/api/fixar", "/api/reagir", "/api/apagar", "/api/digitando", "/api/perfil", "/api/foto"],
+  path: ["/api/msgs", "/api/push", "/api/vapid", "/api/fixar", "/api/reagir", "/api/apagar", "/api/digitando", "/api/lido", "/api/perfil", "/api/foto", "/api/midia"],
 };

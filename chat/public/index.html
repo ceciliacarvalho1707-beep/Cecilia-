@@ -16,17 +16,27 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap">
 <style>
 :root{
+  /* cor da conversa: --acc-l no tema claro, --acc-d no escuro (o JS troca por conversa) */
+  --acc-l:#7b3fe4; --acc-d:#a47bff;
   --bg:#f6f3fb; --surface:#ffffff; --fg:#231a33; --muted:#6f6582;
-  --accent:#7b3fe4; --accent-fg:#ffffff; --other:#ece6f6; --line:#e0d8ee; --bad:#c2334d;
-  --quote-me:rgba(255,255,255,.18); --quote-other:rgba(123,63,228,.10); --shade:rgba(20,10,35,.45);
+  --accent:var(--acc-l); --accent-fg:#ffffff; --line:#e0d8ee; --bad:#c2334d; --ok:#2fb36b;
+  --quote-me:rgba(255,255,255,.2); --shade:rgba(20,10,35,.45); --gravando:#e03131;
   --display:"Bricolage Grotesque",system-ui,sans-serif;
   --body:"DM Sans",system-ui,-apple-system,sans-serif;
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root{
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#16121e; --surface:#1f1a2b; --fg:#eee8f8; --muted:#a49bb6;
-  --accent:#9d6bff; --accent-fg:#14091f; --other:#2b2440; --line:#332b47; --bad:#ff7a92;
-  --quote-me:rgba(20,9,31,.16); --quote-other:rgba(157,107,255,.14); --shade:rgba(0,0,0,.6); color-scheme:dark}}
+  --accent:var(--acc-d); --accent-fg:#14091f; --line:#332b47; --bad:#ff7a92;
+  --quote-me:rgba(20,9,31,.16); --shade:rgba(0,0,0,.6); --gravando:#ff6b6b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16121e; --surface:#1f1a2b; --fg:#eee8f8; --muted:#a49bb6;
+  --accent:var(--acc-d); --accent-fg:#14091f; --line:#332b47; --bad:#ff7a92;
+  --quote-me:rgba(20,9,31,.16); --shade:rgba(0,0,0,.6); --gravando:#ff6b6b; color-scheme:dark}
+/* .cor recalcula as cores derivadas onde a cor da conversa muda */
+:root,.cor{--accent:var(--acc-l);--other:color-mix(in srgb,var(--accent) 12%,var(--bg));--quote-other:color-mix(in srgb,var(--accent) 14%,transparent)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]),:root:not([data-theme="light"]) .cor{--accent:var(--acc-d);--other:color-mix(in srgb,var(--accent) 16%,var(--bg))}}
+:root[data-theme="dark"],:root[data-theme="dark"] .cor{--accent:var(--acc-d);--other:color-mix(in srgb,var(--accent) 16%,var(--bg))}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;overscroll-behavior:none}
@@ -87,7 +97,7 @@ label input{font-weight:400}
 .cab h1{font-size:1.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .status{font-size:.75rem;color:var(--muted);white-space:nowrap}
 .status::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:5px;vertical-align:1px}
-.status.on::before{background:#2fb36b}
+.status.on::before{background:var(--ok)}
 .aviso{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:.85rem;background:var(--other);padding-block:10px;line-height:1.4}
 .aviso button{padding:8px 14px;min-height:36px;font-size:.85rem;flex:none}
 .fixada{display:flex;align-items:center;gap:10px;padding-block:8px;border-bottom:1px solid var(--line);background:var(--surface);cursor:pointer;width:100%;border-radius:0;color:var(--fg);font-weight:400;text-align:left;min-height:52px}
@@ -160,16 +170,66 @@ label input{font-weight:400}
 .visor{position:absolute;inset:0;background:#0b0710;z-index:40;display:flex;align-items:center;justify-content:center}
 .visor img{max-width:100%;max-height:100%;object-fit:contain}
 .visor button{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));background:rgba(255,255,255,.15);color:#fff}
+/* cabeçalho da lista */
+#inicio header h1{flex:1}
+/* cores no editor */
+.cores{display:flex;gap:10px;flex-wrap:wrap}
+.cores label{position:relative;cursor:pointer}
+.cores input{position:absolute;opacity:0;width:1px;height:1px}
+.cores span{display:block;width:40px;height:40px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 0 2px transparent}
+.cores input:checked + span{box-shadow:0 0 0 2px var(--fg)}
+.cores input:focus-visible + span{outline:2px solid var(--fg);outline-offset:3px}
+fieldset{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
+/* tema */
+.folha button.marcado{background:var(--other)}
+.folha button .ok{margin-left:auto;color:var(--accent)}
+/* vistos */
+.tique{display:inline-flex;color:var(--muted)}
+.tique svg{width:16px;height:11px}
+.tique.lido{color:var(--accent)}
+/* áudio */
+.audio{display:flex;align-items:center;gap:10px;min-width:min(220px,60vw);padding:2px 0}
+.audio .play{width:38px;height:38px;min-height:38px;border-radius:50%;padding:0;display:grid;place-items:center;flex:none;background:var(--accent);color:var(--accent-fg)}
+.msg.me .audio .play{background:var(--accent-fg);color:var(--accent)}
+.audio .play svg{width:16px;height:16px}
+.audio .barra{flex:1;height:4px;border-radius:2px;background:color-mix(in srgb,currentColor 25%,transparent);position:relative;cursor:pointer}
+.audio .barra i{position:absolute;left:0;top:0;bottom:0;border-radius:2px;background:currentColor;width:0}
+.audio .dur{font-size:.75rem;font-variant-numeric:tabular-nums;opacity:.85;min-width:2.6em;text-align:right}
+#mic{width:44px;padding:0;display:grid;place-items:center;flex:none}
+#mic svg{width:22px;height:22px}
+.gravando{display:flex;align-items:center;gap:12px;padding-top:10px;padding-bottom:max(10px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
+.gravando .bola{width:12px;height:12px;border-radius:50%;background:var(--gravando);animation:pisca 1s infinite;flex:none}
+.gravando .tempo{flex:1;font-variant-numeric:tabular-nums;font-weight:600}
+.gravando .tempo small{font-weight:400;color:var(--muted);margin-left:8px}
+@keyframes pisca{50%{opacity:.25}}
+/* figurinhas */
+.figs{border-top:1px solid var(--line);background:var(--surface);max-height:min(320px,42vh);overflow-y:auto;padding-block:12px;display:flex;flex-direction:column;gap:10px}
+.figs h3{margin:0;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.grade.txt{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+.grade.txt button{min-height:60px}
+.grade button{background:none;padding:4px;min-height:84px;overflow:hidden;border-radius:14px;display:grid;place-items:center;color:var(--fg);font-weight:500}
+.grade button:hover{background:var(--other)}
+.grade button.criar{border:2px dashed var(--line);font-size:.8rem;color:var(--muted);gap:2px;align-content:center}
+.grade img{width:72px;height:72px;object-fit:cover;border-radius:16px}
+.ftxt{font-family:var(--display);font-weight:700;line-height:1;padding:.35em .5em;border-radius:.45em;display:inline-block;text-align:center;box-shadow:0 .08em 0 rgba(0,0,0,.18);white-space:nowrap;letter-spacing:-.01em}
+.grade .ftxt{font-size:.82rem}
+.msg.fig .bubble{background:none!important;padding:2px 0}
+.msg.fig .ftxt{font-size:2.1rem}
+.msg.fig img.figfoto{width:150px;height:150px;object-fit:cover;border-radius:24px;display:block}
 .toast{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:.85rem;z-index:30;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.bubble{transition:none}.msg.flash .bubble{animation:none;outline:3px solid var(--accent)}}
 </style>
 </head>
 <body>
-<div class="app" id="app">
+<div class="app cor" id="app">
 
   <!-- Lista de conversas salvas -->
   <section id="inicio" class="view">
-    <header class="gut"><h1>Nosso Cantinho</h1></header>
+    <header class="gut"><h1>Nosso Cantinho</h1>
+      <button class="ic" id="temaBtn" type="button" aria-label="Aparência: claro ou escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg></button>
+    </header>
     <div id="conversas" class="gut"></div>
     <button class="fab" id="novaBtn" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -200,6 +260,10 @@ label input{font-weight:400}
         </span>
         <input type="file" id="fFotoArq" accept="image/*" hidden>
       </div>
+      <fieldset>
+        <legend>Cor da conversa</legend>
+        <div class="cores" id="fCores"></div>
+      </fieldset>
       <label id="fSenhaBox">Senha da conversa
         <input id="fSenha" type="password" minlength="4" placeholder="Pelo menos 4 caracteres">
         <span class="hint">Combinem pessoalmente. Misture letras e números: quem adivinhar a senha consegue ler a conversa.</span>
@@ -242,11 +306,20 @@ label input{font-weight:400}
       <span id="previaFotoTxt">Foto pronta. Escreva uma legenda, se quiser, e toque em Enviar.</span>
       <button class="ic" id="previaFotoFechar" type="button" aria-label="Tirar a foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
+    <div class="figs gut" id="figs" hidden></div>
+    <div class="gravando gut" id="gravando" hidden>
+      <button class="ic" id="gravCancelar" type="button" aria-label="Cancelar gravação"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
+      <span class="bola" aria-hidden="true"></span>
+      <span class="tempo" id="gravTempo">0:00<small>gravando…</small></span>
+      <button id="gravEnviar" type="button">Enviar</button>
+    </div>
     <form id="form" class="gut">
+      <button class="anexo" id="figBtn" type="button" aria-label="Figurinhas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.3 2 3.5 2 3.5-2 3.5-2"/><path d="M9 9.5h.01M15 9.5h.01"/></svg></button>
       <button class="anexo" id="anexo" type="button" aria-label="Mandar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 15l-5-5-9 9"/></svg></button>
       <input type="file" id="arquivo" accept="image/*" hidden>
       <textarea id="text" rows="1" placeholder="Escreva uma mensagem…" aria-label="Mensagem"></textarea>
-      <button id="send" type="submit" disabled>Enviar</button>
+      <button id="send" type="submit" hidden>Enviar</button>
+      <button id="mic" type="button" aria-label="Gravar mensagem de voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
     </form>
   </section>
 
@@ -262,6 +335,14 @@ label input{font-weight:400}
       <button type="button" id="aFechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Cancelar</button>
     </div>
   </div>
+  <div class="fundo" id="tema" hidden>
+    <div class="folha" role="dialog" aria-label="Aparência">
+      <div class="previa">Aparência</div>
+      <button type="button" data-tema="auto">Igual ao celular</button>
+      <button type="button" data-tema="light">Claro</button>
+      <button type="button" data-tema="dark">Escuro</button>
+    </div>
+  </div>
   <div class="visor" id="visor" hidden><img id="visorImg" alt="Foto"><button class="ic" id="visorFechar" type="button" aria-label="Fechar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="toast" id="toast" hidden></div>
 </div>
@@ -273,8 +354,34 @@ const ICON_FIXO = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1
 const ICON_SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v6"/></svg>';
 const toque = matchMedia("(pointer:coarse)").matches;
 const EMOJIS = ["❤️", "😂", "😮", "😢", "🙏", "👍"];
-const resumo = m => m.apagada ? "Mensagem apagada" : m.foto ? "📷 " + (m.texto || "Foto") : m.texto;
-const fotoUrl = (sala, id) => `/api/foto?sala=${sala}&id=${id}`;
+const resumo = m => m.apagada ? "Mensagem apagada" : m.fig ? "Figurinha" : m.audio ? "🎤 Mensagem de voz" : m.foto ? "📷 " + (m.texto || "Foto") : m.texto;
+const fotoUrl = (sala, id) => `/api/midia?sala=${sala}&id=${id}`;
+const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
+const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+const ICON_TIQUE1 = '<svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 6-7"/></svg>';
+const ICON_TIQUE2 = '<svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6l3 3 6-7M7 8.5l.5.5 6-7"/></svg>';
+
+// Cores das conversas: [nome, tema claro, tema escuro]
+const CORES = [["Roxo","#7b3fe4","#a47bff"],["Rosa","#c2255c","#f783ac"],["Azul","#1971c2","#74c0fc"],
+               ["Verde","#2b8a3e","#69db7c"],["Laranja","#d9480f","#ffa94d"],["Turquesa","#0b7285","#66d9e8"]];
+function pintar(elm, cor){ const c = CORES[cor] || CORES[0]; elm.style.setProperty("--acc-l", c[1]); elm.style.setProperty("--acc-d", c[2]); }
+function corDoTema(){ return getComputedStyle($("app")).getPropertyValue("--accent").trim() || "#7b3fe4"; }
+function atualizarBarra(){ const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = getComputedStyle($("app")).getPropertyValue("--bg").trim() || "#f6f3fb"; }
+
+// Figurinhas do app: textos com a cara de conversa de amigas
+const FIGS = {
+  kkk:   ["KKKKKK", "#ffd43b", "#3b2c00", -6], oii: ["OIIII", "#ff8cc6", "#4a0024", 4],
+  teamo: ["TE AMO", "#e03131", "#fff", -3], saudade: ["SAUDADE", "#748ffc", "#fff", 5],
+  bomdia: ["BOM DIA ☀", "#ffa94d", "#3d1d00", -4], boanoite: ["BOA NOITE ☾", "#364fc7", "#fff", 3],
+  aff: ["AFF", "#868e96", "#fff", -8], socorro: ["SOCORRO", "#f03e3e", "#fff", 7],
+  vem: ["VEM!!", "#20c997", "#003b2a", -5], obg: ["OBRIGADA", "#be4bdb", "#fff", 4],
+  serio: ["SÉRIO??", "#fab005", "#3b2c00", -7], amei: ["AMEI ♥", "#f06595", "#fff", 5],
+};
+function figTexto(id){
+  const f = FIGS[id] || [id.toUpperCase(), "#868e96", "#fff", 0];
+  const e = el("span", "ftxt", f[0]); e.style.background = f[1]; e.style.color = f[2]; e.style.transform = `rotate(${f[3]}deg)`;
+  return e;
+}
 function avatar(alvo, foto, letra){
   alvo.textContent = "";
   if (foto){ const i = new Image(); i.src = foto; i.alt = ""; alvo.appendChild(i); }
@@ -346,10 +453,26 @@ function el(tag, cls, txt){ const e = document.createElement(tag); if (cls) e.cl
 let toastT = null;
 function toast(t){ const e = $("toast"); e.textContent = t; e.hidden = false; clearTimeout(toastT); toastT = setTimeout(()=>e.hidden = true, 2200); }
 
+// ── Aparência ───────────────────────────────────────────────────────────
+function aplicarTema(){
+  const t = dados.tema || "auto";
+  if (t === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.dataset.theme = t;
+  document.querySelectorAll("#tema [data-tema]").forEach(b => b.classList.toggle("marcado", b.dataset.tema === t));
+  atualizarBarra();
+}
+$("temaBtn").addEventListener("click", () => { aplicarTema(); $("tema").hidden = false; });
+$("tema").addEventListener("click", e => {
+  const b = e.target.closest("[data-tema]");
+  if (b){ dados.tema = b.dataset.tema; guardar(); aplicarTema(); }
+  $("tema").hidden = true;
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", atualizarBarra);
+
 // ── Telas ───────────────────────────────────────────────────────────────
 function mostrar(qual){
   for (const v of ["inicio","editar","chat"]) $(v).hidden = v !== qual;
   $("acoes").hidden = true;
+  if (qual === "inicio"){ $("app").style.removeProperty("--acc-l"); $("app").style.removeProperty("--acc-d"); atualizarBarra(); }
 }
 
 // Lista
@@ -366,7 +489,7 @@ function desenharLista(){
     const u = ultimas[c.sala];
     const novo = u && u.em > (c.visto||0) && u.nome !== c.nome;
     const it = el("button", "item" + (novo ? " novo" : "")); it.type = "button";
-    const av = el("span","av"); avatar(av, c.fotoOutra, c.titulo); it.appendChild(av);
+    const av = el("span","av cor"); pintar(av, c.cor); avatar(av, c.fotoOutra, c.titulo); it.appendChild(av);
     const meio = el("span","meio");
     const l1 = el("span","linha"); l1.appendChild(el("span","tit",c.titulo)); if (u) l1.appendChild(el("span","hora",hora(u.em)));
     const l2 = el("span","linha"); l2.appendChild(el("span","prev", u ? (u.nome === c.nome ? "Você: " : u.nome + ": ") + resumo(u) : "Nenhuma mensagem ainda"));
@@ -395,6 +518,17 @@ $("novaBtn").addEventListener("click", () => abrirEditor(null));
 // Nova / editar
 let editando = null; // sala ou null
 let editorFoto; // undefined: sem mudança; null: tirar; texto: foto nova
+(function montarCores(){
+  const box = $("fCores");
+  CORES.forEach((c, i) => {
+    const l = el("label"); l.title = c[0];
+    const r = el("input"); r.type = "radio"; r.name = "fCor"; r.value = i; r.id = "fCor" + i; r.setAttribute("aria-label", c[0]);
+    const sp = el("span", "cor"); pintar(sp, i);
+    r.addEventListener("change", () => { pintar($("editar"), i); $("editar").classList.add("cor"); });
+    l.append(r, sp); box.appendChild(l);
+  });
+})();
+function corEscolhida(){ const r = document.querySelector('input[name="fCor"]:checked'); return r ? +r.value : 0; }
 function mostrarFotoEditor(){
   const c = editando && acharChat(editando);
   const f = editorFoto !== undefined ? editorFoto : c && c.minhaFoto;
@@ -430,6 +564,8 @@ function abrirEditor(sala){
   $("editarRemover").textContent = "Tirar esta conversa da lista";
   $("editarErr").textContent = "";
   editorFoto = undefined;
+  const cor = c ? (c.cor || 0) : Math.floor(Math.random() * CORES.length);
+  $("fCor" + cor).checked = true; pintar($("editar"), cor); $("editar").classList.add("cor");
   mostrar("editar"); mostrarFotoEditor();
   if (!toque) $("fTitulo").focus();
 }
@@ -442,7 +578,7 @@ $("editarForm").addEventListener("submit", async e => {
   dados.ultimoNome = nome;
   if (editando){
     const c = acharChat(editando); const nomeAntigo = c.nome;
-    c.titulo = titulo; c.nome = nome; guardar();
+    c.titulo = titulo; c.nome = nome; c.cor = corEscolhida(); guardar();
     if (editorFoto !== undefined) salvarPerfil(c, editorFoto);
     else if (nomeAntigo !== nome && c.minhaFoto) salvarPerfil(c, c.minhaFoto);
     abrir(c.sala); return;
@@ -450,8 +586,8 @@ $("editarForm").addEventListener("submit", async e => {
   if (senha.trim().length < 4){ $("editarErr").textContent = "A senha precisa ter pelo menos 4 caracteres."; return; }
   const sala = await salaDe(senha);
   let c = acharChat(sala);
-  if (c){ c.titulo = titulo; c.nome = nome; }
-  else { c = { sala, titulo, nome, notif: false, visto: 0, criado: Date.now() }; dados.chats.push(c); }
+  if (c){ c.titulo = titulo; c.nome = nome; c.cor = corEscolhida(); }
+  else { c = { sala, titulo, nome, cor: corEscolhida(), notif: false, visto: 0, criado: Date.now() }; dados.chats.push(c); }
   guardar();
   if (editorFoto) salvarPerfil(c, editorFoto);
   abrir(sala);
@@ -468,7 +604,7 @@ $("editarRemover").addEventListener("click", async () => {
 // ── Conversa aberta ─────────────────────────────────────────────────────
 const list = $("list"), text = $("text"), send = $("send"), statusEl = $("status"), note = $("note");
 let atual = null, msgs = [], fixadas = [], rev = -1, pv = 0, timer = null, firstRender = true, resposta = null, fixIdx = 0;
-let online = null, digitando = [], fotoPend = null;
+let online = null, digitando = [], fotoPend = null, lidos = {}, lidoEnviado = 0;
 function setNote(t){ note.textContent = t; note.hidden = !t; }
 function atualizarStatus(){
   const dig = digitando.length > 0;
@@ -493,8 +629,9 @@ function abrir(sala){
   const c = acharChat(sala); if (!c) return irInicio();
   if (!$("chat").hidden && atual && atual.sala === sala){ return; }
   pararChat();
-  atual = c; msgs = []; fixadas = []; rev = -1; pv = 0; firstRender = true; fixIdx = 0; online = null; digitando = [];
-  limparResposta(); limparFoto(); setNote("");
+  atual = c; msgs = []; fixadas = []; rev = -1; pv = 0; firstRender = true; fixIdx = 0; online = null; digitando = []; lidos = {}; lidoEnviado = 0;
+  limparResposta(); limparFoto(); fecharFigs(); cancelarGravacao(); setNote("");
+  pintar($("app"), c.cor); atualizarBarra();
   $("chatTitulo").textContent = c.titulo;
   avatar($("chatAv"), c.fotoOutra, c.titulo);
   atualizarStatus();
@@ -503,7 +640,7 @@ function abrir(sala){
   if (history.state?.tela !== "chat") history.pushState({ tela: "chat" }, "");
   buscar(); atualizarSino();
 }
-function pararChat(){ clearTimeout(timer); if (atual) avisarDigitando(true); atual = null; }
+function pararChat(){ clearTimeout(timer); if (atual) avisarDigitando(true); cancelarGravacao(); pararAudio(); atual = null; }
 $("voltar").addEventListener("click", () => history.state?.tela === "chat" ? history.back() : irInicio());
 window.addEventListener("popstate", () => { if (!$("visor").hidden){ fecharVisor(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
 $("cab").addEventListener("click", () => atual && abrirEditor(atual.sala));
@@ -513,6 +650,11 @@ function marcarVisto(){
   const em = msgs[msgs.length-1].em;
   if ((atual.visto||0) < em){ atual.visto = em; guardar(); }
   ultimas[atual.sala] = msgs[msgs.length-1];
+  const deOutra = [...msgs].reverse().find(m => m.nome !== atual.nome);
+  if (deOutra && deOutra.em > lidoEnviado && deOutra.em > (lidos[atual.nome] || 0)){
+    lidoEnviado = deOutra.em;
+    postJSON(`/api/lido?sala=${atual.sala}`, { nome: atual.nome, em: deOutra.em }).catch(() => { lidoEnviado = 0; });
+  }
 }
 
 function render(){
@@ -529,7 +671,7 @@ function render(){
     const d = new Date(m.em), day = d.toDateString();
     if (day !== lastDay){ list.appendChild(el("div","day",dayLabel(d))); lastDay = day; lastNome = null; }
     const mine = m.nome === atual.nome;
-    const box = el("div", "msg" + (mine ? " me" : "") + (m.apagada ? " apagada" : "")); box.dataset.id = m.id;
+    const box = el("div", "msg" + (mine ? " me" : "") + (m.apagada ? " apagada" : "") + (m.fig ? " fig" : "")); box.dataset.id = m.id;
     if (!mine && m.nome !== lastNome) box.appendChild(el("div","who",m.nome || "Amiga"));
     const b = el("div","bubble");
     if (m.apagada){
@@ -543,7 +685,14 @@ function render(){
       q.addEventListener("click", ev => { ev.stopPropagation(); irPara(m.resp.id); });
       b.appendChild(q);
     }
-    if (m.foto){
+    if (m.fig === "foto" && m.foto){
+      const img = new Image(); img.className = "figfoto"; img.alt = "Figurinha"; img.draggable = false; img.src = fotoUrl(atual.sala, m.foto);
+      b.appendChild(img);
+    } else if (m.fig){
+      b.appendChild(figTexto(m.fig));
+    } else if (m.audio){
+      b.appendChild(playerAudio(m));
+    } else if (m.foto){
       const img = new Image(); img.className = "foto"; img.alt = "Foto de " + m.nome; img.loading = "lazy"; img.decoding = "async";
       img.width = m.w; img.height = m.h; img.style.aspectRatio = m.w + " / " + m.h;
       img.src = fotoUrl(atual.sala, m.foto); img.draggable = false;
@@ -569,6 +718,12 @@ function render(){
     const t = el("div","time");
     if (fixos.has(m.id)){ const s = el("span"); s.innerHTML = ICON_FIXO; s.title = "Fixada"; t.appendChild(s); }
     t.appendChild(document.createTextNode(d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})));
+    if (mine){
+      const viu = Object.entries(lidos).some(([n, em]) => n !== atual.nome && em >= m.em);
+      const tq = el("span", "tique" + (viu ? " lido" : "")); tq.innerHTML = viu ? ICON_TIQUE2 : ICON_TIQUE1;
+      tq.title = viu ? "Visto" : "Enviada"; tq.setAttribute("aria-label", tq.title);
+      t.appendChild(tq);
+    }
     box.appendChild(t);
     ligarGestos(box, b, m);
     list.appendChild(box); lastNome = m.nome;
@@ -627,9 +782,13 @@ async function buscar(){
     if (atual !== c) return;
     if (j.perfis) aplicarPerfis(j.perfis);
     digitando = j.digitando || [];
+    const novosLidos = j.lidos || {};
+    const lidosMudou = JSON.stringify(novosLidos) !== JSON.stringify(lidos);
+    lidos = novosLidos;
     setOnline(true);
     if (firstRender && !j.msgs.length) render();
-    juntar(j.msgs); rev = j.rev; trocarFixadas(j.fixadas || []);
+    const mudou = juntar(j.msgs); rev = j.rev; trocarFixadas(j.fixadas || []);
+    if (lidosMudou && !mudou && msgs.length) render();
   }catch(err){
     if (atual === c) setOnline(false);
   }
@@ -651,7 +810,11 @@ function avisarDigitando(parou){
   else { if (Date.now() - ultimoDig < 3000) return; ultimoDig = Date.now(); }
   postJSON(`/api/digitando?sala=${c.sala}`, { nome: c.nome, parou: !!parou }).catch(() => {});
 }
-function podeEnviar(){ send.disabled = !text.value.trim() && !fotoPend; }
+function podeEnviar(){
+  const tem = !!text.value.trim() || !!fotoPend;
+  send.hidden = !tem; send.disabled = !tem; $("mic").hidden = tem || !podeGravar;
+  if (!tem && !podeGravar){ send.hidden = false; send.disabled = true; }
+}
 text.addEventListener("input", () => {
   text.style.height = "auto"; text.style.height = Math.min(text.scrollHeight,140)+"px";
   podeEnviar();
@@ -704,6 +867,179 @@ $("form").addEventListener("submit", async e => {
   if (!toque) text.focus();
 });
 
+// ── Mensagens de voz: tocar ─────────────────────────────────────────────
+const urlsAudio = new Map(); // id -> blob URL (o arquivo é baixado uma vez)
+let tocando = null;          // { id, audio }
+const mmss = s => { s = Math.max(0, Math.round(s || 0)); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); };
+function playerAudio(m){
+  const box = el("div","audio"); box.dataset.audio = m.audio;
+  const bt = el("button","play"); bt.type = "button"; bt.setAttribute("aria-label","Tocar mensagem de voz");
+  const barra = el("span","barra"); barra.appendChild(el("i"));
+  const dur = el("span","dur", mmss(m.dur));
+  box.append(bt, barra, dur);
+  bt.addEventListener("click", ev => { ev.stopPropagation(); alternarAudio(m); });
+  barra.addEventListener("click", ev => {
+    ev.stopPropagation();
+    if (tocando && tocando.id === m.audio && tocando.audio.duration){
+      const r = barra.getBoundingClientRect(); tocando.audio.currentTime = (ev.clientX - r.left) / r.width * tocando.audio.duration;
+    }
+  });
+  pintarPlayer(m.audio, box);
+  return box;
+}
+function pintarPlayer(id, box){
+  box = box || list.querySelector(`[data-audio="${id}"]`); if (!box) return;
+  const t = tocando && tocando.id === id ? tocando.audio : null;
+  const tocandoAgora = t && !t.paused;
+  box.querySelector(".play").innerHTML = tocandoAgora ? ICON_PAUSE : ICON_PLAY;
+  box.querySelector(".play").setAttribute("aria-label", tocandoAgora ? "Pausar" : "Tocar mensagem de voz");
+  const total = t && isFinite(t.duration) ? t.duration : null;
+  box.querySelector(".barra i").style.width = t && total ? (t.currentTime / total * 100) + "%" : "0";
+  if (t && t.currentTime > 0) box.querySelector(".dur").textContent = mmss(t.currentTime);
+}
+async function alternarAudio(m){
+  if (tocando && tocando.id === m.audio){ tocando.audio.paused ? tocando.audio.play() : tocando.audio.pause(); return; }
+  pararAudio();
+  const c = atual;
+  let url = urlsAudio.get(m.audio);
+  if (!url){
+    try{
+      const r = await fetch(fotoUrl(c.sala, m.audio)); if (!r.ok) throw 0;
+      url = URL.createObjectURL(await r.blob()); urlsAudio.set(m.audio, url);
+    }catch(_){ toast("Não deu para carregar o áudio"); return; }
+  }
+  if (atual !== c) return;
+  const a = new Audio(url); tocando = { id: m.audio, audio: a };
+  const att = () => pintarPlayer(m.audio);
+  a.addEventListener("timeupdate", att); a.addEventListener("play", att); a.addEventListener("pause", att);
+  a.addEventListener("ended", () => { const id = m.audio; tocando = null; const b = list.querySelector(`[data-audio="${id}"]`); if (b){ pintarPlayer(id, b); b.querySelector(".dur").textContent = mmss(m.dur); } });
+  a.play().catch(() => toast("Este celular não conseguiu tocar o áudio"));
+}
+function pararAudio(){ if (tocando){ const id = tocando.id; tocando.audio.pause(); tocando = null; pintarPlayer(id); } }
+
+// ── Mensagens de voz: gravar ────────────────────────────────────────────
+const podeGravar = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+let grav = null; // { rec, stream, partes, inicio, tick, tipo }
+const MAX_GRAV = 120;
+function tipoGravacao(){
+  for (const t of ["audio/mp4", "audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"])
+    if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
+  return "";
+}
+$("mic").addEventListener("click", async () => {
+  if (grav) return;
+  let stream;
+  try{ stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch(_){ toast("Libere o microfone para este site nas configurações"); return; }
+  if (!atual){ stream.getTracks().forEach(t => t.stop()); return; }
+  const tipo = tipoGravacao();
+  const rec = new MediaRecorder(stream, tipo ? { mimeType: tipo, audioBitsPerSecond: 48000 } : undefined);
+  grav = { rec, stream, partes: [], inicio: Date.now(), tipo: rec.mimeType || tipo || "audio/webm" };
+  rec.ondataavailable = e => { if (e.data && e.data.size) grav && grav.partes.push(e.data); };
+  rec.start(250);
+  $("form").hidden = true; $("figs").hidden = true; $("gravando").hidden = false;
+  avisarDigitando(false);
+  const tick = () => {
+    if (!grav) return;
+    const seg = (Date.now() - grav.inicio) / 1000;
+    $("gravTempo").firstChild.textContent = mmss(seg);
+    if (seg >= MAX_GRAV) enviarGravacao(); else grav.tick = setTimeout(tick, 250);
+  };
+  tick();
+});
+function encerrarGravacao(){
+  return new Promise(ok => {
+    const g = grav; if (!g) return ok(null);
+    grav = null; clearTimeout(g.tick);
+    const fim = () => { g.stream.getTracks().forEach(t => t.stop()); ok(g); };
+    if (g.rec.state === "inactive") return fim();
+    g.rec.onstop = fim; g.rec.stop();
+  }).finally(() => { $("gravando").hidden = true; $("form").hidden = false; });
+}
+function cancelarGravacao(){ if (grav) encerrarGravacao(); }
+$("gravCancelar").addEventListener("click", () => { cancelarGravacao(); avisarDigitando(true); });
+$("gravEnviar").addEventListener("click", enviarGravacao);
+async function enviarGravacao(){
+  const c = atual;
+  const g = await encerrarGravacao(); if (!g || !c) return;
+  const dur = (Date.now() - g.inicio) / 1000;
+  if (dur < 0.8){ toast("Áudio curto demais"); return; }
+  const tipo = g.tipo.split(";")[0];
+  const blob = new Blob(g.partes, { type: tipo });
+  toast("Enviando áudio…");
+  try{
+    const r = await fetch(`/api/midia?sala=${c.sala}`, { method: "POST", headers: { "content-type": tipo }, body: blob });
+    if (!r.ok) throw new Error(r.status);
+    const { id } = await r.json();
+    urlsAudio.set(id, URL.createObjectURL(blob));
+    const { msg } = await postJSON(`${API}?sala=${c.sala}`, { nome: c.nome, audio: id, dur, tipo, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined });
+    ultimoDig = 0;
+    if (atual === c){ juntar([msg]); list.scrollTop = list.scrollHeight; limparResposta(); }
+    $("toast").hidden = true;
+  }catch(_){ toast("O áudio não foi enviado. Tente de novo."); }
+}
+
+// ── Figurinhas ──────────────────────────────────────────────────────────
+function fecharFigs(){ $("figs").hidden = true; }
+function montarFigs(){
+  const box = $("figs"); box.textContent = "";
+  box.appendChild(el("h3", null, "Minhas figurinhas"));
+  const g1 = el("div","grade");
+  const criar = el("button","criar"); criar.type = "button";
+  criar.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>Criar de uma foto</span>';
+  criar.addEventListener("click", () => $("figArq").click());
+  g1.appendChild(criar);
+  (dados.figs || []).forEach((src, i) => {
+    const b = el("button"); b.type = "button"; b.setAttribute("aria-label", "Mandar figurinha " + (i+1));
+    const img = new Image(); img.src = src; img.alt = ""; b.appendChild(img);
+    b.addEventListener("click", () => mandarFigFoto(src));
+    b.addEventListener("contextmenu", e => { e.preventDefault(); dados.figs.splice(i,1); guardar(); montarFigs(); toast("Figurinha removida"); });
+    g1.appendChild(b);
+  });
+  box.appendChild(g1);
+  box.appendChild(el("h3", null, "Do Cantinho"));
+  const g2 = el("div","grade txt");
+  for (const id of Object.keys(FIGS)){
+    const b = el("button"); b.type = "button"; b.setAttribute("aria-label", "Mandar figurinha " + FIGS[id][0]);
+    b.appendChild(figTexto(id)); b.addEventListener("click", () => mandarFig({ fig: id }));
+    g2.appendChild(b);
+  }
+  box.appendChild(g2);
+  const dica = el("p","hint","Segure uma figurinha sua para tirá-la da lista."); dica.style.margin = "0"; box.appendChild(dica);
+}
+$("figBtn").addEventListener("click", () => {
+  if (!$("figs").hidden) return fecharFigs();
+  montarFigs(); $("figs").hidden = false; text.blur();
+});
+const figArq = el("input"); figArq.type = "file"; figArq.accept = "image/*"; figArq.id = "figArq"; figArq.hidden = true; document.body.appendChild(figArq);
+figArq.addEventListener("change", async () => {
+  const f = figArq.files[0]; figArq.value = ""; if (!f) return;
+  try{
+    const { dataUrl } = await comprimir(f, 320, 0.85, true);
+    dados.figs = [dataUrl, ...(dados.figs || [])].slice(0, 24); guardar(); montarFigs();
+    toast("Figurinha criada");
+  }catch(_){ toast("Não deu para abrir essa foto"); }
+});
+async function mandarFigFoto(src){
+  const c = atual; if (!c) return;
+  try{
+    const blob = await (await fetch(src)).blob();
+    const r = await fetch(`/api/midia?sala=${c.sala}`, { method: "POST", headers: { "content-type": "image/jpeg" }, body: blob });
+    if (!r.ok) throw new Error(r.status);
+    const { id } = await r.json();
+    await mandarFig({ fig: "foto", foto: id, w: 320, h: 320 });
+  }catch(_){ toast("A figurinha não foi enviada. Tente de novo."); }
+}
+async function mandarFig(extra){
+  const c = atual; if (!c) return;
+  fecharFigs();
+  try{
+    const { msg } = await postJSON(`${API}?sala=${c.sala}`, { nome: c.nome, ...extra, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined });
+    if (atual === c){ juntar([msg]); list.scrollTop = list.scrollHeight; limparResposta(); }
+  }catch(_){ toast("A figurinha não foi enviada. Tente de novo."); }
+}
+text.addEventListener("focus", fecharFigs);
+
 // Responder
 function responder(m){
   resposta = m;
@@ -747,7 +1083,7 @@ function ligarGestos(box, bubble, m){
   bubble.addEventListener("pointercancel", fim);
   bubble.addEventListener("click", e => {
     if (arrastou || segurou){ arrastou = segurou = false; e.stopPropagation(); return; }
-    if (e.target.closest(".foto,.cita")) return; // a foto abre em tela cheia; a citação leva à mensagem
+    if (e.target.closest(".foto,.cita,.audio")) return; // a foto abre em tela cheia; a citação leva à mensagem; o áudio toca
     abrirAcoes(m);
   }, true);
 }
@@ -758,7 +1094,7 @@ function abrirAcoes(m){
   acaoMsg = m;
   $("acoesPrevia").textContent = (m.nome === atual.nome ? "Você" : m.nome) + ": " + resumo(m);
   $("aFixarTxt").textContent = fixadas.some(f => f.id === m.id) ? "Desafixar" : "Fixar no topo";
-  $("aCopiar").hidden = !m.texto;
+  $("aCopiar").hidden = !m.texto || !!m.fig;
   $("aApagar").hidden = m.nome !== atual.nome; $("aApagar").dataset.certeza = ""; $("aApagarTxt").textContent = "Apagar para todas";
   const box = $("emojis"); box.textContent = "";
   for (const e of EMOJIS){
@@ -893,7 +1229,7 @@ $("sino").addEventListener("click", async () => {
 });
 
 // ── Começo ──────────────────────────────────────────────────────────────
-guardar();
+guardar(); aplicarTema(); podeEnviar();
 history.replaceState({ tela: "inicio" }, "");
 const pedido = new URLSearchParams(location.search).get("c");
 if (pedido){ history.replaceState({ tela: "inicio" }, "", "/"); }

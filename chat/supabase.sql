@@ -144,3 +144,22 @@ on conflict (id) do update
 drop policy if exists "midia: enviar" on storage.objects;
 create policy "midia: enviar" on storage.objects for insert to anon
   with check (bucket_id = 'midia' and name ~ '^[0-9a-f]{64}/[0-9a-f-]{36}\.(jpg|png|webp|webm|m4a|ogg|mp3|aac)$');
+
+-- ============================================================================
+-- Atualização 2: enquetes, jogos, várias fotos, vídeos e mensagens encaminhadas
+-- ============================================================================
+-- "extra" guarda o conteúdo desses tipos novos (álbum, vídeo, enquete, jogo).
+alter table public.mensagens add column if not exists extra jsonb
+  check (extra is null or char_length(extra::text) <= 20000);
+
+-- Vídeos de até 20 MB.
+update storage.buckets
+   set file_size_limit = 20971520,
+       allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp',
+         'audio/webm', 'audio/mp4', 'audio/ogg', 'audio/mpeg', 'audio/aac', 'audio/x-m4a',
+         'video/mp4', 'video/webm', 'video/quicktime']
+ where id = 'midia';
+
+drop policy if exists "midia: enviar" on storage.objects;
+create policy "midia: enviar" on storage.objects for insert to anon
+  with check (bucket_id = 'midia' and name ~ '^[0-9a-f]{64}/[0-9a-f-]{36}\.(jpg|png|webp|webm|m4a|ogg|mp3|aac|mp4|mov)$');

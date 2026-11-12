@@ -354,6 +354,42 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
 .visor .vnav.ant{left:max(10px,env(safe-area-inset-left,0px))}
 .visor .vnav.prox{right:max(10px,env(safe-area-inset-right,0px))}
 .visor .vcont{position:absolute;top:calc(20px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);color:#fff;font-size:.85rem;font-variant-numeric:tabular-nums}
+/* ── ligação (sempre escura, como tela de chamada) ── */
+#buscaBtn,#sino{display:none!important}
+.ligacao{position:absolute;inset:0;z-index:45;background:#120d1b;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  padding-top:calc(48px + env(safe-area-inset-top,0px));padding-bottom:calc(36px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow:hidden}
+.ligacao #ligRemoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:none}
+.ligacao.imagem #ligRemoto{display:block}
+.ligacao #ligLocal{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:calc(16px + env(safe-area-inset-top,0px));width:min(28vw,140px);aspect-ratio:3/4;object-fit:cover;border-radius:14px;background:#2a2238;display:none;z-index:2;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.ligacao.com-video #ligLocal{display:block}
+.ligacao #ligLocal.espelho{transform:scaleX(-1)}
+.ligInfo{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.ligInfo .av{width:112px;height:112px;font-size:2.6rem;overflow:hidden;box-shadow:0 0 0 8px rgba(255,255,255,.06),0 0 0 18px rgba(255,255,255,.03)}
+.ligacao.imagem .ligInfo .av{display:none}
+.ligacao.imagem .ligInfo{align-self:flex-start}
+#ligNome{font-family:var(--display);font-size:1.7rem;font-weight:700;text-wrap:balance}
+#ligEstado{font-size:.95rem;opacity:.85;font-variant-numeric:tabular-nums}
+.ligBotoes,.ligEntrada{position:relative;z-index:1;display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap}
+.ligb{width:62px;height:62px;min-height:62px;border-radius:50%;padding:0;display:grid;place-items:center;background:rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ligb svg{width:26px;height:26px}
+.ligb.ligado{background:#fff;color:#120d1b}
+.ligb.vermelho{background:#e03131;color:#fff}
+.ligb.verde{background:#2fb36b;color:#fff}
+.ligEntrada .ligb{width:72px;height:72px}
+.ligEntrada .ligb.verde{animation:chama 1.2s ease-in-out infinite}
+@keyframes chama{50%{transform:scale(1.08)}}
+.ligRot{display:block;font-size:.78rem;margin-top:8px;text-align:center;opacity:.85}
+.ligEntrada > span,.ligBotoes > span{display:flex;flex-direction:column;align-items:center}
+@media (prefers-reduced-motion:reduce){.ligEntrada .ligb.verde{animation:none}}
+/* registro da chamada na conversa */
+.chamada{display:flex;align-items:center;gap:10px;cursor:pointer;padding:2px 2px 2px 0;min-width:190px}
+.chamada .icone{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,currentColor 14%,transparent);flex:none}
+.chamada .icone svg{width:18px;height:18px}
+.chamada .icone.perdida{color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,transparent)}
+.msg.me .chamada .icone.perdida{color:inherit}
+.chamada .txt{display:flex;flex-direction:column;gap:1px}
+.chamada small{font-size:.75rem;opacity:.8}
 .toast{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:.85rem;z-index:30;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.bubble{transition:none}.msg.flash .bubble{animation:none;outline:3px solid var(--accent)}}
 </style>
@@ -430,6 +466,8 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
         <span class="status" id="status">conectando…</span>
       </button>
       <button class="ic" id="buscaBtn" type="button" aria-label="Buscar na conversa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+      <button class="ic" id="ligarBtn" type="button" aria-label="Ligação de voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></button>
+      <button class="ic" id="videoBtn" type="button" aria-label="Chamada de vídeo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg></button>
       <button class="ic" id="maisBtn" type="button" aria-label="Mais opções da conversa"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
       <button class="ic sino" id="sino" type="button" aria-label="Ativar notificações" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
     </header>
@@ -517,6 +555,26 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
   <div class="visor" id="visor" hidden><img id="visorImg" alt="Foto"><span class="vcont" id="visorCont"></span>
     <button class="vnav ant" id="visorAnt" type="button" aria-label="Foto anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button class="vnav prox" id="visorProx" type="button" aria-label="Próxima foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><button class="ic" id="visorFechar" type="button" aria-label="Fechar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <section class="ligacao" id="ligacao" hidden aria-label="Ligação" aria-live="polite">
+    <video id="ligRemoto" autoplay playsinline></video>
+    <audio id="ligAudio" autoplay></audio>
+    <video id="ligLocal" class="espelho" autoplay playsinline muted></video>
+    <div class="ligInfo">
+      <span class="av" id="ligAv"></span>
+      <b id="ligNome"></b>
+      <span id="ligEstado"></span>
+    </div>
+    <div class="ligEntrada" id="ligEntrada" hidden>
+      <span><button class="ligb vermelho" id="ligRecusar" type="button" aria-label="Recusar"></button><span class="ligRot">Recusar</span></span>
+      <span><button class="ligb verde" id="ligAtender" type="button" aria-label="Atender"></button><span class="ligRot">Atender</span></span>
+    </div>
+    <div class="ligBotoes" id="ligBotoes">
+      <span><button class="ligb" id="ligMudo" type="button" aria-label="Desligar o microfone" aria-pressed="false"></button><span class="ligRot">Mudo</span></span>
+      <span><button class="ligb" id="ligCam" type="button" aria-label="Desligar a câmera" aria-pressed="false"></button><span class="ligRot">Câmera</span></span>
+      <span><button class="ligb" id="ligVirar" type="button" aria-label="Trocar de câmera"></button><span class="ligRot">Virar</span></span>
+      <span><button class="ligb vermelho" id="ligDesligar" type="button" aria-label="Desligar"></button><span class="ligRot">Desligar</span></span>
+    </div>
+  </section>
   <div class="toast" id="toast" hidden></div>
 </div>
 
@@ -537,6 +595,7 @@ function resumo(m){
   if (x.tipo === "velha") return "🎮 Jogo da velha";
   if (x.tipo === "forca") return "🎮 Forca";
   if (x.tipo === "quiz") return "🎮 Quiz: quem me conhece mais";
+  if (x.tipo === "chamada") return x.perdida ? (x.video ? "📹 Chamada de vídeo perdida" : "📞 Ligação perdida") : (x.video ? "📹 Chamada de vídeo" : "📞 Ligação de voz");
   if (m.fig) return "Figurinha";
   if (m.audio) return "🎤 Mensagem de voz";
   if (m.foto) return "📷 " + (m.texto || "Foto");
@@ -946,7 +1005,7 @@ const sb = window.supabase ? supabase.createClient(SUPA_URL, SUPA_KEY, { auth: {
 if (!dados.aparelho){ dados.aparelho = Math.random().toString(36).slice(2, 10); }
 const canais = new Map(); // sala -> canal
 const canalPronto = sala => { const ch = canais.get(sala); return !!ch && ch.state === "joined"; };
-const meuEstado = sala => ({ nome: (acharChat(sala) || {}).nome, ativo: !!atual && atual.sala === sala && !document.hidden });
+const meuEstado = sala => ({ nome: (acharChat(sala) || {}).nome, ativo: !!atual && atual.sala === sala && !document.hidden, chamando: chamandoAgora(sala) });
 function atualizarTrack(){ for (const [sala, ch] of canais) if (ch.state === "joined") ch.track(meuEstado(sala)).catch?.(() => {}); }
 // Avisos rápidos (digitando, online, visto) só vão pela conexão aberta; mensagens e mudanças
 // vão de qualquer jeito (se a conexão ainda não abriu, a outra pessoa recebe na próxima conferência).
@@ -973,7 +1032,7 @@ function atualizarPresenca(){
 function ligarCanais(){
   if (!sb) return;
   for (const c of dados.chats) if (!canais.has(c.sala)) abrirCanal(c.sala);
-  for (const [sala, ch] of canais) if (!acharChat(sala)){ sb.removeChannel(ch); canais.delete(sala); }
+  for (const [sala, ch] of canais) if (!acharChat(sala)){ canais.delete(sala); sb.removeChannel(ch); }
 }
 function abrirCanal(sala){
   const c = acharChat(sala);
@@ -991,13 +1050,20 @@ function abrirCanal(sala){
     (estados[sala] = estados[sala] || {})[payload.nome] = { ativo: !!payload.ativo, em: Date.now() };
     if (atual && atual.sala === sala) atualizarPresenca();
   });
-  ch.on("presence", { event: "sync" }, () => { if (atual && atual.sala === sala) atualizarPresenca(); });
+  ch.on("broadcast", { event: "lig" }, ({ payload }) => sinalRecebido(sala, payload));
+  ch.on("presence", { event: "sync" }, () => { if (atual && atual.sala === sala) atualizarPresenca(); conferirChamadaNaPresenca(sala); });
   ch.subscribe(st => {
     if (st === "SUBSCRIBED"){
       ch.track(meuEstado(sala)).catch?.(() => {});
       if (atual && atual.sala === sala){ buscar(); }       // pega o que chegou enquanto estava fora
-    } else if (st === "CHANNEL_ERROR" || st === "TIMED_OUT"){
+    } else if (st === "CHANNEL_ERROR" || st === "TIMED_OUT" || st === "CLOSED"){
       if (atual && atual.sala === sala) agendar();
+      // canal caiu: abre de novo (a conexão do celular oscila, principalmente no 4G)
+      if (canais.get(sala) === ch) setTimeout(() => {
+        if (canais.get(sala) !== ch || ch.state === "joined") return;
+        canais.delete(sala); sb.removeChannel(ch);
+        if (acharChat(sala)) abrirCanal(sala);
+      }, 1500);
     }
   });
   canais.set(sala, ch);
@@ -1075,6 +1141,7 @@ function montarMsg(m, mostraNome, fixo, viu, fav){
   else if (x.tipo === "velha"){ b.classList.add("card"); b.appendChild(montarVelha(m)); }
   else if (x.tipo === "forca"){ b.classList.add("card"); b.appendChild(montarForca(m)); }
   else if (x.tipo === "quiz"){ b.classList.add("card"); b.appendChild(montarQuiz(m)); }
+  else if (x.tipo === "chamada"){ b.appendChild(montarChamada(m)); }
   else if (m.fig === "foto" && (m.foto || m.figSrc)){
     const img = new Image(); img.className = "figfoto"; img.alt = "Figurinha"; img.draggable = false;
     img.src = m.figSrc || fotoUrl(atual.sala, m.foto);
@@ -1695,7 +1762,7 @@ function ligarGestos(box, bubble, m){
   let toqueT = null;
   bubble.addEventListener("click", e => {
     if (arrastou || segurou){ arrastou = segurou = false; e.stopPropagation(); return; }
-    if (e.target.closest(".cita,.audio,.video,.album,.enquete,.jogo")) return; // partes com toque próprio
+    if (e.target.closest(".cita,.audio,.video,.album,.enquete,.jogo,.chamada")) return; // partes com toque próprio
     const naFoto = !!e.target.closest(".foto");
     if (toqueT){ clearTimeout(toqueT); toqueT = null; e.stopPropagation(); coracao(m, bubble); return; } // toque duplo
     if (naFoto) e.stopPropagation();
@@ -1720,7 +1787,8 @@ function abrirAcoes(m){
   const tipoX = (m.extra || {}).tipo;
   $("aEditar").hidden = m.nome !== atual.nome || !!m.fig || !!m.audio || ["enquete","velha","forca","quiz"].includes(tipoX);
   $("aFavTxt").textContent = ehFav(m.id) ? "Tirar das favoritas" : "Favoritar";
-  $("aEnc").hidden = ["velha","forca","quiz"].includes(tipoX);
+  $("aEnc").hidden = ["velha","forca","quiz","chamada"].includes(tipoX);
+  if (tipoX === "chamada") $("aEditar").hidden = true;
   $("aApagar").hidden = m.nome !== atual.nome; $("aApagar").dataset.certeza = ""; $("aApagarTxt").textContent = "Apagar para todas";
   const box = $("emojis"); box.textContent = "";
   for (const e of EMOJIS){
@@ -1849,6 +1917,12 @@ $("anexo").addEventListener("click", () => abrirFolha("Mandar", (f, fechar) => {
 }));
 // Menu dos três pontinhos da conversa
 $("maisBtn").addEventListener("click", () => abrirFolha("", (f, fechar) => {
+  opcao(f, '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>', "Buscar na conversa", () => { fechar(); abrirBusca(); });
+  if (!$("sino").hidden){
+    const on = $("sino").classList.contains("on");
+    opcao(f, '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
+      on ? "Notificações: ligadas (toque para desligar)" : "Ligar notificações desta conversa", () => { fechar(); $("sino").click(); });
+  }
   opcao(f, I.gal, "Galeria: fotos, vídeos e áudios", () => { fechar(); abrirGaleria(); });
   opcao(f, I.estrela, "Mensagens favoritas", () => verFavoritas());
   opcao(f, I.fundo, "Papel de parede e cor", () => { fechar(); abrirEditor(atual.sala); });
@@ -2408,6 +2482,322 @@ function atualizarIcone(){
   const total = dados.chats.reduce((s, c) => s + (atual && atual.sala === c.sala && !document.hidden ? 0 : (naoLidas[c.sala] || 0)), 0);
   if (navigator.setAppBadge) Promise.resolve().then(() => total ? navigator.setAppBadge(total) : navigator.clearAppBadge()).catch(() => {});
   if (window.caches) caches.open("cantinho-badge").then(k => k.put("/badge", new Response(String(total)))).catch(() => {});
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Ligações de voz e vídeo (WebRTC). O som e a imagem vão direto de um celular
+// para o outro; o canal do Supabase só serve para "tocar" e combinar a conexão.
+// ════════════════════════════════════════════════════════════════════════
+const ICE = [
+  { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+  // Servidor de retransmissão (TURN) para redes que bloqueiam a conexão direta: entra aqui se precisar.
+];
+const podeLigar = !!(window.RTCPeerConnection && navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+const IL = {
+  fone: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>',
+  video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+  micOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 9v2a3 3 0 0 0 5.1 2.1M15 9.3V6a3 3 0 0 0-5.7-1.3M5 11a7 7 0 0 0 11.5 5.4M19 11a7 7 0 0 1-.6 2.8M12 18v3M3 3l18 18"/></svg>',
+  camOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 10.5l6-3.5v10l-3-1.7M2.5 6.5v9.5A2 2 0 0 0 4.5 18h9M8 6h5.5a2 2 0 0 1 2 2v3M3 3l18 18"/></svg>',
+  virar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-3l-2-3H9L7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1z"/><path d="M9.5 12.5a3 3 0 0 1 5-1.5M14.5 14.5a3 3 0 0 1-5 1.5"/><path d="M14.5 9v2h-2M9.5 18v-2h2"/></svg>',
+  desligar: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1a1 1 0 0 1-.56.9 11.5 11.5 0 0 0-2.66 1.85 1 1 0 0 1-1.4 0L.29 13.08a1 1 0 0 1 0-1.41A16.9 16.9 0 0 1 12 7c4.4 0 8.4 1.7 11.71 4.67a1 1 0 0 1 0 1.41l-2.49 2.49a1 1 0 0 1-1.4 0 11.3 11.3 0 0 0-2.66-1.85 1 1 0 0 1-.56-.9v-3.1A15 15 0 0 0 12 9z"/></svg>',
+};
+
+let lig = null; // a ligação em andamento
+const recusadas = new Set(); // ligações que eu já recusei (para não tocar de novo)
+
+function sinalizar(sala, dados){ avisarCanal(sala, "lig", dados); }
+// recados que encerram algo vão 3 vezes, para não se perderem se a conexão oscilar
+function sinalizarFirme(sala, dados){ sinalizar(sala, dados); setTimeout(() => sinalizar(sala, dados), 800); setTimeout(() => sinalizar(sala, dados), 2000); }
+
+// ── Começar uma ligação ─────────────────────────────────────────────────
+async function ligar(video){
+  if (!podeLigar){ toast("Este navegador não faz ligações"); return; }
+  if (lig){ toast("Você já está numa ligação"); return; }
+  const c = atual; if (!c) return;
+  const id = crypto.randomUUID();
+  lig = { id, sala: c.sala, c, papel: "faz", video, estado: "chamando", filaIce: [], desde: Date.now() };
+  mostrarLigacao();
+  let stream;
+  try{ stream = await pegarMidia(video); }
+  catch(_){ if (lig && lig.id === id) fecharTela(); toast(video ? "Libere a câmera e o microfone para este site" : "Libere o microfone para este site"); return; }
+  if (!lig || lig.id !== id){ stream.getTracks().forEach(t => t.stop()); return; }
+  lig.local = stream;
+  $("ligLocal").srcObject = lig.local;
+  sinalizar(c.sala, { t: "convite", id, de: c.nome, video });
+  atualizarTrack();
+  // se a outra pessoa não está com o app aberto, avisa por notificação
+  if (!outrosPresentes(c.sala).length){
+    fetch(`/api/avisar?sala=${c.sala}`, { method: "POST", keepalive: true, headers: { "content-type": "application/json" },
+      body: JSON.stringify({ nome: c.nome, texto: video ? "📹 Chamada de vídeo: abra o app para atender" : "📞 Ligando para você: abra o app para atender", endpoint: minhaSub ? minhaSub.endpoint : undefined }) }).catch(() => {});
+  }
+  tocar("chamando");
+  lig.reconvite = setInterval(() => { if (lig && lig.id === id && lig.estado === "chamando") sinalizar(c.sala, { t: "convite", id, de: c.nome, video }); else clearInterval(lig && lig.reconvite); }, 3000);
+  lig.prazo = setTimeout(() => { if (lig && lig.id === id && lig.estado === "chamando") encerrar("Ninguém atendeu"); }, 45000);
+}
+async function pegarMidia(video, frente = true){
+  return navigator.mediaDevices.getUserMedia({
+    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    video: video ? { facingMode: frente ? "user" : "environment", width: { ideal: 640 }, height: { ideal: 480 } } : false,
+  });
+}
+
+// ── Recebendo uma ligação ───────────────────────────────────────────────
+function receber(sala, p){
+  const c = acharChat(sala); if (!c || recusadas.has(p.id)) return;
+  lig = { id: p.id, sala, c, papel: "recebe", video: !!p.video, outra: p.de, estado: "tocando", filaIce: [], desde: Date.now() };
+  mostrarLigacao();
+  tocar("toque");
+  if (document.hidden && Notification?.permission === "granted" && swReg) swReg.showNotification(p.de, { body: p.video ? "📹 Chamada de vídeo" : "📞 Ligando para você", tag: "lig-" + p.id, icon: "/icon-192.png" }).catch?.(() => {});
+  lig.prazo = setTimeout(() => { if (lig && lig.id === p.id && lig.estado === "tocando"){ recusadas.add(p.id); fecharTela(); } }, 50000);
+}
+async function atender(){
+  const l = lig; if (!l || l.estado !== "tocando") return;
+  pararSom(); l.estado = "conectando"; mostrarLigacao();
+  try{ l.local = await pegarMidia(l.video); }
+  catch(_){
+    try{ l.local = await pegarMidia(false); l.video = false; toast("Sem câmera: entrando só com voz"); }
+    catch(_){ toast("Libere o microfone para este site"); recusar(); return; }
+  }
+  if (lig !== l) { l.local.getTracks().forEach(t => t.stop()); return; }
+  $("ligLocal").srcObject = l.local;
+  criarConexao(l);
+  sinalizar(l.sala, { t: "aceitar", id: l.id, de: l.c.nome });
+}
+function recusar(){
+  const l = lig; if (!l) return;
+  recusadas.add(l.id);
+  sinalizarFirme(l.sala, { t: "recusar", id: l.id, de: l.c.nome });
+  fecharTela();
+}
+
+// ── Conexão direta ──────────────────────────────────────────────────────
+function criarConexao(l){
+  const pc = new RTCPeerConnection({ iceServers: ICE });
+  l.pc = pc; l.remoto = new MediaStream();
+  l.local.getTracks().forEach(t => pc.addTrack(t, l.local));
+  pc.ontrack = e => {
+    l.remoto.addTrack(e.track);
+    $("ligRemoto").srcObject = l.remoto; $("ligAudio").srcObject = l.remoto;
+    $("ligRemoto").play?.().catch(() => {}); $("ligAudio").play?.().catch(() => {});
+    mostrarLigacao();
+  };
+  l.meusIce = [];
+  pc.onicecandidate = e => { if (e.candidate){ const cand = e.candidate.toJSON(); l.meusIce.push(cand); sinalizar(l.sala, { t: "ice", id: l.id, cand }); } };
+  // Se algum recado se perder (a conexão em tempo real pode cair por um instante),
+  // repete o que falta a cada 2,5 s até a ligação conectar.
+  l.reenvio = setInterval(() => {
+    if (lig !== l || l.estado === "em"){ clearInterval(l.reenvio); return; }
+    if (l.papel === "faz" && pc.signalingState === "have-local-offer") sinalizar(l.sala, { t: "sdp", id: l.id, desc: pc.localDescription.toJSON() });
+    if (l.papel === "recebe" && !pc.remoteDescription) sinalizar(l.sala, { t: "aceitar", id: l.id, de: l.c.nome });
+    for (const cand of l.meusIce) sinalizar(l.sala, { t: "ice", id: l.id, cand });
+  }, 2500);
+  pc.onconnectionstatechange = () => {
+    if (lig !== l) return;
+    const st = pc.connectionState;
+    if (st === "connected"){
+      if (l.estado !== "em"){ l.estado = "em"; l.inicio = l.inicio || Date.now(); pararSom(); manterTelaLigada(true); }
+      l.reconectando = false; mostrarLigacao();
+    } else if (st === "disconnected"){ l.reconectando = true; mostrarLigacao(); }
+    else if (st === "failed"){
+      if (l.papel === "faz" && !l.tentouDeNovo){ l.tentouDeNovo = true; oferecer(l, true); }
+      else encerrar(l.inicio ? "A ligação caiu" : "Não deu para conectar. A rede de uma de vocês pode estar bloqueando ligações.");
+    }
+  };
+  return pc;
+}
+async function oferecer(l, reiniciar){
+  try{
+    const of = await l.pc.createOffer(reiniciar ? { iceRestart: true } : undefined);
+    await l.pc.setLocalDescription(of);
+    sinalizar(l.sala, { t: "sdp", id: l.id, desc: l.pc.localDescription.toJSON() });
+  }catch(_){ encerrar("Não deu para conectar"); }
+}
+async function aplicarFilaIce(l){
+  for (const c of l.filaIce.splice(0)) await l.pc.addIceCandidate(c).catch(() => {});
+}
+
+// Mensagens de sinalização que chegam pelo canal da conversa
+async function sinalRecebido(sala, p){
+  const c = acharChat(sala); if (!c || p.de === c.nome && p.t !== "ice" && p.t !== "sdp") return;
+  if (p.t === "convite"){
+    if (lig){
+      // as duas ligaram ao mesmo tempo: fica a ligação de id menor
+      if (lig.sala === sala && lig.papel === "faz" && lig.estado === "chamando" && lig.id > p.id){
+        const minha = lig; clearTimeout(minha.prazo); minha.local?.getTracks().forEach(t => t.stop());
+        lig = null; receber(sala, p); atender(); return;
+      }
+      if (lig.id !== p.id) sinalizarFirme(sala, { t: "ocupado", id: p.id, de: c.nome });
+      return;
+    }
+    receber(sala, p); return;
+  }
+  const l = lig; if (!l || l.id !== p.id) return;
+  if (p.t === "aceitar" && l.papel === "faz" && l.estado === "chamando"){
+    clearTimeout(l.prazo); clearInterval(l.reconvite); pararSom(); l.outra = p.de; l.estado = "conectando"; atualizarTrack(); mostrarLigacao();
+    criarConexao(l); oferecer(l);
+  } else if (p.t === "recusar" && l.papel === "faz"){ encerrar(p.de + " recusou a ligação", false);
+  } else if (p.t === "ocupado" && l.papel === "faz"){ encerrar(p.de + " está em outra ligação", false);
+  } else if (p.t === "desligar"){ encerrar(l.estado === "tocando" ? null : "Ligação encerrada", false);
+  } else if (p.t === "sdp" && l.pc){
+    try{
+      // a mesma proposta chegou de novo (repetição): só reenvia a resposta
+      if (l.pc.remoteDescription && l.pc.remoteDescription.sdp === p.desc.sdp){
+        if (p.desc.type === "offer" && l.pc.localDescription) sinalizar(sala, { t: "sdp", id: l.id, desc: l.pc.localDescription.toJSON(), de: l.c.nome });
+        return;
+      }
+      if (p.desc.type === "answer" && l.pc.signalingState !== "have-local-offer") return;
+      await l.pc.setRemoteDescription(p.desc);
+      if (p.desc.type === "offer"){
+        const r = await l.pc.createAnswer(); await l.pc.setLocalDescription(r);
+        sinalizar(sala, { t: "sdp", id: l.id, desc: l.pc.localDescription.toJSON(), de: l.c.nome });
+      }
+      aplicarFilaIce(l);
+    }catch(_){ encerrar("Não deu para conectar"); }
+  } else if (p.t === "ice"){
+    if (l.pc && l.pc.remoteDescription) l.pc.addIceCandidate(p.cand).catch(() => {});
+    else l.filaIce.push(p.cand);
+  }
+}
+// Quem abre o app no meio de uma chamada vê o "tocando" pela presença
+function conferirChamadaNaPresenca(sala){
+  if (lig) return;
+  const p = outrosPresentes(sala).find(p => p.chamando && !recusadas.has(p.chamando.id) && Date.now() - p.chamando.desde < 45000);
+  if (p) receber(sala, { id: p.chamando.id, de: p.nome, video: p.chamando.video });
+}
+function chamandoAgora(sala){
+  return lig && lig.sala === sala && lig.papel === "faz" && lig.estado === "chamando" ? { id: lig.id, video: lig.video, desde: lig.desde } : undefined;
+}
+
+// ── Encerrar ────────────────────────────────────────────────────────────
+function encerrar(motivo, avisar = true){
+  const l = lig; if (!l) return;
+  if (avisar) sinalizarFirme(l.sala, { t: "desligar", id: l.id, de: l.c.nome });
+  const dur = l.inicio ? Math.round((Date.now() - l.inicio) / 1000) : 0;
+  // quem ligou registra a chamada na conversa
+  if (l.papel === "faz"){
+    publicar(l.c, { nome: l.c.nome, texto: "", extra: { v: 1, tipo: "chamada", video: l.video, dur, perdida: !l.inicio } })
+      .then(msg => { if (atual && atual.sala === l.sala) juntar([msg]); }).catch(() => {});
+  }
+  fecharTela();
+  if (motivo) toast(motivo);
+}
+function fecharTela(){
+  const l = lig; lig = null;
+  if (l){
+    clearTimeout(l.prazo); clearInterval(l.relogio); clearInterval(l.reenvio); clearInterval(l.reconvite);
+    l.local?.getTracks().forEach(t => t.stop());
+    try{ l.pc?.close(); }catch(_){}
+  }
+  pararSom(); manterTelaLigada(false);
+  $("ligRemoto").srcObject = null; $("ligLocal").srcObject = null; $("ligAudio").srcObject = null;
+  $("ligacao").hidden = true;
+  atualizarTrack();
+}
+
+// ── Tela da ligação ─────────────────────────────────────────────────────
+function mostrarLigacao(){
+  const l = lig; if (!l) return;
+  const t = $("ligacao"); t.hidden = false;
+  t.classList.toggle("com-video", l.video);
+  const temImagem = l.video && l.remoto && l.remoto.getVideoTracks().length > 0 && l.estado === "em";
+  t.classList.toggle("imagem", !!temImagem);
+  const nome = l.outra || l.c.titulo;
+  $("ligNome").textContent = nome;
+  const av = $("ligAv"); pintar(av, l.c.cor); avatar(av, l.c.fotoOutra, nome);
+  $("ligEntrada").hidden = l.estado !== "tocando";
+  $("ligBotoes").hidden = l.estado === "tocando";
+  $("ligCam").hidden = $("ligVirar").hidden = !l.video;
+  clearInterval(l.relogio);
+  const estado = () => {
+    if (lig !== l) return;
+    let s;
+    if (l.estado === "chamando") s = l.video ? "Chamada de vídeo… chamando" : "Chamando…";
+    else if (l.estado === "tocando") s = l.video ? "está te chamando por vídeo" : "está te ligando";
+    else if (l.estado === "conectando") s = "Conectando…";
+    else s = (l.reconectando ? "Reconectando… " : "") + mmss((Date.now() - l.inicio) / 1000);
+    $("ligEstado").textContent = s;
+  };
+  estado(); if (l.estado === "em") l.relogio = setInterval(estado, 1000);
+}
+$("ligAtender").addEventListener("click", atender);
+$("ligRecusar").addEventListener("click", recusar);
+$("ligDesligar").addEventListener("click", () => encerrar(lig && lig.estado === "chamando" ? "Ligação cancelada" : null));
+$("ligMudo").addEventListener("click", () => {
+  const l = lig; if (!l || !l.local) return;
+  const tr = l.local.getAudioTracks()[0]; if (!tr) return;
+  tr.enabled = !tr.enabled;
+  $("ligMudo").innerHTML = tr.enabled ? IL.mic : IL.micOff; $("ligMudo").setAttribute("aria-pressed", String(!tr.enabled));
+  $("ligMudo").classList.toggle("ligado", !tr.enabled);
+});
+$("ligCam").addEventListener("click", () => {
+  const l = lig; if (!l || !l.local) return;
+  const tr = l.local.getVideoTracks()[0]; if (!tr) return;
+  tr.enabled = !tr.enabled;
+  $("ligCam").classList.toggle("ligado", !tr.enabled); $("ligCam").setAttribute("aria-pressed", String(!tr.enabled));
+  $("ligLocal").style.visibility = tr.enabled ? "" : "hidden";
+});
+$("ligVirar").addEventListener("click", async () => {
+  const l = lig; if (!l || !l.local) return;
+  l.frente = l.frente === false ? true : false;
+  try{
+    const nova = await navigator.mediaDevices.getUserMedia({ video: { facingMode: l.frente === false ? "environment" : "user", width: { ideal: 640 }, height: { ideal: 480 } } });
+    const tr = nova.getVideoTracks()[0], velha = l.local.getVideoTracks()[0];
+    const sender = l.pc && l.pc.getSenders().find(s => s.track && s.track.kind === "video");
+    if (sender) await sender.replaceTrack(tr);
+    if (velha){ l.local.removeTrack(velha); velha.stop(); }
+    l.local.addTrack(tr); $("ligLocal").srcObject = l.local;
+    $("ligLocal").classList.toggle("espelho", l.frente !== false);
+  }catch(_){ toast("Não deu para trocar de câmera"); }
+});
+for (const [id, ic] of [["ligMudo", IL.mic], ["ligCam", IL.camOff], ["ligVirar", IL.virar], ["ligDesligar", IL.desligar], ["ligRecusar", IL.desligar], ["ligAtender", IL.fone]]) $(id).insertAdjacentHTML("afterbegin", ic);
+$("ligarBtn").addEventListener("click", () => ligar(false));
+$("videoBtn").addEventListener("click", () => ligar(true));
+$("ligarBtn").hidden = $("videoBtn").hidden = !podeLigar;
+
+// ── Toque e vibração ────────────────────────────────────────────────────
+let somCtx = null, somT = null;
+function tocar(tipo){
+  pararSom();
+  const toque = tipo === "toque";
+  const bip = () => {
+    try{
+      somCtx = somCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const t0 = somCtx.currentTime, g = somCtx.createGain();
+      g.connect(somCtx.destination);
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(toque ? 0.18 : 0.06, t0 + 0.05);
+      g.gain.setValueAtTime(toque ? 0.18 : 0.06, t0 + (toque ? 0.9 : 1.2));
+      g.gain.linearRampToValueAtTime(0, t0 + (toque ? 1.0 : 1.3));
+      for (const f of toque ? [660, 880] : [425]){
+        const o = somCtx.createOscillator(); o.frequency.value = f; o.connect(g); o.start(t0); o.stop(t0 + 1.35);
+      }
+    }catch(_){}
+    if (toque && navigator.vibrate) navigator.vibrate([400, 200, 400]);
+  };
+  bip(); somT = setInterval(bip, toque ? 2500 : 4000);
+}
+function pararSom(){ clearInterval(somT); somT = null; if (navigator.vibrate) navigator.vibrate(0); }
+let travaTela = null;
+async function manterTelaLigada(sim){
+  try{
+    if (sim && navigator.wakeLock && !travaTela) travaTela = await navigator.wakeLock.request("screen");
+    else if (!sim && travaTela){ await travaTela.release(); travaTela = null; }
+  }catch(_){}
+}
+
+// Registro da chamada dentro da conversa
+function montarChamada(m){
+  const x = m.extra, eu = m.nome === atual.nome, box = el("div","chamada");
+  const ic = el("span","icone" + (x.perdida ? " perdida" : "")); ic.innerHTML = x.video ? IL.video : IL.fone; box.appendChild(ic);
+  const txt = el("span","txt");
+  const tipo = x.video ? "Chamada de vídeo" : "Ligação de voz";
+  txt.appendChild(el("b", null, x.perdida ? (eu ? tipo + " sem resposta" : "Chamada perdida") : tipo));
+  txt.appendChild(el("small", null, x.perdida ? (eu ? "Ninguém atendeu" : "Toque para ligar de volta") : "Duração: " + mmss(x.dur)));
+  box.appendChild(txt);
+  box.addEventListener("click", ev => { ev.stopPropagation(); ligar(!!x.video); });
+  box.title = "Ligar de novo";
+  return box;
 }
 
 // ── Notificações ────────────────────────────────────────────────────────

@@ -3496,15 +3496,19 @@ function linhaPessoa(p, acoes){
   const box = el("span","acoesP"); for (const a of acoes || []) box.appendChild(a); l.appendChild(box);
   return l;
 }
-let buscaAmigosT = null;
+let buscaAmigosT = null, buscaBox = null;
 function desenharAmigos(){
-  const box = $("abaAmigos"); box.textContent = "";
-  if (!eu){ box.appendChild(semContaAviso("Com uma conta, você acha suas amigas pela @, vê o perfil delas e conversa sem precisar de senha.")); return; }
-  const busca = el("div","buscaAmigos");
-  const i = el("input"); i.type = "search"; i.placeholder = "Procurar pela @ ou pelo nome"; i.setAttribute("aria-label", "Procurar pessoas"); i.autocomplete = "off"; i.autocapitalize = "none";
-  const res = el("div");
-  i.addEventListener("input", () => { clearTimeout(buscaAmigosT); buscaAmigosT = setTimeout(() => procurarPessoas(i.value, res), 300); });
-  busca.append(i, res); box.appendChild(busca);
+  const box = $("abaAmigos");
+  if (!eu){ box.textContent = ""; buscaBox = null; box.appendChild(semContaAviso("Com uma conta, você acha suas amigas pela @, vê o perfil delas e conversa sem precisar de senha.")); return; }
+  // a caixa de busca é criada uma vez só: redesenhar a lista não apaga o que a pessoa está digitando
+  if (!buscaBox){
+    buscaBox = el("div","buscaAmigos");
+    const i = el("input"); i.type = "search"; i.placeholder = "Procurar pela @ ou pelo nome"; i.setAttribute("aria-label", "Procurar pessoas"); i.autocomplete = "off"; i.autocapitalize = "none";
+    const res = el("div");
+    i.addEventListener("input", () => { clearTimeout(buscaAmigosT); buscaAmigosT = setTimeout(() => procurarPessoas(i.value, res), 300); });
+    buscaBox.append(i, res);
+  }
+  box.textContent = ""; box.appendChild(buscaBox);
   const recebidos = amizades.filter(a => !a.aceita && a.para === eu.id), enviados = amizades.filter(a => !a.aceita && a.de === eu.id);
   const amigas = amizades.filter(a => a.aceita).map(a => perfisCache.get(outroLado(a))).filter(Boolean).sort((a, b) => a.nome.localeCompare(b.nome));
   if (recebidos.length){

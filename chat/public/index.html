@@ -1168,6 +1168,7 @@ function recebeu(sala, m){
 }
 let digEm = {}, digT = null;
 function recebeuDig(p){
+  if (!atual) return;
   digEm[p.nome] = p.parou ? 0 : Date.now();
   const agora = Date.now();
   digitando = Object.entries(digEm).filter(([n, t]) => n !== atual.nome && agora - t < 5000).map(([n]) => n);

@@ -16,6 +16,7 @@ const TIPOS = /^(image\/(jpeg|webp|png)|audio\/(webm|mp4|ogg|mpeg|aac|x-m4a))$/;
 const MAX_PERFIL = 80 * 1024;
 const EMOJIS = ["❤️", "😂", "😮", "😢", "🙏", "👍"];
 const DIGITANDO_MS = 7000;
+const ATIVO_MS = 30000; // quem mandou sinal de "estou na conversa" há menos que isso não recebe notificação
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -52,8 +53,14 @@ async function chavesVapid(store) {
 }
 
 async function avisar(store, sala, msg, endpointQuemMandou) {
-  const subs = (await store.get("subs-" + sala, { type: "json" })) || [];
-  const alvos = subs.filter((s) => s.sub.endpoint !== endpointQuemMandou && s.nome !== msg.nome);
+  const [subs, pres] = await Promise.all([
+    store.get("subs-" + sala, { type: "json" }).then((x) => x || []),
+    store.get("pres-" + sala, { type: "json" }),
+  ]);
+  // Quem está com a conversa aberta na tela já vê a mensagem: não precisa de notificação.
+  const agora = Date.now(), ativos = (pres && pres.ativos) || {};
+  const naConversa = (nome) => agora - (ativos[nome] || 0) < ATIVO_MS;
+  const alvos = subs.filter((s) => s.sub.endpoint !== endpointQuemMandou && s.nome !== msg.nome && !naConversa(s.nome));
   if (!alvos.length) return;
   const k = await chavesVapid(store);
   webpush.setVapidDetails("https://netlify.app", k.publicKey, k.privateKey);
@@ -158,6 +165,9 @@ export default async (req) => {
       fixadas: fixadas || [],
       digitando: Object.entries(dig || {}).filter(([n, t]) => n !== eu && agora - t < DIGITANDO_MS).map(([n]) => n),
       lidos: (pres && pres.lidos) || {},
+      ativos: (pres && pres.ativos) || {},
+      vistos: (pres && pres.vistos) || {},
+      agora,
     };
     if (perfis && perfis.v !== pv) resp.perfis = perfis;
     return json(resp);
@@ -169,20 +179,26 @@ export default async (req) => {
   const nome = limpaNome(body.nome);
 
   // Presença: quem está digitando e até onde cada pessoa já leu ("visto").
-  if (rota === "digitando" || rota === "lido") {
+  if (rota === "digitando" || rota === "lido" || rota === "presenca") {
     if (!nome) return json({ erro: "faltou nome" }, 400);
     await alterar(store, keyPres, (p) => {
       p = p || {};
       const agora = Date.now(), dig = {};
       for (const [n, t] of Object.entries(p.dig || {})) if (agora - t < DIGITANDO_MS) dig[n] = t;
       const lidos = { ...(p.lidos || {}) };
-      if (rota === "digitando") { if (body.parou) delete dig[nome]; else dig[nome] = agora; }
+      const ativos = { ...(p.ativos || {}) }, vistos = { ...(p.vistos || {}) };
+      if (rota === "presenca") {
+        if (body.ativo) ativos[nome] = agora; else delete ativos[nome];
+        vistos[nome] = agora;
+        if (!body.ativo) delete dig[nome];
+      }
+      else if (rota === "digitando") { if (body.parou) delete dig[nome]; else dig[nome] = agora; }
       else {
         const em = Number(body.em) || 0;
         if (em <= (lidos[nome] || 0)) return {};
         lidos[nome] = Math.min(em, agora + 60000);
       }
-      return { valor: { dig, lidos } };
+      return { valor: { dig, lidos, ativos, vistos } };
     }).catch(() => {});
     return json({ ok: true });
   }
@@ -216,10 +232,11 @@ export default async (req) => {
   }
 
   // Reagir (uma reação por pessoa; tocar de novo no mesmo emoji tira) e apagar mudam uma mensagem.
-  if (rota === "reagir" || rota === "apagar") {
+  if (rota === "reagir" || rota === "apagar" || rota === "editar") {
     const id = typeof body.id === "string" ? body.id : "";
     if (!nome || !id) return json({ erro: "faltou nome ou mensagem" }, 400);
     if (rota === "reagir" && !EMOJIS.includes(body.emoji)) return json({ erro: "emoji inválido" }, 400);
+    const novoTexto = typeof body.texto === "string" ? body.texto.trim().slice(0, 2000) : "";
     let fotoApagada = null;
     try {
       const r = await alterar(store, key, (d) => {
@@ -228,10 +245,16 @@ export default async (req) => {
         if (i < 0) return { resultado: { erro: "mensagem não encontrada", status: 404 } };
         const m = { ...s.msgs[i] };
         if (m.apagada) return { resultado: { erro: "mensagem apagada", status: 409 } };
-        if (rota === "apagar") {
+        if (rota === "editar") {
+          if (m.nome !== nome) return { resultado: { erro: "só dá para editar as suas mensagens", status: 403 } };
+          if (m.fig || m.audio) return { resultado: { erro: "essa mensagem não tem texto", status: 400 } };
+          if (!novoTexto && !m.foto) return { resultado: { erro: "a mensagem não pode ficar vazia", status: 400 } };
+          if (novoTexto === m.texto) return { resultado: { msg: m } };
+          m.texto = novoTexto; m.editada = true;
+        } else if (rota === "apagar") {
           if (m.nome !== nome) return { resultado: { erro: "só dá para apagar as suas mensagens", status: 403 } };
           fotoApagada = m.foto || m.audio || null;
-          for (const k of ["texto", "foto", "w", "h", "resp", "reacoes", "audio", "dur", "fig"]) delete m[k];
+          for (const k of ["texto", "foto", "w", "h", "resp", "reacoes", "audio", "dur", "fig", "editada"]) delete m[k];
           m.apagada = true; m.texto = "";
         } else {
           const reacoes = {};
@@ -292,5 +315,5 @@ export default async (req) => {
 };
 
 export const config = {
-  path: ["/api/msgs", "/api/push", "/api/vapid", "/api/fixar", "/api/reagir", "/api/apagar", "/api/digitando", "/api/lido", "/api/perfil", "/api/foto", "/api/midia"],
+  path: ["/api/msgs", "/api/push", "/api/vapid", "/api/fixar", "/api/reagir", "/api/apagar", "/api/editar", "/api/presenca", "/api/digitando", "/api/lido", "/api/perfil", "/api/foto", "/api/midia"],
 };

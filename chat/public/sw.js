@@ -1,5 +1,5 @@
 // Service worker do Nosso Cantinho: abre o app sem internet e mostra as notificações.
-const CACHE = "cantinho-v5";
+const CACHE = "cantinho-v6";
 const BASE = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (e) => {

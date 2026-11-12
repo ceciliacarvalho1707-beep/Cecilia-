@@ -220,6 +220,39 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
 .msg.fig .bubble{background:none!important;padding:2px 0}
 .msg.fig .ftxt{font-size:2.1rem}
 .msg.fig img.figfoto{width:150px;height:150px;object-fit:cover;border-radius:24px;display:block}
+/* ── movimento suave ── */
+.view:not([hidden]){animation:aparece .2s ease-out}
+@keyframes aparece{from{opacity:0;transform:translateY(6px)}}
+.msg.entra{animation:entra .24s cubic-bezier(.2,.8,.3,1)}
+.msg.me.entra{transform-origin:right bottom}
+@keyframes entra{from{opacity:0;transform:translateY(10px) scale(.97)}}
+.fundo:not([hidden]){animation:escurece .18s ease-out}
+.fundo:not([hidden]) .folha{animation:sobe .24s cubic-bezier(.2,.8,.3,1)}
+@keyframes escurece{from{background:transparent}}
+@keyframes sobe{from{transform:translateY(100%)}}
+.reacoes button{animation:pula .25s ease-out}
+@keyframes pula{from{transform:scale(.6)}}
+#list{scroll-behavior:auto}
+#chat{position:relative}
+.msg.pendente .bubble{opacity:.75}
+.msg.erro .bubble{opacity:.6;outline:2px solid var(--bad);outline-offset:2px}
+.tique.relogio svg{width:12px;height:12px}
+.erroTxt{color:var(--bad);font-weight:600}
+.editada{font-style:italic}
+.naolidas{align-self:stretch;text-align:center;font-size:.75rem;font-weight:600;color:var(--accent);background:var(--other);border-radius:10px;padding:6px;margin:8px 0}
+/* botão de descer */
+.descer{position:absolute;right:max(16px,env(safe-area-inset-right,0px));width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;background:var(--surface);color:var(--fg);box-shadow:0 4px 14px rgba(0,0,0,.18);display:grid;place-items:center;z-index:5;transition:opacity .15s,transform .15s}
+.descer svg{width:22px;height:22px}
+.descer.some{opacity:0;transform:translateY(10px) scale(.9);pointer-events:none}
+.descer b{position:absolute;top:-6px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--accent);color:var(--accent-fg);font-size:.72rem;display:grid;place-items:center;padding:0 5px}
+/* busca */
+.busca{display:flex;align-items:center;gap:6px;padding-block:8px;border-bottom:1px solid var(--line);background:var(--surface)}
+.busca input{flex:1;min-width:0;padding:8px 14px}
+.busca .cont{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;min-width:4.5em;text-align:center}
+.busca .ic{width:36px;height:36px;min-height:36px}
+.busca .ic svg{width:20px;height:20px}
+.msg.achada .bubble{box-shadow:0 0 0 3px var(--accent)}
+@media (prefers-reduced-motion:reduce){.view:not([hidden]),.msg.entra,.fundo:not([hidden]),.fundo:not([hidden]) .folha,.reacoes button{animation:none}}
 .toast{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:.85rem;z-index:30;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.bubble{transition:none}.msg.flash .bubble{animation:none;outline:3px solid var(--accent)}}
 </style>
@@ -290,15 +323,28 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
         <h1 id="chatTitulo">Conversa</h1>
         <span class="status" id="status">conectando…</span>
       </button>
+      <button class="ic" id="buscaBtn" type="button" aria-label="Buscar na conversa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
       <button class="ic sino" id="sino" type="button" aria-label="Ativar notificações" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
     </header>
+    <div class="busca gut" id="busca" hidden>
+      <input id="buscaTxt" type="search" placeholder="Buscar mensagens" aria-label="Buscar mensagens" autocomplete="off">
+      <span class="cont" id="buscaCont"></span>
+      <button class="ic" id="buscaCima" type="button" aria-label="Resultado anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+      <button class="ic" id="buscaBaixo" type="button" aria-label="Próximo resultado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button class="ic" id="buscaFechar" type="button" aria-label="Fechar busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
     <button class="fixada gut" id="fixada" type="button" hidden>
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 .7 1.7L15 6.4v4.2l2.7 2.7A1 1 0 0 1 17 15h-4v6l-1 1-1-1v-6H7a1 1 0 0 1-.7-1.7L9 10.6V6.4L7.3 4.7A1 1 0 0 1 8 3z"/></svg>
       <span class="meio"><span class="rot" id="fixadaRot">Mensagem fixada</span><span class="txt" id="fixadaTxt"></span></span>
     </button>
     <div class="aviso gut" id="aviso" hidden><span id="avisoTxt"></span><button type="button" id="avisoBtn">Ativar</button></div>
     <div id="list" class="gut" aria-live="polite"></div>
+    <button class="descer some" id="descer" type="button" aria-label="Ir para as mensagens mais novas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg><b id="descerN" hidden></b></button>
     <div class="note" id="note" hidden></div>
+    <div class="resp gut" id="editBar" hidden>
+      <span class="cita"><b>Editando mensagem</b><span id="editTxt"></span></span>
+      <button class="ic" id="editFechar" type="button" aria-label="Cancelar edição"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
     <div class="resp gut" id="resp" hidden>
       <span class="cita"><b id="respNome"></b><span id="respTxt"></span></span>
       <button class="ic" id="respFechar" type="button" aria-label="Cancelar resposta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
@@ -332,6 +378,7 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       <div class="emojis" id="emojis"></div>
       <button type="button" id="aResponder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v6"/></svg>Responder</button>
       <button type="button" id="aFixar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 .7 1.7L15 6.4v4.2l2.7 2.7A1 1 0 0 1 17 15h-4v6l-1 1-1-1v-6H7a1 1 0 0 1-.7-1.7L9 10.6V6.4L7.3 4.7A1 1 0 0 1 8 3z"/></svg><span id="aFixarTxt">Fixar</span></button>
+      <button type="button" id="aEditar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Editar</button>
       <button type="button" id="aCopiar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar texto</button>
       <button type="button" id="aApagar" class="perigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg><span id="aApagarTxt">Apagar para todas</span></button>
       <button type="button" id="aFechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Cancelar</button>
@@ -480,8 +527,12 @@ function mostrar(qual){
 // Lista
 const ultimas = {}; // sala -> última mensagem
 let listaT = null;
+let assinaturaLista = "";
 function desenharLista(){
-  const box = $("conversas"); box.textContent = "";
+  const box = $("conversas");
+  const sig = JSON.stringify([dados.chats, ultimas]);
+  if (sig === assinaturaLista && box.childElementCount) return;
+  assinaturaLista = sig; box.textContent = "";
   if (!dados.chats.length){
     box.innerHTML = '<div class="vazio"><b>Nenhuma conversa salva</b>Toque em “Nova conversa”, dê um nome e combine a senha com a sua amiga.</div>';
     return;
@@ -510,7 +561,7 @@ async function atualizarPrevias(){
       if (r.ok){ const j = await r.json(); if (j.msgs[0]) ultimas[c.sala] = j.msgs[0]; }
     }catch(_){}
   }));
-  if (!$("inicio").hidden){ desenharLista(); listaT = setTimeout(atualizarPrevias, 20000); }
+  if (!$("inicio").hidden){ desenharLista(); listaT = setTimeout(atualizarPrevias, 8000); }
 }
 function irInicio(){
   pararChat(); mostrar("inicio"); desenharLista(); atualizarPrevias();
@@ -607,13 +658,28 @@ $("editarRemover").addEventListener("click", async () => {
 const list = $("list"), text = $("text"), send = $("send"), statusEl = $("status"), note = $("note");
 let atual = null, msgs = [], fixadas = [], rev = -1, pv = 0, timer = null, firstRender = true, resposta = null, fixIdx = 0;
 let online = null, digitando = [], fotoPend = null, lidos = {}, lidoEnviado = 0;
+let pendentes = [], editandoMsg = null, presOutra = null; // presOutra: { online, visto }
 function setNote(t){ note.textContent = t; note.hidden = !t; }
 function atualizarStatus(){
   const dig = digitando.length > 0;
   statusEl.classList.toggle("dig", dig);
   statusEl.classList.toggle("on", !dig && online === true);
-  statusEl.textContent = dig ? (digitando.length > 1 ? digitando.join(" e ") + " estão digitando…" : digitando[0] + " está digitando…")
-    : online === null ? "conectando…" : online ? "ao vivo" : "sem conexão";
+  let txt;
+  if (dig) txt = digitando.length > 1 ? digitando.join(" e ") + " estão digitando…" : digitando[0] + " está digitando…";
+  else if (online === null) txt = "conectando…";
+  else if (!online) txt = "sem conexão";
+  else if (presOutra && presOutra.online) txt = "online";
+  else if (presOutra && presOutra.visto) txt = "visto por último " + quando(presOutra.visto);
+  else txt = "ao vivo";
+  statusEl.textContent = txt;
+  statusEl.classList.toggle("on", !dig && online === true && !!(presOutra && presOutra.online));
+}
+function quando(ts){
+  const d = new Date(ts), hoje = new Date(), ontem = new Date(); ontem.setDate(hoje.getDate() - 1);
+  const h = d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  if (d.toDateString() === hoje.toDateString()) return "hoje às " + h;
+  if (d.toDateString() === ontem.toDateString()) return "ontem às " + h;
+  return "em " + d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}) + " às " + h;
 }
 function setOnline(ok){ online = ok; if (!ok) digitando = []; atualizarStatus(); }
 function aplicarPerfis(p){
@@ -632,7 +698,8 @@ function abrir(sala){
   if (!$("chat").hidden && atual && atual.sala === sala){ return; }
   pararChat();
   atual = c; msgs = []; fixadas = []; rev = -1; pv = 0; firstRender = true; fixIdx = 0; online = null; digitando = []; lidos = {}; lidoEnviado = 0;
-  limparResposta(); limparFoto(); fecharFigs(); cancelarGravacao(); setNote("");
+  pendentes = []; presOutra = null; nos.clear(); divisor = c.visto || 0; novasAbaixo = 0;
+  limparResposta(); limparFoto(); fecharFigs(); cancelarGravacao(); sairEdicao(); fecharBusca(); setNote("");
   pintar($("app"), c.cor); atualizarBarra();
   $("chatTitulo").textContent = c.titulo;
   avatar($("chatAv"), c.fotoOutra, c.titulo);
@@ -640,9 +707,21 @@ function abrir(sala){
   list.textContent = ""; $("fixada").hidden = true; $("aviso").hidden = true;
   mostrar("chat");
   if (history.state?.tela !== "chat") history.pushState({ tela: "chat" }, "");
-  buscar(); atualizarSino();
+  buscar(); atualizarSino(); presenca(true);
 }
-function pararChat(){ clearTimeout(timer); if (atual) avisarDigitando(true); cancelarGravacao(); pararAudio(); atual = null; }
+function pararChat(){ clearTimeout(timer); if (atual){ avisarDigitando(true); presenca(false); } cancelarGravacao(); pararAudio(); atual = null; }
+
+// "Estou na conversa": avisa o servidor a cada 15 s. Assim a outra pessoa vê "online"
+// e o servidor não manda notificação para quem já está com a conversa aberta.
+let presT = null;
+function presenca(ativo){
+  clearTimeout(presT);
+  const c = atual; if (!c) return;
+  const on = ativo && !document.hidden;
+  fetch(`/api/presenca?sala=${c.sala}`, { method: "POST", keepalive: true, headers: { "content-type": "application/json" }, body: JSON.stringify({ nome: c.nome, ativo: on }) }).catch(() => {});
+  if (on) presT = setTimeout(() => presenca(true), 15000);
+}
+window.addEventListener("pagehide", () => presenca(false));
 $("voltar").addEventListener("click", () => history.state?.tela === "chat" ? history.back() : irInicio());
 window.addEventListener("popstate", () => { if (!$("visor").hidden){ fecharVisor(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
 $("cab").addEventListener("click", () => atual && abrirEditor(atual.sala));
@@ -659,83 +738,152 @@ function marcarVisto(){
   }
 }
 
+// Desenha só o que mudou: cada linha tem uma "assinatura"; se ela não mudou, o
+// elemento continua o mesmo (sem piscar foto, sem perder áudio tocando, sem pular a rolagem).
+const nos = new Map(); // chave -> { sig, node }
+let divisor = 0;       // mensagens da outra pessoa depois disso aparecem como "não lidas"
+let novasAbaixo = 0;
+const ICON_RELOGIO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const pertoDoFim = (folga = 120) => list.scrollHeight - list.scrollTop - list.clientHeight < folga;
+const semMovimento = matchMedia("(prefers-reduced-motion: reduce)");
+function rolarProFim(suave){
+  list.scrollTo({ top: list.scrollHeight, behavior: suave && !semMovimento.matches ? "smooth" : "auto" });
+}
+
+function montarMsg(m, mostraNome, fixo, viu){
+  const d = new Date(m.em), mine = m.nome === atual.nome;
+  const box = el("div", "msg" + (mine ? " me" : "") + (m.apagada ? " apagada" : "") + (m.fig ? " fig" : "")
+    + (m.pendente ? " pendente" : "") + (m.erro ? " erro" : ""));
+  box.dataset.id = m.id;
+  if (mostraNome) box.appendChild(el("div","who",m.nome || "Amiga"));
+  const b = el("div","bubble");
+  const hora = d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  if (m.apagada){
+    b.appendChild(el("span","t", mine ? "Você apagou esta mensagem" : "Mensagem apagada"));
+    box.append(b, el("div","time", hora));
+    return box;
+  }
+  if (m.resp){
+    const q = el("span","cita"); q.appendChild(el("b",null, m.resp.nome === atual.nome ? "Você" : m.resp.nome)); q.appendChild(el("span",null,m.resp.texto));
+    q.addEventListener("click", ev => { ev.stopPropagation(); irPara(m.resp.id); });
+    b.appendChild(q);
+  }
+  if (m.fig === "foto" && (m.foto || m.figSrc)){
+    const img = new Image(); img.className = "figfoto"; img.alt = "Figurinha"; img.draggable = false;
+    img.src = m.figSrc || fotoUrl(atual.sala, m.foto);
+    b.appendChild(img);
+  } else if (m.fig){
+    b.appendChild(figTexto(m.fig));
+  } else if (m.audio){
+    b.appendChild(playerAudio(m));
+  } else if (m.foto){
+    const img = new Image(); img.className = "foto"; img.alt = "Foto de " + m.nome; img.decoding = "async";
+    img.width = m.w; img.height = m.h; img.style.aspectRatio = m.w + " / " + m.h;
+    img.src = fotoUrl(atual.sala, m.foto); img.draggable = false;
+    img.addEventListener("load", () => { if (pertoDoFim(m.h)) rolarProFim(false); }, { once: true });
+    img.addEventListener("click", ev => { ev.stopPropagation(); abrirVisor(img.src); });
+    b.appendChild(img);
+    if (!m.texto && !m.resp) b.classList.add("so-foto");
+  }
+  if (m.texto) b.appendChild(el("span","t",m.texto));
+  const seta = el("span","seta"); seta.innerHTML = ICON_SETA; box.appendChild(seta);
+  box.appendChild(b);
+  const reac = Object.entries(m.reacoes || {});
+  if (reac.length){
+    const r = el("div","reacoes");
+    for (const [e, ns] of reac){
+      const bt = el("button", ns.includes(atual.nome) ? "minha" : ""); bt.type = "button";
+      bt.title = ns.map(n => n === atual.nome ? "Você" : n).join(", ");
+      bt.appendChild(document.createTextNode(e)); if (ns.length > 1) bt.appendChild(el("small",null,String(ns.length)));
+      bt.addEventListener("click", () => reagir(m, e));
+      r.appendChild(bt);
+    }
+    box.appendChild(r);
+  }
+  const t = el("div","time");
+  if (fixo){ const s = el("span"); s.innerHTML = ICON_FIXO; s.title = "Fixada"; t.appendChild(s); }
+  if (m.editada) t.appendChild(el("span","editada","editada ·"));
+  if (m.erro){
+    t.appendChild(el("span","erroTxt","Não enviada · toque para tentar de novo"));
+  } else {
+    t.appendChild(document.createTextNode(hora));
+    if (mine){
+      const tq = el("span", "tique" + (m.pendente ? " relogio" : viu ? " lido" : ""));
+      tq.innerHTML = m.pendente ? ICON_RELOGIO : viu ? ICON_TIQUE2 : ICON_TIQUE1;
+      tq.title = m.pendente ? "Enviando" : viu ? "Visto" : "Enviada"; tq.setAttribute("aria-label", tq.title);
+      t.appendChild(tq);
+    }
+  }
+  box.appendChild(t);
+  if (m.erro) box.addEventListener("click", () => reenviar(m));
+  else if (!m.pendente) ligarGestos(box, b, m);
+  return box;
+}
+
 function render(){
-  const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 80;
-  const topo = list.scrollTop;
-  list.textContent = "";
-  if (!msgs.length){
+  if (!atual) return;
+  const todas = [...msgs, ...pendentes];
+  const estavaNoFim = firstRender || pertoDoFim();
+  if (!todas.length){
+    nos.clear();
     list.innerHTML = '<div class="empty"><b>Nenhuma mensagem ainda</b>Escreva a primeira aí embaixo. Ela aparece em segundos para a outra pessoa.</div>';
     return;
   }
+  const vazio = list.querySelector(".empty"); if (vazio) vazio.remove();
   const fixos = new Set(fixadas.map(f => f.id));
-  let lastDay = "", lastNome = null;
-  for (const m of msgs){
+  const lidoPelaOutra = Math.max(0, ...Object.entries(lidos).filter(([n]) => n !== atual.nome).map(([, em]) => em));
+  const linhas = [];
+  let lastDay = "", lastNome = null, divisorPosto = false;
+  for (const m of todas){
     const d = new Date(m.em), day = d.toDateString();
-    if (day !== lastDay){ list.appendChild(el("div","day",dayLabel(d))); lastDay = day; lastNome = null; }
-    const mine = m.nome === atual.nome;
-    const box = el("div", "msg" + (mine ? " me" : "") + (m.apagada ? " apagada" : "") + (m.fig ? " fig" : "")); box.dataset.id = m.id;
-    if (!mine && m.nome !== lastNome) box.appendChild(el("div","who",m.nome || "Amiga"));
-    const b = el("div","bubble");
-    if (m.apagada){
-      b.appendChild(el("span","t", mine ? "Você apagou esta mensagem" : "Mensagem apagada"));
-      box.appendChild(b);
-      const t = el("div","time", d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})); box.appendChild(t);
-      list.appendChild(box); lastNome = m.nome; continue;
+    if (day !== lastDay){ linhas.push({ k: "d:" + day, sig: dayLabel(d), fazer: () => el("div","day",dayLabel(d)) }); lastDay = day; lastNome = null; }
+    if (divisor && !divisorPosto && m.em > divisor && m.nome !== atual.nome && !m.pendente){
+      divisorPosto = true;
+      linhas.push({ k: "naolidas", sig: "1", fazer: () => el("div","naolidas","Mensagens não lidas") });
     }
-    if (m.resp){
-      const q = el("span","cita"); q.appendChild(el("b",null, m.resp.nome === atual.nome ? "Você" : m.resp.nome)); q.appendChild(el("span",null,m.resp.texto));
-      q.addEventListener("click", ev => { ev.stopPropagation(); irPara(m.resp.id); });
-      b.appendChild(q);
-    }
-    if (m.fig === "foto" && m.foto){
-      const img = new Image(); img.className = "figfoto"; img.alt = "Figurinha"; img.draggable = false; img.src = fotoUrl(atual.sala, m.foto);
-      b.appendChild(img);
-    } else if (m.fig){
-      b.appendChild(figTexto(m.fig));
-    } else if (m.audio){
-      b.appendChild(playerAudio(m));
-    } else if (m.foto){
-      const img = new Image(); img.className = "foto"; img.alt = "Foto de " + m.nome; img.loading = "lazy"; img.decoding = "async";
-      img.width = m.w; img.height = m.h; img.style.aspectRatio = m.w + " / " + m.h;
-      img.src = fotoUrl(atual.sala, m.foto); img.draggable = false;
-      img.addEventListener("click", ev => { ev.stopPropagation(); abrirVisor(img.src); });
-      b.appendChild(img);
-      if (!m.texto && !m.resp) b.classList.add("so-foto");
-    }
-    if (m.texto) b.appendChild(el("span","t",m.texto));
-    const seta = el("span","seta"); seta.innerHTML = ICON_SETA; box.appendChild(seta);
-    box.appendChild(b);
-    const reac = Object.entries(m.reacoes || {});
-    if (reac.length){
-      const r = el("div","reacoes");
-      for (const [e, ns] of reac){
-        const bt = el("button", ns.includes(atual.nome) ? "minha" : ""); bt.type = "button";
-        bt.title = ns.map(n => n === atual.nome ? "Você" : n).join(", ");
-        bt.appendChild(document.createTextNode(e)); if (ns.length > 1) bt.appendChild(el("small",null,String(ns.length)));
-        bt.addEventListener("click", () => reagir(m, e));
-        r.appendChild(bt);
-      }
-      box.appendChild(r);
-    }
-    const t = el("div","time");
-    if (fixos.has(m.id)){ const s = el("span"); s.innerHTML = ICON_FIXO; s.title = "Fixada"; t.appendChild(s); }
-    t.appendChild(document.createTextNode(d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})));
-    if (mine){
-      const viu = Object.entries(lidos).some(([n, em]) => n !== atual.nome && em >= m.em);
-      const tq = el("span", "tique" + (viu ? " lido" : "")); tq.innerHTML = viu ? ICON_TIQUE2 : ICON_TIQUE1;
-      tq.title = viu ? "Visto" : "Enviada"; tq.setAttribute("aria-label", tq.title);
-      t.appendChild(tq);
-    }
-    box.appendChild(t);
-    ligarGestos(box, b, m);
-    list.appendChild(box); lastNome = m.nome;
+    const mostraNome = m.nome !== atual.nome && m.nome !== lastNome;
+    const fixo = fixos.has(m.id), viu = m.nome === atual.nome && lidoPelaOutra >= m.em;
+    linhas.push({ k: m.id, msg: m, sig: JSON.stringify([m, mostraNome, fixo, viu]), fazer: () => montarMsg(m, mostraNome, fixo, viu) });
+    lastNome = m.nome;
   }
-  if (atBottom || firstRender){
-    list.scrollTop = list.scrollHeight; firstRender = false;
-    // fotos que ainda estão carregando mudam a altura: continua lá embaixo
-    list.querySelectorAll("img.foto").forEach(i => { if (!i.complete) i.addEventListener("load", () => { if (list.scrollHeight - list.scrollTop - list.clientHeight < 400) list.scrollTop = list.scrollHeight; }, { once: true }); });
-  } else list.scrollTop = topo;
+  const vivos = new Set();
+  let anterior = null, chegaram = 0;
+  for (const l of linhas){
+    let e = nos.get(l.k);
+    if (!e || e.sig !== l.sig){
+      const novo = l.fazer();
+      if (e) e.node.replaceWith(novo);
+      else if (!firstRender && l.msg){ novo.classList.add("entra"); if (l.msg.nome !== atual.nome) chegaram++; }
+      e = { sig: l.sig, node: novo }; nos.set(l.k, e);
+    }
+    const quero = anterior ? anterior.nextSibling : list.firstChild;
+    if (e.node !== quero) list.insertBefore(e.node, quero);
+    anterior = e.node; vivos.add(l.k);
+  }
+  for (const [k, e] of nos) if (!vivos.has(k)){ e.node.remove(); nos.delete(k); }
+
+  if (firstRender){
+    firstRender = false;
+    const nl = nos.get("naolidas");
+    if (nl) nl.node.scrollIntoView({ block: "start" }); else rolarProFim(false);
+  } else if (estavaNoFim){
+    rolarProFim(true);
+  } else if (chegaram){
+    novasAbaixo += chegaram;
+  }
+  atualizarDescer();
 }
+
+function atualizarDescer(){
+  const longe = !pertoDoFim(200);
+  if (!longe) novasAbaixo = 0;
+  $("descer").classList.toggle("some", !longe);
+  $("descerN").hidden = !novasAbaixo; $("descerN").textContent = novasAbaixo > 99 ? "99+" : novasAbaixo;
+  $("descer").style.bottom = ($("chat").clientHeight - list.offsetTop - list.clientHeight + 12) + "px";
+}
+list.addEventListener("scroll", () => requestAnimationFrame(atualizarDescer), { passive: true });
+$("descer").addEventListener("click", () => { novasAbaixo = 0; rolarProFim(true); });
+window.addEventListener("resize", () => { if (atual && pertoDoFim(250)) rolarProFim(false); atualizarDescer(); });
 
 function desenharFixada(){
   const f = $("fixada");
@@ -784,6 +932,13 @@ async function buscar(){
     if (atual !== c) return;
     if (j.perfis) aplicarPerfis(j.perfis);
     digitando = j.digitando || [];
+    const outra = Object.keys({ ...(j.vistos || {}), ...(j.ativos || {}) }).filter(n => n !== c.nome);
+    if (outra.length){
+      const ag = j.agora || Date.now();
+      const ativoEm = Math.max(0, ...outra.map(n => (j.ativos || {})[n] || 0));
+      const vistoEm = Math.max(0, ...outra.map(n => (j.vistos || {})[n] || 0));
+      presOutra = { online: ag - ativoEm < 25000, visto: vistoEm ? Date.now() - (ag - vistoEm) : 0 };
+    }
     const novosLidos = j.lidos || {};
     const lidosMudou = JSON.stringify(novosLidos) !== JSON.stringify(lidos);
     lidos = novosLidos;
@@ -796,9 +951,16 @@ async function buscar(){
   }
   agendar();
 }
-// Confere novas mensagens a cada 3 s com a conversa aberta; para quando o app fica em segundo plano.
-function agendar(){ clearTimeout(timer); if (atual && !document.hidden) timer = setTimeout(buscar, 3000); }
+// Ritmo das conferências: a cada 1 s quando a outra pessoa também está na conversa
+// (mensagens chegam quase na hora), 2,5 s quando não está, e para em segundo plano.
+function agendar(){
+  clearTimeout(timer);
+  if (!atual || document.hidden) return;
+  const rapido = (presOutra && presOutra.online) || digitando.length;
+  timer = setTimeout(buscar, rapido ? 1000 : 2500);
+}
 document.addEventListener("visibilitychange", () => {
+  if (atual) presenca(!document.hidden);
   if (document.hidden) return;
   if (atual){ clearTimeout(timer); buscar(); marcarVisto(); }
   else if (!$("inicio").hidden) atualizarPrevias();
@@ -812,6 +974,7 @@ function avisarDigitando(parou){
   else { if (Date.now() - ultimoDig < 3000) return; ultimoDig = Date.now(); }
   postJSON(`/api/digitando?sala=${c.sala}`, { nome: c.nome, parou: !!parou }).catch(() => {});
 }
+for (const ev of ["pointerdown", "mousedown"]) send.addEventListener(ev, e => { if (document.activeElement === text) e.preventDefault(); });
 function podeEnviar(){
   const tem = !!text.value.trim() || !!fotoPend;
   send.hidden = !tem; send.disabled = !tem; $("mic").hidden = tem || !podeGravar;
@@ -843,11 +1006,37 @@ function fecharVisor(){ $("visor").hidden = true; $("visorImg").removeAttribute(
 $("visor").addEventListener("click", () => history.back());
 text.addEventListener("keydown", e => {
   if (e.key==="Enter" && !e.shiftKey && !toque){ e.preventDefault(); $("form").requestSubmit(); }
-  if (e.key==="Escape" && resposta) limparResposta();
+  if (e.key==="Escape"){ if (resposta) limparResposta(); if (editandoMsg) sairEdicao(); }
 });
+function limparCaixa(){ text.value = ""; text.style.height = "auto"; podeEnviar(); }
+async function enviarTexto(p){
+  const c = atual;
+  p.pendente = true; p.erro = false; render();
+  try{
+    const { msg } = await postJSON(`${API}?sala=${c.sala}`, p.corpo);
+    pendentes = pendentes.filter(x => x !== p);
+    if (atual === c){ msgs.some(x => x.id === msg.id) ? render() : juntar([msg]); }
+  }catch(_){
+    p.pendente = false; p.erro = true; if (atual === c) render();
+  }
+}
+function reenviar(p){ if (p.erro) enviarTexto(p); }
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
   const v = text.value.trim(), c = atual, foto = fotoPend; if ((!v && !foto) || !c) return;
+  if (editandoMsg){ return salvarEdicao(v); }
+  if (!foto){
+    // texto: aparece na hora com um reloginho, e o envio acontece por trás
+    const corpo = { texto: v, nome: c.nome, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined };
+    const ult = msgs.length ? msgs[msgs.length-1].em : 0;
+    const p = { id: "tmp-" + Date.now() + Math.random().toString(36).slice(2,6), nome: c.nome, texto: v, em: Math.max(Date.now(), ult + 1), corpo };
+    if (resposta) p.resp = { id: resposta.id, nome: resposta.nome, texto: resumo(resposta).slice(0, 140) };
+    pendentes.push(p); ultimoDig = 0;
+    limparCaixa(); limparResposta(); setNote("");
+    rolarProFim(false);
+    enviarTexto(p);
+    return;
+  }
   send.disabled = true;
   try{
     const corpo = { texto: v, nome: c.nome, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined };
@@ -859,8 +1048,8 @@ $("form").addEventListener("submit", async e => {
     }
     const { msg } = await postJSON(`${API}?sala=${c.sala}`, corpo);
     ultimoDig = 0;
-    if (atual === c){ juntar([msg]); list.scrollTop = list.scrollHeight; }
-    text.value = ""; text.style.height = "auto"; setNote(""); limparResposta(); limparFoto();
+    if (atual === c){ juntar([msg]); rolarProFim(true); }
+    limparCaixa(); setNote(""); limparResposta(); limparFoto();
   }catch(err){
     setNote(foto ? "A foto não foi enviada. Confira a internet e tente de novo." : "A mensagem não foi enviada. Confira a internet e tente de novo.");
     send.disabled = false;
@@ -868,6 +1057,61 @@ $("form").addEventListener("submit", async e => {
   $("previaFotoTxt").textContent = "Foto pronta. Escreva uma legenda, se quiser, e toque em Enviar.";
   if (!toque) text.focus();
 });
+
+// ── Editar mensagem ─────────────────────────────────────────────────────
+function entrarEdicao(m){
+  limparResposta(); limparFoto();
+  editandoMsg = m;
+  $("editTxt").textContent = m.texto || resumo(m);
+  $("editBar").hidden = false;
+  text.value = m.texto || ""; text.dispatchEvent(new Event("input"));
+  text.focus(); text.setSelectionRange(text.value.length, text.value.length);
+}
+function sairEdicao(){ if (!editandoMsg) return; editandoMsg = null; $("editBar").hidden = true; limparCaixa(); }
+$("editFechar").addEventListener("click", sairEdicao);
+async function salvarEdicao(v){
+  const m = editandoMsg, c = atual; if (!m || !c) return;
+  sairEdicao();
+  if (v === m.texto) return;
+  try{
+    const j = await postJSON(`/api/editar?sala=${c.sala}`, { id: m.id, nome: c.nome, texto: v });
+    if (atual === c) juntar([j.msg]);
+  }catch(_){ toast("Não deu para editar. Tente de novo."); }
+}
+
+// ── Buscar na conversa ──────────────────────────────────────────────────
+let achados = [], achadoIdx = -1;
+const normal = t => (t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+function abrirBusca(){ $("busca").hidden = false; $("buscaTxt").value = ""; $("buscaCont").textContent = ""; $("buscaTxt").focus(); }
+function fecharBusca(){
+  $("busca").hidden = true; achados = []; achadoIdx = -1;
+  list.querySelectorAll(".msg.achada").forEach(x => x.classList.remove("achada"));
+}
+function procurar(){
+  const q = normal($("buscaTxt").value.trim());
+  list.querySelectorAll(".msg.achada").forEach(x => x.classList.remove("achada"));
+  achados = q ? msgs.filter(m => !m.apagada && normal(m.texto).includes(q)).map(m => m.id) : [];
+  achadoIdx = achados.length - 1;
+  mostrarAchado();
+}
+function mostrarAchado(){
+  $("buscaCont").textContent = !$("buscaTxt").value.trim() ? "" : achados.length ? `${achadoIdx + 1} de ${achados.length}` : "nada";
+  list.querySelectorAll(".msg.achada").forEach(x => x.classList.remove("achada"));
+  if (achadoIdx < 0) return;
+  const id = achados[achadoIdx];
+  irPara(id);
+  const n = nos.get(id); if (n) n.node.classList.add("achada");
+}
+let buscaT = null;
+$("buscaBtn").addEventListener("click", () => $("busca").hidden ? abrirBusca() : fecharBusca());
+$("buscaFechar").addEventListener("click", fecharBusca);
+$("buscaTxt").addEventListener("input", () => { clearTimeout(buscaT); buscaT = setTimeout(procurar, 200); });
+$("buscaTxt").addEventListener("keydown", e => {
+  if (e.key === "Enter"){ e.preventDefault(); if (achados.length){ achadoIdx = (achadoIdx - 1 + achados.length) % achados.length; mostrarAchado(); } }
+  if (e.key === "Escape") fecharBusca();
+});
+$("buscaCima").addEventListener("click", () => { if (achados.length){ achadoIdx = (achadoIdx - 1 + achados.length) % achados.length; mostrarAchado(); } });
+$("buscaBaixo").addEventListener("click", () => { if (achados.length){ achadoIdx = (achadoIdx + 1) % achados.length; mostrarAchado(); } });
 
 // ── Mensagens de voz: tocar ─────────────────────────────────────────────
 const urlsAudio = new Map(); // id -> blob URL (o arquivo é baixado uma vez)
@@ -1030,15 +1274,17 @@ async function mandarFigFoto(src){
     if (!r.ok) throw new Error(r.status);
     const { id } = await r.json();
     await mandarFig({ fig: "foto", foto: id, w: 320, h: 320 });
+    return;
   }catch(_){ toast("A figurinha não foi enviada. Tente de novo."); }
 }
 async function mandarFig(extra){
   const c = atual; if (!c) return;
   fecharFigs();
-  try{
-    const { msg } = await postJSON(`${API}?sala=${c.sala}`, { nome: c.nome, ...extra, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined });
-    if (atual === c){ juntar([msg]); list.scrollTop = list.scrollHeight; limparResposta(); }
-  }catch(_){ toast("A figurinha não foi enviada. Tente de novo."); }
+  const corpo = { nome: c.nome, ...extra, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined };
+  const ult = msgs.length ? msgs[msgs.length-1].em : 0;
+  const p = { id: "tmp-" + Date.now(), nome: c.nome, texto: "", fig: extra.fig, foto: extra.foto, em: Math.max(Date.now(), ult + 1), corpo };
+  pendentes.push(p); limparResposta(); rolarProFim(false);
+  enviarTexto(p);
 }
 text.addEventListener("focus", fecharFigs);
 
@@ -1083,11 +1329,22 @@ function ligarGestos(box, bubble, m){
   };
   bubble.addEventListener("pointerup", fim);
   bubble.addEventListener("pointercancel", fim);
+  let toqueT = null;
   bubble.addEventListener("click", e => {
     if (arrastou || segurou){ arrastou = segurou = false; e.stopPropagation(); return; }
-    if (e.target.closest(".foto,.cita,.audio")) return; // a foto abre em tela cheia; a citação leva à mensagem; o áudio toca
-    abrirAcoes(m);
+    if (e.target.closest(".cita,.audio")) return; // a citação leva à mensagem; o áudio toca
+    const naFoto = !!e.target.closest(".foto");
+    if (toqueT){ clearTimeout(toqueT); toqueT = null; e.stopPropagation(); coracao(m, bubble); return; } // toque duplo
+    if (naFoto) e.stopPropagation();
+    toqueT = setTimeout(() => { toqueT = null; naFoto ? abrirVisor(fotoUrl(atual.sala, m.foto)) : abrirAcoes(m); }, 230);
   }, true);
+}
+
+function coracao(m, bubble){
+  if (navigator.vibrate) navigator.vibrate(10);
+  bubble.animate?.([{ transform: "scale(1)" }, { transform: "scale(1.06)" }, { transform: "scale(1)" }], { duration: 220 });
+  const ja = (m.reacoes && (m.reacoes["❤️"] || []).includes(atual.nome));
+  if (!ja) reagir(m, "❤️");
 }
 
 // Menu de ações
@@ -1097,6 +1354,7 @@ function abrirAcoes(m){
   $("acoesPrevia").textContent = (m.nome === atual.nome ? "Você" : m.nome) + ": " + resumo(m);
   $("aFixarTxt").textContent = fixadas.some(f => f.id === m.id) ? "Desafixar" : "Fixar no topo";
   $("aCopiar").hidden = !m.texto || !!m.fig;
+  $("aEditar").hidden = m.nome !== atual.nome || !!m.fig || !!m.audio;
   $("aApagar").hidden = m.nome !== atual.nome; $("aApagar").dataset.certeza = ""; $("aApagarTxt").textContent = "Apagar para todas";
   const box = $("emojis"); box.textContent = "";
   for (const e of EMOJIS){
@@ -1109,6 +1367,14 @@ function abrirAcoes(m){
 }
 async function reagir(m, e){
   const c = atual;
+  // mostra na hora; o servidor confirma em seguida
+  const atualM = msgs.find(x => x.id === m.id);
+  if (atualM){
+    const r = {}; let tinha = null;
+    for (const [k, ns] of Object.entries(atualM.reacoes || {})){ if (ns.includes(c.nome)) tinha = k; const resto = ns.filter(n => n !== c.nome); if (resto.length) r[k] = resto; }
+    if (tinha !== e) r[e] = [...(r[e] || []), c.nome];
+    juntar([{ ...atualM, reacoes: r }]);
+  }
   try{
     const j = await postJSON(`/api/reagir?sala=${c.sala}`, { id: m.id, emoji: e, nome: c.nome });
     if (atual === c) juntar([j.msg]);
@@ -1129,6 +1395,7 @@ $("acoes").addEventListener("click", e => { if (e.target.id === "acoes") fecharA
 document.addEventListener("keydown", e => { if (e.key === "Escape"){ if (!$("visor").hidden) history.back(); else if (!$("acoes").hidden) fecharAcoes(); } });
 $("aFechar").addEventListener("click", fecharAcoes);
 $("aResponder").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); responder(m); });
+$("aEditar").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); entrarEdicao(m); });
 $("aCopiar").addEventListener("click", async () => {
   const m = acaoMsg; fecharAcoes();
   try{ await navigator.clipboard.writeText(m.texto); toast("Texto copiado"); }catch(_){ toast("Não deu para copiar"); }

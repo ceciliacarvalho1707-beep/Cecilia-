@@ -3074,7 +3074,7 @@ function aplicarGrupo(c, g){
   if ("foto" in g) c.fotoGrupo = g.foto || null;
   guardar();
   if (atual === c){ $("chatTitulo").textContent = c.titulo; avatar($("chatAv"), c.fotoGrupo, c.titulo); atualizarStatus(); }
-  if (!$("inicio").hidden){ assinaturaLista = ""; desenharLista(); }
+  if (!$("inicio").hidden) desenharLista();
 }
 async function salvarGrupo(c, campos){
   const dadosG = { nome: c.titulo, foto: c.fotoGrupo || null, ...campos };
@@ -3420,7 +3420,7 @@ async function sincronizarConversas(){
     const novas = dados.chats.filter(c => !daConta.has(c.sala) || (c.senha && !daConta.get(c.sala).senha))
       .map(c => ({ usuario: eu.id, sala: c.sala, senha: c.senha || null, titulo: c.titulo || null, grupo: !!c.grupo, com: c.amiga || null }));
     if (novas.length) await sbConta.from("minhas_conversas").upsert(novas, { onConflict: "usuario,sala" });
-    if (mudou){ guardar(); ligarCanais(); assinaturaLista = ""; if (!$("inicio").hidden) atualizarPrevias(); }
+    if (mudou){ guardar(); ligarCanais(); if (!$("inicio").hidden){ desenharLista(); atualizarPrevias(); } }
   })().finally(() => { sincronizando = null; });
   return sincronizando;
 }

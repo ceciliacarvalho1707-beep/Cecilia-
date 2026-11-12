@@ -96,23 +96,11 @@ label input{font-weight:400;font-size:15px}
 
 </div>
 
-<script type="module">
-// Configuração pública do projeto Firebase (Configurações do projeto → Seus apps → Web).
-// Essas chaves não são segredo: quem protege as mensagens são as regras do Firestore.
-const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  appId: ""
-};
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, query, orderBy, limitToLast, onSnapshot, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+<script>
 const $ = id => document.getElementById(id);
 const KEY = "cantinho:v1";
-let db = null, unsub = null, me = null;
+const API = "/api/msgs";
+let me = null, msgs = [], ultimo = 0, timer = null, ativo = false;
 
 function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) }catch(_){ return null } }
 function save(v){ try{ v ? localStorage.setItem(KEY, JSON.stringify(v)) : localStorage.removeItem(KEY) }catch(_){} }
@@ -123,15 +111,8 @@ async function salaDe(senha){
   return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("");
 }
 
-if (firebaseConfig.projectId){
-  db = getFirestore(initializeApp(firebaseConfig));
-} else {
-  $("entrarErr").textContent = "O site ainda não está ligado ao banco de mensagens.";
-}
-
 $("entrarForm").addEventListener("submit", async e => {
   e.preventDefault();
-  if (!db) return;
   const nome = $("nome").value.trim(), senha = $("senha").value;
   if (!nome){ $("entrarErr").textContent = "Escreva seu nome."; return; }
   if (senha.trim().length < 8){ $("entrarErr").textContent = "A senha precisa ter pelo menos 8 caracteres."; return; }
@@ -140,12 +121,13 @@ $("entrarForm").addEventListener("submit", async e => {
 });
 
 $("sair").addEventListener("click", () => {
-  if (unsub) unsub(); unsub = null; save(null);
+  ativo = false; clearTimeout(timer); save(null); me = null;
   $("senha").value = ""; $("chat").hidden = true; $("entrar").hidden = false;
 });
 
 const list = $("list"), text = $("text"), send = $("send"), statusEl = $("status"), note = $("note");
 function setNote(t){ note.textContent = t; note.hidden = !t; }
+function setOnline(ok){ statusEl.textContent = ok ? "ao vivo" : "sem conexão"; statusEl.classList.toggle("on", ok); }
 function dayLabel(d){
   const hoje = new Date(), ontem = new Date(); ontem.setDate(hoje.getDate()-1);
   if (d.toDateString()===hoje.toDateString()) return "Hoje";
@@ -154,16 +136,16 @@ function dayLabel(d){
 }
 
 let firstRender = true;
-function render(msgs){
+function render(){
   const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 80;
   list.textContent = "";
   if (!msgs.length){
-    list.innerHTML = '<div class="empty"><b>Nenhuma mensagem ainda</b>Escreva a primeira aí embaixo. Ela aparece na hora pra vocês duas.</div>';
+    list.innerHTML = '<div class="empty"><b>Nenhuma mensagem ainda</b>Escreva a primeira aí embaixo. Ela aparece em segundos pra vocês duas.</div>';
     return;
   }
   let lastDay = "", lastNome = null;
   for (const m of msgs){
-    const d = m.em ? m.em.toDate() : new Date(), day = d.toDateString();
+    const d = new Date(m.em), day = d.toDateString();
     if (day !== lastDay){ const s=document.createElement("div"); s.className="day"; s.textContent=dayLabel(d); list.appendChild(s); lastDay=day; lastNome=null; }
     const mine = m.nome === me.nome;
     const el = document.createElement("div"); el.className = "msg" + (mine ? " me" : "");
@@ -175,20 +157,39 @@ function render(msgs){
   if (atBottom || firstRender){ list.scrollTop = list.scrollHeight; firstRender = false; }
 }
 
+function juntar(novas){
+  const ids = new Set(msgs.map(m=>m.id));
+  let mudou = false;
+  for (const m of novas){ if (!ids.has(m.id)){ msgs.push(m); mudou = true; } if (m.em > ultimo) ultimo = m.em; }
+  if (mudou){ msgs.sort((a,b)=>a.em-b.em); render(); }
+}
+
+async function buscar(){
+  if (!ativo || !me) return;
+  const sala = me.sala;
+  try{
+    const r = await fetch(`${API}?sala=${sala}&depois=${ultimo}`, { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    const { msgs: novas } = await r.json();
+    if (!me || me.sala !== sala) return;
+    setOnline(true); setNote("");
+    if (firstRender && !novas.length) render();
+    juntar(novas);
+  }catch(err){
+    setOnline(false);
+  }
+  agendar();
+}
+// Confere novas mensagens a cada 3 s com a página aberta; para quando ela fica em segundo plano.
+function agendar(){ clearTimeout(timer); if (ativo && !document.hidden) timer = setTimeout(buscar, 3000); }
+document.addEventListener("visibilitychange", () => { if (!document.hidden && ativo){ clearTimeout(timer); buscar(); } });
+
 function abrir(v){
-  me = v; firstRender = true;
+  me = v; msgs = []; ultimo = 0; firstRender = true; ativo = true;
   $("entrar").hidden = true; $("chat").hidden = false;
   statusEl.textContent = "conectando…"; statusEl.classList.remove("on");
-  const q = query(collection(db, "salas", v.sala, "msgs"), orderBy("em"), limitToLast(300));
-  unsub = onSnapshot(q, snap => {
-    statusEl.textContent = "ao vivo"; statusEl.classList.add("on"); setNote("");
-    render(snap.docs.map(d => d.data({ serverTimestamps: "estimate" })));
-  }, err => {
-    statusEl.textContent = "erro"; statusEl.classList.remove("on");
-    setNote("Não deu pra carregar as mensagens. Confira a internet e recarregue a página.");
-    console.error(err);
-  });
-  text.focus();
+  list.textContent = "";
+  buscar(); text.focus();
 }
 
 text.addEventListener("input", () => {
@@ -203,17 +204,20 @@ $("form").addEventListener("submit", async e => {
   const v = text.value.trim(); if (!v || !me) return;
   send.disabled = true;
   try{
-    await addDoc(collection(db, "salas", me.sala, "msgs"), { texto: v.slice(0,2000), nome: me.nome, em: serverTimestamp() });
+    const r = await fetch(`${API}?sala=${me.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ texto: v, nome: me.nome }) });
+    if (!r.ok) throw new Error(r.status);
+    const { msg } = await r.json();
+    juntar([msg]); list.scrollTop = list.scrollHeight;
     text.value = ""; text.style.height = "auto"; setNote("");
   }catch(err){
     setNote("A mensagem não foi enviada. Confira a internet e tente de novo.");
-    send.disabled = false; console.error(err);
+    send.disabled = false;
   }
   text.focus();
 });
 
 const salvo = load();
-if (db && salvo && salvo.sala && salvo.nome){ $("nome").value = salvo.nome; abrir(salvo); }
+if (salvo && salvo.sala && salvo.nome){ $("nome").value = salvo.nome; abrir(salvo); }
 </script>
 </body>
 </html>

@@ -1,0 +1,4 @@
+# No Netlify, use "chat" como Base directory.
+[build]
+  publish = "public"
+  functions = "netlify/functions"

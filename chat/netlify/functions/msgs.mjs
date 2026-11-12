@@ -178,6 +178,15 @@ export default async (req) => {
   if (req.method !== "POST") return json({ erro: "método não permitido" }, 405);
   const nome = limpaNome(body.nome);
 
+  // Notificação de mensagem nova. As mensagens agora ficam no Supabase; o app chama
+  // isto só quando a outra pessoa não está com a conversa aberta.
+  if (rota === "avisar") {
+    if (!nome) return json({ erro: "faltou nome" }, 400);
+    const texto = typeof body.texto === "string" ? body.texto.slice(0, 180) : "";
+    await avisar(store, sala, { nome, texto: texto || "Mensagem nova" }, body.endpoint).catch((e) => console.error("push", e));
+    return json({ ok: true });
+  }
+
   // Presença: quem está digitando e até onde cada pessoa já leu ("visto").
   if (rota === "digitando" || rota === "lido" || rota === "presenca") {
     if (!nome) return json({ erro: "faltou nome" }, 400);
@@ -315,5 +324,5 @@ export default async (req) => {
 };
 
 export const config = {
-  path: ["/api/msgs", "/api/push", "/api/vapid", "/api/fixar", "/api/reagir", "/api/apagar", "/api/editar", "/api/presenca", "/api/digitando", "/api/lido", "/api/perfil", "/api/foto", "/api/midia"],
+  path: ["/api/msgs", "/api/push", "/api/vapid", "/api/fixar", "/api/reagir", "/api/apagar", "/api/editar", "/api/presenca", "/api/avisar", "/api/digitando", "/api/lido", "/api/perfil", "/api/foto", "/api/midia"],
 };

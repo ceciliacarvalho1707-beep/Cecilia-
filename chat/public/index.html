@@ -396,6 +396,7 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
   <div class="toast" id="toast" hidden></div>
 </div>
 
+<script src="/supabase.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const API = "/api/msgs";
@@ -404,7 +405,63 @@ const ICON_SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const toque = matchMedia("(pointer:coarse)").matches;
 const EMOJIS = ["❤️", "😂", "😮", "😢", "🙏", "👍"];
 const resumo = m => m.apagada ? "Mensagem apagada" : m.fig ? "Figurinha" : m.audio ? "🎤 Mensagem de voz" : m.foto ? "📷 " + (m.texto || "Foto") : m.texto;
-const fotoUrl = (sala, id) => `/api/midia?sala=${sala}&id=${id}`;
+// ── Supabase: guarda as mensagens e entrega na hora (tempo real) ─────────
+// Esta chave é a pública ("anon"): as regras do banco só deixam ver a conversa
+// cujo código (da senha) vai no cabeçalho x-sala de cada pedido.
+const SUPA_URL = "https://diwkjbxialmwjqqvxjdf.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpd2tqYnhpYWxtd2pxcXZ4amRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MTA2NjMsImV4cCI6MjExMDA4NjY2M30.QPacKUSIz6H8HTuaxOX-7RdpaBZFaacUiOfLcasroa0";
+const COLS = "id,nome,texto,em,foto,w,h,audio,dur,tipo,fig,resp,reacoes,editada,apagada";
+async function rest(sala, caminho, { method = "GET", body, prefer, keepalive } = {}){
+  const h = { apikey: SUPA_KEY, Authorization: "Bearer " + SUPA_KEY, "x-sala": sala };
+  if (body !== undefined) h["content-type"] = "application/json";
+  if (prefer) h.Prefer = prefer;
+  const r = await fetch(`${SUPA_URL}/rest/v1/${caminho}`, { method, headers: h, body: body !== undefined ? JSON.stringify(body) : undefined, keepalive, cache: "no-store" });
+  if (!r.ok){ let j = {}; try{ j = await r.json(); }catch(_){} throw Object.assign(new Error(j.message || r.status), { status: r.status }); }
+  const t = r.status === 204 ? "" : await r.text();
+  return t ? JSON.parse(t) : null;
+}
+// Tira campos vazios para a mesma mensagem vir igual de qualquer caminho
+function limpa(m){
+  const o = {};
+  for (const [k, v] of Object.entries(m || {})) if (v !== null && v !== undefined && k !== "sala") o[k] = v;
+  if (o.reacoes && !Object.keys(o.reacoes).length) delete o.reacoes;
+  if (!o.editada) delete o.editada;
+  if (!o.apagada) delete o.apagada;
+  return o;
+}
+const semVazios = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== null && v !== undefined));
+const EXT = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "audio/webm": "webm", "audio/mp4": "m4a", "audio/x-m4a": "m4a", "audio/ogg": "ogg", "audio/mpeg": "mp3", "audio/aac": "aac" };
+const nuvem = {
+  async mensagens(sala){ return (await rest(sala, `mensagens?select=${COLS}&sala=eq.${sala}&order=em.desc&limit=300`)).reverse().map(limpa); },
+  async ultima(sala){ const r = await rest(sala, `mensagens?select=${COLS}&sala=eq.${sala}&order=em.desc&limit=1`); return r && r[0] ? limpa(r[0]) : null; },
+  async enviar(sala, linha){ const r = await rest(sala, `mensagens?select=${COLS}`, { method: "POST", body: { sala, ...semVazios(linha) }, prefer: "return=representation" }); return limpa(r[0]); },
+  async mudar(sala, id, campos){
+    const r = await rest(sala, `mensagens?id=eq.${id}&sala=eq.${sala}&select=${COLS}`, { method: "PATCH", body: campos, prefer: "return=representation" });
+    if (!r || !r[0]) throw new Error("mensagem não encontrada");
+    return limpa(r[0]);
+  },
+  async reagir(sala, id, nome, emoji){ return limpa(await rest(sala, "rpc/reagir", { method: "POST", body: { p_id: id, p_nome: nome, p_emoji: emoji } })); },
+  async fixadas(sala){ return (await rest(sala, `fixadas?select=id,nome,texto,em&sala=eq.${sala}&order=fixada_em.desc&limit=10`)) || []; },
+  async fixar(sala, f){
+    await rest(sala, "fixadas?on_conflict=sala,id", { method: "POST", body: { sala, ...f }, prefer: "resolution=ignore-duplicates" });
+    const todas = await nuvem.fixadas(sala);
+    for (const x of todas.slice(3)) await nuvem.desafixar(sala, x.id).catch(() => {});
+    return todas.slice(0, 3);
+  },
+  async desafixar(sala, id){ await rest(sala, `fixadas?sala=eq.${sala}&id=eq.${id}`, { method: "DELETE" }); },
+  async pessoas(sala){ return (await rest(sala, `pessoas?select=nome,foto,lido,visto&sala=eq.${sala}`)) || []; },
+  async pessoa(sala, nome, campos, keepalive){
+    await rest(sala, "pessoas?on_conflict=sala,nome", { method: "POST", body: { sala, nome, ...campos }, prefer: "resolution=merge-duplicates", keepalive });
+  },
+  url(sala, arq){ return String(arq).includes("/") ? `${SUPA_URL}/storage/v1/object/public/midia/${arq}` : `/api/midia?sala=${sala}&id=${arq}`; },
+  async subir(sala, blob, tipo){
+    const nome = `${sala}/${crypto.randomUUID()}.${EXT[tipo] || "bin"}`;
+    const r = await fetch(`${SUPA_URL}/storage/v1/object/midia/${nome}`, { method: "POST", headers: { apikey: SUPA_KEY, Authorization: "Bearer " + SUPA_KEY, "content-type": tipo }, body: blob });
+    if (!r.ok) throw new Error(r.status);
+    return nome;
+  },
+};
+const fotoUrl = (sala, id) => nuvem.url(sala, id);
 const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
 const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
 const ICON_TIQUE1 = '<svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 6-7"/></svg>';
@@ -555,13 +612,12 @@ function desenharLista(){
 async function atualizarPrevias(){
   clearTimeout(listaT);
   if ($("inicio").hidden) return;
+  ligarCanais();
   await Promise.all(dados.chats.map(async c => {
-    try{
-      const r = await fetch(`${API}?sala=${c.sala}&ultima=1`, { cache: "no-store" });
-      if (r.ok){ const j = await r.json(); if (j.msgs[0]) ultimas[c.sala] = j.msgs[0]; }
-    }catch(_){}
+    try{ const u = await nuvem.ultima(c.sala); if (u) ultimas[c.sala] = u; }catch(_){}
   }));
-  if (!$("inicio").hidden){ desenharLista(); listaT = setTimeout(atualizarPrevias, 8000); }
+  // as novidades chegam pelo tempo real; isto é só uma conferência de segurança
+  if (!$("inicio").hidden){ desenharLista(); listaT = setTimeout(atualizarPrevias, 60000); }
 }
 function irInicio(){
   pararChat(); mostrar("inicio"); desenharLista(); atualizarPrevias();
@@ -600,9 +656,10 @@ $("fFotoArq").addEventListener("change", async () => {
 });
 async function salvarPerfil(c, foto){
   try{
-    const j = await postJSON(`/api/perfil?sala=${c.sala}`, { nome: c.nome, foto });
+    await nuvem.pessoa(c.sala, c.nome, { foto: foto || null });
     c.minhaFoto = foto || null; guardar();
-    if (atual === c) aplicarPerfis(j.perfis);
+    avisarCanal(c.sala, "pessoa", { nome: c.nome, foto: foto || null });
+    if (atual === c) aplicarPessoas([{ nome: c.nome, foto: foto || null }], true);
   }catch(_){ toast("Não deu para salvar a foto. Tente de novo."); }
 }
 function abrirEditor(sala){
@@ -650,7 +707,7 @@ $("editarRemover").addEventListener("click", async () => {
   if (!b.dataset.certeza){ b.dataset.certeza = "1"; b.textContent = "Toque de novo para confirmar"; return; }
   const c = acharChat(editando);
   if (c && c.notif) await desligarNotif(c);
-  dados.chats = dados.chats.filter(x => x.sala !== editando); guardar();
+  dados.chats = dados.chats.filter(x => x.sala !== editando); guardar(); ligarCanais();
   editando = null; irInicio(); toast("Conversa tirada da lista");
 });
 
@@ -682,23 +739,30 @@ function quando(ts){
   return "em " + d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}) + " às " + h;
 }
 function setOnline(ok){ online = ok; if (!ok) digitando = []; atualizarStatus(); }
-function aplicarPerfis(p){
-  if (!p || !atual) return;
-  pv = p.v;
-  const fotos = p.fotos || {};
-  const outra = Object.keys(fotos).find(n => n !== atual.nome);
-  atual.fotoOutra = outra ? fotos[outra] : null;
-  if (fotos[atual.nome] !== undefined || atual.minhaFoto) atual.minhaFoto = fotos[atual.nome] || null;
+let pessoas = {}; // nome -> { foto, lido, visto }
+function vistoOutra(){ return Math.max(0, ...Object.entries(pessoas).filter(([n]) => n !== atual.nome).map(([, p]) => p.visto || 0)); }
+function aplicarPessoas(lista, juntarCom){
+  if (!atual) return;
+  if (!juntarCom) pessoas = {};
+  for (const p of lista) pessoas[p.nome] = { ...(pessoas[p.nome] || {}), ...p };
+  const antes = JSON.stringify(lidos);
+  lidos = {}; for (const [n, p] of Object.entries(pessoas)) if (p.lido) lidos[n] = p.lido;
+  const outra = Object.keys(pessoas).find(n => n !== atual.nome && pessoas[n].foto);
+  atual.fotoOutra = outra ? pessoas[outra].foto : null;
+  if (pessoas[atual.nome] && "foto" in pessoas[atual.nome]) atual.minhaFoto = pessoas[atual.nome].foto || null;
   guardar();
   avatar($("chatAv"), atual.fotoOutra, atual.titulo);
+  presOutra = { online: !!(presOutra && presOutra.online), visto: vistoOutra() };
+  atualizarStatus();
+  if (JSON.stringify(lidos) !== antes && msgs.length) render();
 }
 
 function abrir(sala){
   const c = acharChat(sala); if (!c) return irInicio();
   if (!$("chat").hidden && atual && atual.sala === sala){ return; }
   pararChat();
-  atual = c; msgs = []; fixadas = []; rev = -1; pv = 0; firstRender = true; fixIdx = 0; online = null; digitando = []; lidos = {}; lidoEnviado = 0;
-  pendentes = []; presOutra = null; nos.clear(); divisor = c.visto || 0; novasAbaixo = 0;
+  atual = c; msgs = []; fixadas = []; firstRender = true; fixIdx = 0; online = null; digitando = []; digEm = {}; lidos = {}; lidoEnviado = 0;
+  pendentes = []; presOutra = null; pessoas = {}; nos.clear(); divisor = c.visto || 0; novasAbaixo = 0;
   limparResposta(); limparFoto(); fecharFigs(); cancelarGravacao(); sairEdicao(); fecharBusca(); setNote("");
   pintar($("app"), c.cor); atualizarBarra();
   $("chatTitulo").textContent = c.titulo;
@@ -707,21 +771,90 @@ function abrir(sala){
   list.textContent = ""; $("fixada").hidden = true; $("aviso").hidden = true;
   mostrar("chat");
   if (history.state?.tela !== "chat") history.pushState({ tela: "chat" }, "");
-  buscar(); atualizarSino(); presenca(true);
+  ligarCanais(); buscar(); atualizarSino(); presenca(atual);
+  if (canalPronto(c.sala)) atualizarPresenca();
 }
-function pararChat(){ clearTimeout(timer); if (atual){ avisarDigitando(true); presenca(false); } cancelarGravacao(); pararAudio(); atual = null; }
+function pararChat(){
+  const c = atual;
+  clearTimeout(timer); if (c) avisarDigitando(true); cancelarGravacao(); pararAudio(); atual = null;
+  if (c) presenca(c);
+}
+// Guarda "visto por último" e conta aos outros se estou ou não com a conversa aberta.
+function presenca(c){
+  if (!c) return;
+  atualizarTrack();
+  avisarCanal(c.sala, "estado", { nome: c.nome, ativo: meuEstado(c.sala).ativo }); // chega mais rápido que a presença
+  const visto = Date.now();
+  nuvem.pessoa(c.sala, c.nome, { visto }, true).catch(() => {});
+  avisarCanal(c.sala, "pessoa", { nome: c.nome, visto });
+}
+window.addEventListener("pagehide", () => { if (atual) presenca(atual); });
 
-// "Estou na conversa": avisa o servidor a cada 15 s. Assim a outra pessoa vê "online"
-// e o servidor não manda notificação para quem já está com a conversa aberta.
-let presT = null;
-function presenca(ativo){
-  clearTimeout(presT);
-  const c = atual; if (!c) return;
-  const on = ativo && !document.hidden;
-  fetch(`/api/presenca?sala=${c.sala}`, { method: "POST", keepalive: true, headers: { "content-type": "application/json" }, body: JSON.stringify({ nome: c.nome, ativo: on }) }).catch(() => {});
-  if (on) presT = setTimeout(() => presenca(true), 15000);
+// ── Tempo real: um canal por conversa salva ─────────────────────────────
+const sb = window.supabase ? supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { persistSession: false, autoRefreshToken: false } }) : null;
+if (!dados.aparelho){ dados.aparelho = Math.random().toString(36).slice(2, 10); }
+const canais = new Map(); // sala -> canal
+const canalPronto = sala => { const ch = canais.get(sala); return !!ch && ch.state === "joined"; };
+const meuEstado = sala => ({ nome: (acharChat(sala) || {}).nome, ativo: !!atual && atual.sala === sala && !document.hidden });
+function atualizarTrack(){ for (const [sala, ch] of canais) if (ch.state === "joined") ch.track(meuEstado(sala)).catch?.(() => {}); }
+function avisarCanal(sala, event, payload){ const ch = canais.get(sala); if (ch) ch.send({ type: "broadcast", event, payload }).catch?.(() => {}); }
+const estados = {}; // sala -> nome -> { ativo, em }: avisos rápidos de "entrei/saí da conversa"
+function outrosPresentes(sala){
+  const ch = canais.get(sala); if (!ch) return [];
+  const eu = (acharChat(sala) || {}).nome, rapido = estados[sala] || {}, agora = Date.now();
+  return Object.values(ch.presenceState()).flat().filter(p => p.nome && p.nome !== eu).map(p => {
+    const e = rapido[p.nome];
+    return e && agora - e.em < 15000 ? { ...p, ativo: e.ativo } : p;
+  });
 }
-window.addEventListener("pagehide", () => presenca(false));
+function atualizarPresenca(){
+  if (!atual) return;
+  presOutra = { online: outrosPresentes(atual.sala).some(p => p.ativo), visto: vistoOutra() };
+  atualizarStatus();
+}
+function ligarCanais(){
+  if (!sb) return;
+  for (const c of dados.chats) if (!canais.has(c.sala)) abrirCanal(c.sala);
+  for (const [sala, ch] of canais) if (!acharChat(sala)){ sb.removeChannel(ch); canais.delete(sala); }
+}
+function abrirCanal(sala){
+  const c = acharChat(sala);
+  const ch = sb.channel("c-" + sala, { config: { broadcast: { self: false }, presence: { key: (c.nome || "") + "-" + dados.aparelho } } });
+  ch.on("broadcast", { event: "msg" }, ({ payload }) => recebeu(sala, payload));
+  ch.on("broadcast", { event: "muda" }, ({ payload }) => recebeu(sala, payload));
+  ch.on("broadcast", { event: "fix" }, ({ payload }) => { if (atual && atual.sala === sala) trocarFixadas(payload.lista || []); });
+  ch.on("broadcast", { event: "pessoa" }, ({ payload }) => { if (atual && atual.sala === sala) aplicarPessoas([payload], true); });
+  ch.on("broadcast", { event: "dig" }, ({ payload }) => { if (atual && atual.sala === sala) recebeuDig(payload); });
+  ch.on("broadcast", { event: "estado" }, ({ payload }) => {
+    (estados[sala] = estados[sala] || {})[payload.nome] = { ativo: !!payload.ativo, em: Date.now() };
+    if (atual && atual.sala === sala) atualizarPresenca();
+  });
+  ch.on("presence", { event: "sync" }, () => { if (atual && atual.sala === sala) atualizarPresenca(); });
+  ch.subscribe(st => {
+    if (st === "SUBSCRIBED"){
+      ch.track(meuEstado(sala)).catch?.(() => {});
+      if (atual && atual.sala === sala){ buscar(); }       // pega o que chegou enquanto estava fora
+    } else if (st === "CHANNEL_ERROR" || st === "TIMED_OUT"){
+      if (atual && atual.sala === sala) agendar();
+    }
+  });
+  canais.set(sala, ch);
+}
+function recebeu(sala, m){
+  m = limpa(m);
+  const u = ultimas[sala];
+  if (!u || u.id === m.id || m.em >= u.em) ultimas[sala] = m;
+  if (atual && atual.sala === sala) juntar([m]);
+  else if (!$("inicio").hidden) desenharLista();
+}
+let digEm = {}, digT = null;
+function recebeuDig(p){
+  digEm[p.nome] = p.parou ? 0 : Date.now();
+  const agora = Date.now();
+  digitando = Object.entries(digEm).filter(([n, t]) => n !== atual.nome && agora - t < 5000).map(([n]) => n);
+  atualizarStatus();
+  clearTimeout(digT); if (digitando.length) digT = setTimeout(() => recebeuDig({ nome: "", parou: true }), 5200);
+}
 $("voltar").addEventListener("click", () => history.state?.tela === "chat" ? history.back() : irInicio());
 window.addEventListener("popstate", () => { if (!$("visor").hidden){ fecharVisor(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
 $("cab").addEventListener("click", () => atual && abrirEditor(atual.sala));
@@ -734,7 +867,10 @@ function marcarVisto(){
   const deOutra = [...msgs].reverse().find(m => m.nome !== atual.nome);
   if (deOutra && deOutra.em > lidoEnviado && deOutra.em > (lidos[atual.nome] || 0)){
     lidoEnviado = deOutra.em;
-    postJSON(`/api/lido?sala=${atual.sala}`, { nome: atual.nome, em: deOutra.em }).catch(() => { lidoEnviado = 0; });
+    const c = atual, em = deOutra.em;
+    nuvem.pessoa(c.sala, c.nome, { lido: em })
+      .then(() => avisarCanal(c.sala, "pessoa", { nome: c.nome, lido: em }))
+      .catch(() => { lidoEnviado = 0; });
   }
 }
 
@@ -926,41 +1062,54 @@ function trocarFixadas(nova){
 async function buscar(){
   const c = atual; if (!c) return;
   try{
-    const r = await fetch(`${API}?sala=${c.sala}&desde=${rev}&pv=${pv}&eu=${encodeURIComponent(c.nome)}`, { cache: "no-store" });
-    if (!r.ok) throw new Error(r.status);
-    const j = await r.json();
+    let [ms, fx, ps] = await Promise.all([nuvem.mensagens(c.sala), nuvem.fixadas(c.sala), nuvem.pessoas(c.sala)]);
     if (atual !== c) return;
-    if (j.perfis) aplicarPerfis(j.perfis);
-    digitando = j.digitando || [];
-    const outra = Object.keys({ ...(j.vistos || {}), ...(j.ativos || {}) }).filter(n => n !== c.nome);
-    if (outra.length){
-      const ag = j.agora || Date.now();
-      const ativoEm = Math.max(0, ...outra.map(n => (j.ativos || {})[n] || 0));
-      const vistoEm = Math.max(0, ...outra.map(n => (j.vistos || {})[n] || 0));
-      presOutra = { online: ag - ativoEm < 25000, visto: vistoEm ? Date.now() - (ag - vistoEm) : 0 };
+    if (!ms.length && !c.migrado && await migrar(c)){
+      [ms, fx, ps] = await Promise.all([nuvem.mensagens(c.sala), nuvem.fixadas(c.sala), nuvem.pessoas(c.sala)]);
+      if (atual !== c) return;
     }
-    const novosLidos = j.lidos || {};
-    const lidosMudou = JSON.stringify(novosLidos) !== JSON.stringify(lidos);
-    lidos = novosLidos;
+    aplicarPessoas(ps);
     setOnline(true);
-    if (firstRender && !j.msgs.length) render();
-    const mudou = juntar(j.msgs); rev = j.rev; trocarFixadas(j.fixadas || []);
-    if (lidosMudou && !mudou && msgs.length) render();
+    if (firstRender && !ms.length) render();
+    juntar(ms); trocarFixadas(fx.slice(0, 3));
+    if (ms.length) ultimas[c.sala] = ms[ms.length - 1];
   }catch(err){
     if (atual === c) setOnline(false);
   }
   agendar();
 }
-// Ritmo das conferências: a cada 1 s quando a outra pessoa também está na conversa
-// (mensagens chegam quase na hora), 2,5 s quando não está, e para em segundo plano.
+// As mensagens chegam pelo tempo real. Isto só confere de vez em quando, para o caso
+// de algo ter se perdido; se o tempo real cair, confere a cada 3 s até voltar.
 function agendar(){
   clearTimeout(timer);
   if (!atual || document.hidden) return;
-  const rapido = (presOutra && presOutra.online) || digitando.length;
-  timer = setTimeout(buscar, rapido ? 1000 : 2500);
+  timer = setTimeout(buscar, canalPronto(atual.sala) ? 30000 : 3000);
+}
+
+// Conversas da versão anterior (guardadas no Netlify) são copiadas uma vez para o Supabase.
+async function migrar(c){
+  c.migrado = true; guardar();
+  try{
+    const r = await fetch(`${API}?sala=${c.sala}&desde=-1&pv=0&eu=`, { cache: "no-store" });
+    if (!r.ok) return 0;
+    const j = await r.json(), ms = j.msgs || [];
+    const linhas = ms.map(m => ({ id: m.id, sala: c.sala, nome: m.nome, texto: m.texto || "", em: m.em,
+      foto: m.foto || null, w: m.w || null, h: m.h || null, audio: m.audio || null, dur: m.dur ?? null, tipo: m.tipo || null,
+      fig: m.fig || null, resp: m.resp || null, reacoes: m.reacoes || {}, editada: !!m.editada, apagada: !!m.apagada }));
+    for (let i = 0; i < linhas.length; i += 200)
+      await rest(c.sala, "mensagens?on_conflict=id", { method: "POST", body: linhas.slice(i, i + 200), prefer: "resolution=ignore-duplicates" });
+    for (const f of j.fixadas || [])
+      await rest(c.sala, "fixadas?on_conflict=sala,id", { method: "POST", body: { sala: c.sala, id: f.id, nome: f.nome, texto: f.texto || "", em: f.em }, prefer: "resolution=ignore-duplicates" }).catch(() => {});
+    const fotos = (j.perfis && j.perfis.fotos) || {}, lidosV = j.lidos || {};
+    for (const n of new Set([...Object.keys(fotos), ...Object.keys(lidosV)]))
+      await nuvem.pessoa(c.sala, n, { ...(fotos[n] ? { foto: fotos[n] } : {}), ...(lidosV[n] ? { lido: lidosV[n] } : {}) }).catch(() => {});
+    return ms.length;
+  }catch(_){
+    c.migrado = false; guardar(); return 0;
+  }
 }
 document.addEventListener("visibilitychange", () => {
-  if (atual) presenca(!document.hidden);
+  if (atual) presenca(atual);
   if (document.hidden) return;
   if (atual){ clearTimeout(timer); buscar(); marcarVisto(); }
   else if (!$("inicio").hidden) atualizarPrevias();
@@ -972,7 +1121,7 @@ function avisarDigitando(parou){
   const c = atual; if (!c) return;
   if (parou){ if (!ultimoDig) return; ultimoDig = 0; }
   else { if (Date.now() - ultimoDig < 3000) return; ultimoDig = Date.now(); }
-  postJSON(`/api/digitando?sala=${c.sala}`, { nome: c.nome, parou: !!parou }).catch(() => {});
+  avisarCanal(c.sala, "dig", { nome: c.nome, parou: !!parou });
 }
 for (const ev of ["pointerdown", "mousedown"]) send.addEventListener(ev, e => { if (document.activeElement === text) e.preventDefault(); });
 function podeEnviar(){
@@ -1009,11 +1158,24 @@ text.addEventListener("keydown", e => {
   if (e.key==="Escape"){ if (resposta) limparResposta(); if (editandoMsg) sairEdicao(); }
 });
 function limparCaixa(){ text.value = ""; text.style.height = "auto"; podeEnviar(); }
+// Manda a notificação só se a outra pessoa não estiver com a conversa aberta agora
+function notificar(c, msg){
+  if (outrosPresentes(c.sala).some(p => p.ativo)) return;
+  fetch(`/api/avisar?sala=${c.sala}`, { method: "POST", keepalive: true, headers: { "content-type": "application/json" },
+    body: JSON.stringify({ nome: c.nome, texto: resumo(msg), endpoint: minhaSub ? minhaSub.endpoint : undefined }) }).catch(() => {});
+}
+async function publicar(c, linha){
+  const msg = await nuvem.enviar(c.sala, linha);
+  avisarCanal(c.sala, "msg", msg);
+  ultimas[c.sala] = msg;
+  notificar(c, msg);
+  return msg;
+}
 async function enviarTexto(p){
   const c = atual;
   p.pendente = true; p.erro = false; render();
   try{
-    const { msg } = await postJSON(`${API}?sala=${c.sala}`, p.corpo);
+    const msg = await publicar(c, p.corpo);
     pendentes = pendentes.filter(x => x !== p);
     if (atual === c){ msgs.some(x => x.id === msg.id) ? render() : juntar([msg]); }
   }catch(_){
@@ -1027,10 +1189,11 @@ $("form").addEventListener("submit", async e => {
   if (editandoMsg){ return salvarEdicao(v); }
   if (!foto){
     // texto: aparece na hora com um reloginho, e o envio acontece por trás
-    const corpo = { texto: v, nome: c.nome, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined };
+    const resp = resposta ? { id: resposta.id, nome: resposta.nome, texto: resumo(resposta).slice(0, 140) } : null;
+    const corpo = { texto: v, nome: c.nome, resp };
     const ult = msgs.length ? msgs[msgs.length-1].em : 0;
     const p = { id: "tmp-" + Date.now() + Math.random().toString(36).slice(2,6), nome: c.nome, texto: v, em: Math.max(Date.now(), ult + 1), corpo };
-    if (resposta) p.resp = { id: resposta.id, nome: resposta.nome, texto: resumo(resposta).slice(0, 140) };
+    if (resp) p.resp = resp;
     pendentes.push(p); ultimoDig = 0;
     limparCaixa(); limparResposta(); setNote("");
     rolarProFim(false);
@@ -1039,14 +1202,12 @@ $("form").addEventListener("submit", async e => {
   }
   send.disabled = true;
   try{
-    const corpo = { texto: v, nome: c.nome, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined };
+    const corpo = { texto: v, nome: c.nome, resp: resposta ? { id: resposta.id, nome: resposta.nome, texto: resumo(resposta).slice(0, 140) } : null };
     if (foto){
       $("previaFotoTxt").textContent = "Enviando foto…";
-      const r = await fetch(`/api/foto?sala=${c.sala}`, { method: "POST", headers: { "content-type": "image/jpeg" }, body: foto.blob });
-      if (!r.ok) throw new Error(r.status);
-      corpo.foto = (await r.json()).id; corpo.w = foto.w; corpo.h = foto.h;
+      corpo.foto = await nuvem.subir(c.sala, foto.blob, "image/jpeg"); corpo.w = foto.w; corpo.h = foto.h;
     }
-    const { msg } = await postJSON(`${API}?sala=${c.sala}`, corpo);
+    const msg = await publicar(c, corpo);
     ultimoDig = 0;
     if (atual === c){ juntar([msg]); rolarProFim(true); }
     limparCaixa(); setNote(""); limparResposta(); limparFoto();
@@ -1074,8 +1235,10 @@ async function salvarEdicao(v){
   sairEdicao();
   if (v === m.texto) return;
   try{
-    const j = await postJSON(`/api/editar?sala=${c.sala}`, { id: m.id, nome: c.nome, texto: v });
-    if (atual === c) juntar([j.msg]);
+    if (!v && !m.foto) return;
+    const msg = await nuvem.mudar(c.sala, m.id, { texto: v, editada: true });
+    avisarCanal(c.sala, "muda", msg);
+    if (atual === c) juntar([msg]);
   }catch(_){ toast("Não deu para editar. Tente de novo."); }
 }
 
@@ -1214,11 +1377,10 @@ async function enviarGravacao(){
   const blob = new Blob(g.partes, { type: tipo });
   toast("Enviando áudio…");
   try{
-    const r = await fetch(`/api/midia?sala=${c.sala}`, { method: "POST", headers: { "content-type": tipo }, body: blob });
-    if (!r.ok) throw new Error(r.status);
-    const { id } = await r.json();
+    const id = await nuvem.subir(c.sala, blob, tipo);
     urlsAudio.set(id, URL.createObjectURL(blob));
-    const { msg } = await postJSON(`${API}?sala=${c.sala}`, { nome: c.nome, audio: id, dur, tipo, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined });
+    const msg = await publicar(c, { nome: c.nome, texto: "", audio: id, dur, tipo,
+      resp: resposta ? { id: resposta.id, nome: resposta.nome, texto: resumo(resposta).slice(0, 140) } : null });
     ultimoDig = 0;
     if (atual === c){ juntar([msg]); list.scrollTop = list.scrollHeight; limparResposta(); }
     $("toast").hidden = true;
@@ -1270,9 +1432,7 @@ async function mandarFigFoto(src){
   const c = atual; if (!c) return;
   try{
     const blob = await (await fetch(src)).blob();
-    const r = await fetch(`/api/midia?sala=${c.sala}`, { method: "POST", headers: { "content-type": "image/jpeg" }, body: blob });
-    if (!r.ok) throw new Error(r.status);
-    const { id } = await r.json();
+    const id = await nuvem.subir(c.sala, blob, "image/jpeg");
     await mandarFig({ fig: "foto", foto: id, w: 320, h: 320 });
     return;
   }catch(_){ toast("A figurinha não foi enviada. Tente de novo."); }
@@ -1280,7 +1440,7 @@ async function mandarFigFoto(src){
 async function mandarFig(extra){
   const c = atual; if (!c) return;
   fecharFigs();
-  const corpo = { nome: c.nome, ...extra, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined };
+  const corpo = { nome: c.nome, texto: "", ...extra, resp: resposta ? { id: resposta.id, nome: resposta.nome, texto: resumo(resposta).slice(0, 140) } : null };
   const ult = msgs.length ? msgs[msgs.length-1].em : 0;
   const p = { id: "tmp-" + Date.now(), nome: c.nome, texto: "", fig: extra.fig, foto: extra.foto, em: Math.max(Date.now(), ult + 1), corpo };
   pendentes.push(p); limparResposta(); rolarProFim(false);
@@ -1376,8 +1536,9 @@ async function reagir(m, e){
     juntar([{ ...atualM, reacoes: r }]);
   }
   try{
-    const j = await postJSON(`/api/reagir?sala=${c.sala}`, { id: m.id, emoji: e, nome: c.nome });
-    if (atual === c) juntar([j.msg]);
+    const msg = await nuvem.reagir(c.sala, m.id, c.nome, e);
+    avisarCanal(c.sala, "muda", msg);
+    if (atual === c) juntar([msg]);
   }catch(_){ toast("Não deu para reagir. Tente de novo."); }
 }
 $("aApagar").addEventListener("click", async () => {
@@ -1385,8 +1546,15 @@ $("aApagar").addEventListener("click", async () => {
   if (!b.dataset.certeza){ b.dataset.certeza = "1"; $("aApagarTxt").textContent = "Toque de novo para apagar"; return; }
   const m = acaoMsg, c = atual; fecharAcoes();
   try{
-    const j = await postJSON(`/api/apagar?sala=${c.sala}`, { id: m.id, nome: c.nome });
-    if (atual === c){ trocarFixadas(fixadas.filter(f => f.id !== m.id)); juntar([j.msg]); }
+    const msg = await nuvem.mudar(c.sala, m.id, { apagada: true, texto: "", foto: null, w: null, h: null, audio: null, dur: null, tipo: null, fig: null, resp: null, reacoes: {}, editada: false });
+    avisarCanal(c.sala, "muda", msg);
+    if (fixadas.some(f => f.id === m.id)){
+      await nuvem.desafixar(c.sala, m.id).catch(() => {});
+      const lista = fixadas.filter(f => f.id !== m.id);
+      avisarCanal(c.sala, "fix", { lista });
+      if (atual === c) trocarFixadas(lista);
+    }
+    if (atual === c) juntar([msg]);
     toast("Mensagem apagada");
   }catch(_){ toast("Não deu para apagar. Tente de novo."); }
 });
@@ -1404,10 +1572,11 @@ $("aFixar").addEventListener("click", async () => {
   const m = acaoMsg, c = atual; fecharAcoes();
   const fixar = !fixadas.some(f => f.id === m.id);
   try{
-    const r = await fetch(`/api/fixar?sala=${c.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: m.id, fixar }) });
-    if (!r.ok) throw new Error(r.status);
-    const j = await r.json();
-    if (atual === c){ fixIdx = 0; trocarFixadas(j.fixadas); }
+    let lista;
+    if (fixar) lista = await nuvem.fixar(c.sala, { id: m.id, nome: m.nome, texto: resumo(m).slice(0, 200), em: m.em });
+    else { await nuvem.desafixar(c.sala, m.id); lista = (await nuvem.fixadas(c.sala)).slice(0, 3); }
+    avisarCanal(c.sala, "fix", { lista });
+    if (atual === c){ fixIdx = 0; trocarFixadas(lista); }
     toast(fixar ? "Mensagem fixada" : "Mensagem desafixada");
   }catch(_){ toast("Não deu. Tente de novo."); }
 });

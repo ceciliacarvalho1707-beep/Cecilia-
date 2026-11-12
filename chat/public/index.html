@@ -120,7 +120,6 @@ label input{font-weight:400}
 .resp{display:flex;align-items:center;gap:10px;padding-block:8px;background:var(--surface);border-top:1px solid var(--line)}
 .resp .cita{flex:1;min-width:0;margin:0}
 #form{display:flex;gap:8px;align-items:flex-end;padding-top:10px;padding-bottom:max(10px,env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
-.resp:not([hidden]) + #form{border-top:0;padding-top:4px}
 #text{flex:1;min-width:0;resize:none;max-height:140px;line-height:1.35}
 
 /* menu de ações da mensagem */
@@ -130,6 +129,37 @@ label input{font-weight:400}
 .folha button{background:none;color:var(--fg);display:flex;align-items:center;gap:14px;border-radius:12px;padding:12px;font-weight:500;width:100%;text-align:left}
 .folha button svg{width:20px;height:20px;color:var(--accent);flex:none}
 .folha button:hover{background:var(--other)}
+.av img,.av-mini img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.av-mini{width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;font-family:var(--display);font-weight:700;flex:none;overflow:hidden}
+.perfil{display:flex;align-items:center;gap:14px}
+.perfil .av{width:64px;height:64px;font-size:1.5rem;overflow:hidden}
+.perfil .acoesP{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.perfil button{padding:8px 14px;min-height:38px;font-size:.88rem}
+.status.dig{color:var(--accent);font-weight:600}
+.status.dig::before{display:none}
+.msg.apagada .bubble{background:none;border:1px dashed var(--line);color:var(--muted);font-style:italic;cursor:default}
+.msg.me.apagada .bubble{background:none;color:var(--muted)}
+.foto{display:block;border-radius:12px;margin:-4px -8px 4px;max-width:min(260px,62vw);width:calc(100% + 16px);height:auto;background:var(--line);cursor:zoom-in;object-fit:cover}
+.bubble.so-foto{padding:4px}
+.bubble.so-foto .foto{margin:0;width:100%}
+.reacoes{display:flex;gap:4px;flex-wrap:wrap;margin:-6px 8px 0;position:relative;z-index:1}
+.reacoes button{background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:14px;padding:2px 8px;min-height:26px;font-size:.85rem;font-weight:500;display:flex;gap:4px;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.reacoes button.minha{border-color:var(--accent);background:var(--quote-other)}
+.reacoes small{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.emojis{display:flex;justify-content:space-between;gap:4px;padding:2px 6px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.folha .emojis button{width:48px;height:48px;min-height:48px;padding:0;font-size:1.6rem;justify-content:center;border-radius:50%;flex:none}
+.folha .emojis button.minha{background:var(--other)}
+.folha button.perigo{color:var(--bad);text-decoration:none;font-weight:500}
+.folha button.perigo svg{color:var(--bad)}
+.anexo{background:none;color:var(--muted);width:44px;min-height:44px;height:44px;padding:0;display:grid;place-items:center;flex:none;border-radius:50%}
+.anexo svg{width:24px;height:24px}
+.previaFoto{display:flex;align-items:center;gap:10px;padding-block:8px;background:var(--surface);border-top:1px solid var(--line)}
+.previaFoto img{width:56px;height:56px;object-fit:cover;border-radius:10px}
+.previaFoto span{flex:1;font-size:.88rem;color:var(--muted)}
+.previaFoto:not([hidden]) ~ #form, .resp:not([hidden]) ~ #form{border-top:0;padding-top:4px}
+.visor{position:absolute;inset:0;background:#0b0710;z-index:40;display:flex;align-items:center;justify-content:center}
+.visor img{max-width:100%;max-height:100%;object-fit:contain}
+.visor button{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));background:rgba(255,255,255,.15);color:#fff}
 .toast{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:.85rem;z-index:30;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.bubble{transition:none}.msg.flash .bubble{animation:none;outline:3px solid var(--accent)}}
 </style>
@@ -158,6 +188,18 @@ label input{font-weight:400}
       <label>Seu nome
         <input id="fNome" maxlength="30" required placeholder="Como você aparece para a outra pessoa">
       </label>
+      <div class="perfil">
+        <span class="av" id="fFotoAv">?</span>
+        <span class="acoesP">
+          <b style="font-size:.85rem">Sua foto nesta conversa</b>
+          <span class="botoes" style="gap:6px">
+            <button type="button" class="sec" id="fFotoBtn">Escolher foto</button>
+            <button type="button" class="sec" id="fFotoTirar" hidden>Tirar</button>
+          </span>
+          <span class="hint">A outra pessoa vê essa foto.</span>
+        </span>
+        <input type="file" id="fFotoArq" accept="image/*" hidden>
+      </div>
       <label id="fSenhaBox">Senha da conversa
         <input id="fSenha" type="password" minlength="4" placeholder="Pelo menos 4 caracteres">
         <span class="hint">Combinem pessoalmente. Misture letras e números: quem adivinhar a senha consegue ler a conversa.</span>
@@ -177,6 +219,7 @@ label input{font-weight:400}
       <button class="ic" id="voltar" type="button" aria-label="Voltar para as conversas">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
+      <span class="av-mini" id="chatAv" aria-hidden="true"></span>
       <button class="cab" id="cab" type="button" aria-label="Editar conversa">
         <h1 id="chatTitulo">Conversa</h1>
         <span class="status" id="status">conectando…</span>
@@ -194,7 +237,14 @@ label input{font-weight:400}
       <span class="cita"><b id="respNome"></b><span id="respTxt"></span></span>
       <button class="ic" id="respFechar" type="button" aria-label="Cancelar resposta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
+    <div class="previaFoto gut" id="previaFoto" hidden>
+      <img id="previaFotoImg" alt="Foto escolhida">
+      <span id="previaFotoTxt">Foto pronta. Escreva uma legenda, se quiser, e toque em Enviar.</span>
+      <button class="ic" id="previaFotoFechar" type="button" aria-label="Tirar a foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
     <form id="form" class="gut">
+      <button class="anexo" id="anexo" type="button" aria-label="Mandar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 15l-5-5-9 9"/></svg></button>
+      <input type="file" id="arquivo" accept="image/*" hidden>
       <textarea id="text" rows="1" placeholder="Escreva uma mensagem…" aria-label="Mensagem"></textarea>
       <button id="send" type="submit" disabled>Enviar</button>
     </form>
@@ -204,12 +254,15 @@ label input{font-weight:400}
   <div class="fundo" id="acoes" hidden>
     <div class="folha" role="dialog" aria-label="Ações da mensagem">
       <div class="previa" id="acoesPrevia"></div>
+      <div class="emojis" id="emojis"></div>
       <button type="button" id="aResponder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v6"/></svg>Responder</button>
       <button type="button" id="aFixar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 .7 1.7L15 6.4v4.2l2.7 2.7A1 1 0 0 1 17 15h-4v6l-1 1-1-1v-6H7a1 1 0 0 1-.7-1.7L9 10.6V6.4L7.3 4.7A1 1 0 0 1 8 3z"/></svg><span id="aFixarTxt">Fixar</span></button>
       <button type="button" id="aCopiar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar texto</button>
+      <button type="button" id="aApagar" class="perigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg><span id="aApagarTxt">Apagar para todas</span></button>
       <button type="button" id="aFechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Cancelar</button>
     </div>
   </div>
+  <div class="visor" id="visor" hidden><img id="visorImg" alt="Foto"><button class="ic" id="visorFechar" type="button" aria-label="Fechar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="toast" id="toast" hidden></div>
 </div>
 
@@ -219,6 +272,38 @@ const API = "/api/msgs";
 const ICON_FIXO = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3a1 1 0 0 1 .7 1.7L15 6.4v4.2l2.7 2.7A1 1 0 0 1 17 15h-4v6l-1 1-1-1v-6H7a1 1 0 0 1-.7-1.7L9 10.6V6.4L7.3 4.7A1 1 0 0 1 8 3z"/></svg>';
 const ICON_SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 5 5v6"/></svg>';
 const toque = matchMedia("(pointer:coarse)").matches;
+const EMOJIS = ["❤️", "😂", "😮", "😢", "🙏", "👍"];
+const resumo = m => m.apagada ? "Mensagem apagada" : m.foto ? "📷 " + (m.texto || "Foto") : m.texto;
+const fotoUrl = (sala, id) => `/api/foto?sala=${sala}&id=${id}`;
+function avatar(alvo, foto, letra){
+  alvo.textContent = "";
+  if (foto){ const i = new Image(); i.src = foto; i.alt = ""; alvo.appendChild(i); }
+  else alvo.textContent = (letra || "?").trim().charAt(0).toUpperCase() || "?";
+}
+async function postJSON(url, body){
+  const r = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(j.erro || r.status), { status: r.status });
+  return j;
+}
+// Diminui a foto antes de enviar: rápido no 4G e cabe no armazenamento.
+async function comprimir(arquivo, lado, qualidade, quadrado){
+  let img;
+  try{ img = await createImageBitmap(arquivo, { imageOrientation: "from-image" }); }
+  catch(_){
+    img = await new Promise((ok, erro) => { const i = new Image(); i.onload = () => ok(i); i.onerror = erro; i.src = URL.createObjectURL(arquivo); });
+  }
+  const W = img.width, H = img.height;
+  let sx = 0, sy = 0, sw = W, sh = H;
+  if (quadrado){ const m = Math.min(W, H); sx = (W - m) / 2; sy = (H - m) / 2; sw = sh = m; }
+  const k = Math.min(1, lado / Math.max(sw, sh));
+  const w = Math.round(sw * k), h = Math.round(sh * k);
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+  const cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h);
+  cx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+  const blob = await new Promise(ok => cv.toBlob(ok, "image/jpeg", qualidade));
+  return { blob, w, h, dataUrl: quadrado ? cv.toDataURL("image/jpeg", qualidade) : null };
+}
 
 // ── Conversas salvas neste aparelho ─────────────────────────────────────
 const KEY = "cantinho:v2";
@@ -281,10 +366,10 @@ function desenharLista(){
     const u = ultimas[c.sala];
     const novo = u && u.em > (c.visto||0) && u.nome !== c.nome;
     const it = el("button", "item" + (novo ? " novo" : "")); it.type = "button";
-    it.appendChild(el("span","av",(c.titulo||"?").trim().charAt(0).toUpperCase()));
+    const av = el("span","av"); avatar(av, c.fotoOutra, c.titulo); it.appendChild(av);
     const meio = el("span","meio");
     const l1 = el("span","linha"); l1.appendChild(el("span","tit",c.titulo)); if (u) l1.appendChild(el("span","hora",hora(u.em)));
-    const l2 = el("span","linha"); l2.appendChild(el("span","prev", u ? (u.nome === c.nome ? "Você: " : u.nome + ": ") + u.texto : "Nenhuma mensagem ainda"));
+    const l2 = el("span","linha"); l2.appendChild(el("span","prev", u ? (u.nome === c.nome ? "Você: " : u.nome + ": ") + resumo(u) : "Nenhuma mensagem ainda"));
     if (novo) l2.appendChild(el("span","ponto"));
     meio.append(l1,l2); it.appendChild(meio);
     it.addEventListener("click", () => abrir(c.sala));
@@ -309,6 +394,30 @@ $("novaBtn").addEventListener("click", () => abrirEditor(null));
 
 // Nova / editar
 let editando = null; // sala ou null
+let editorFoto; // undefined: sem mudança; null: tirar; texto: foto nova
+function mostrarFotoEditor(){
+  const c = editando && acharChat(editando);
+  const f = editorFoto !== undefined ? editorFoto : c && c.minhaFoto;
+  avatar($("fFotoAv"), f, $("fNome").value || "?");
+  $("fFotoTirar").hidden = !f;
+  $("fFotoBtn").textContent = f ? "Trocar foto" : "Escolher foto";
+}
+$("fFotoBtn").addEventListener("click", () => $("fFotoArq").click());
+$("fFotoTirar").addEventListener("click", () => { editorFoto = null; mostrarFotoEditor(); });
+$("fNome").addEventListener("input", mostrarFotoEditor);
+$("fFotoArq").addEventListener("change", async () => {
+  const f = $("fFotoArq").files[0]; $("fFotoArq").value = "";
+  if (!f) return;
+  try{ editorFoto = (await comprimir(f, 192, 0.8, true)).dataUrl; mostrarFotoEditor(); }
+  catch(_){ $("editarErr").textContent = "Não deu para abrir essa foto. Tente outra."; }
+});
+async function salvarPerfil(c, foto){
+  try{
+    const j = await postJSON(`/api/perfil?sala=${c.sala}`, { nome: c.nome, foto });
+    c.minhaFoto = foto || null; guardar();
+    if (atual === c) aplicarPerfis(j.perfis);
+  }catch(_){ toast("Não deu para salvar a foto. Tente de novo."); }
+}
 function abrirEditor(sala){
   editando = sala; const c = sala && acharChat(sala);
   $("editarTit").textContent = c ? "Editar conversa" : "Nova conversa";
@@ -320,7 +429,8 @@ function abrirEditor(sala){
   $("editarRemover").hidden = !c; $("editarRemover").dataset.certeza = "";
   $("editarRemover").textContent = "Tirar esta conversa da lista";
   $("editarErr").textContent = "";
-  mostrar("editar");
+  editorFoto = undefined;
+  mostrar("editar"); mostrarFotoEditor();
   if (!toque) $("fTitulo").focus();
 }
 $("editarCancelar").addEventListener("click", () => editando ? abrir(editando) : irInicio());
@@ -331,14 +441,20 @@ $("editarForm").addEventListener("submit", async e => {
   if (!nome){ $("editarErr").textContent = "Escreva seu nome."; return; }
   dados.ultimoNome = nome;
   if (editando){
-    const c = acharChat(editando); c.titulo = titulo; c.nome = nome; guardar(); abrir(c.sala); return;
+    const c = acharChat(editando); const nomeAntigo = c.nome;
+    c.titulo = titulo; c.nome = nome; guardar();
+    if (editorFoto !== undefined) salvarPerfil(c, editorFoto);
+    else if (nomeAntigo !== nome && c.minhaFoto) salvarPerfil(c, c.minhaFoto);
+    abrir(c.sala); return;
   }
   if (senha.trim().length < 4){ $("editarErr").textContent = "A senha precisa ter pelo menos 4 caracteres."; return; }
   const sala = await salaDe(senha);
   let c = acharChat(sala);
   if (c){ c.titulo = titulo; c.nome = nome; }
   else { c = { sala, titulo, nome, notif: false, visto: 0, criado: Date.now() }; dados.chats.push(c); }
-  guardar(); abrir(sala);
+  guardar();
+  if (editorFoto) salvarPerfil(c, editorFoto);
+  abrir(sala);
 });
 $("editarRemover").addEventListener("click", async () => {
   const b = $("editarRemover");
@@ -351,26 +467,45 @@ $("editarRemover").addEventListener("click", async () => {
 
 // ── Conversa aberta ─────────────────────────────────────────────────────
 const list = $("list"), text = $("text"), send = $("send"), statusEl = $("status"), note = $("note");
-let atual = null, msgs = [], fixadas = [], ultimo = 0, timer = null, firstRender = true, resposta = null, fixIdx = 0;
+let atual = null, msgs = [], fixadas = [], rev = -1, pv = 0, timer = null, firstRender = true, resposta = null, fixIdx = 0;
+let online = null, digitando = [], fotoPend = null;
 function setNote(t){ note.textContent = t; note.hidden = !t; }
-function setOnline(ok){ statusEl.textContent = ok ? "ao vivo" : "sem conexão"; statusEl.classList.toggle("on", ok); }
+function atualizarStatus(){
+  const dig = digitando.length > 0;
+  statusEl.classList.toggle("dig", dig);
+  statusEl.classList.toggle("on", !dig && online === true);
+  statusEl.textContent = dig ? (digitando.length > 1 ? digitando.join(" e ") + " estão digitando…" : digitando[0] + " está digitando…")
+    : online === null ? "conectando…" : online ? "ao vivo" : "sem conexão";
+}
+function setOnline(ok){ online = ok; if (!ok) digitando = []; atualizarStatus(); }
+function aplicarPerfis(p){
+  if (!p || !atual) return;
+  pv = p.v;
+  const fotos = p.fotos || {};
+  const outra = Object.keys(fotos).find(n => n !== atual.nome);
+  atual.fotoOutra = outra ? fotos[outra] : null;
+  if (fotos[atual.nome] !== undefined || atual.minhaFoto) atual.minhaFoto = fotos[atual.nome] || null;
+  guardar();
+  avatar($("chatAv"), atual.fotoOutra, atual.titulo);
+}
 
 function abrir(sala){
   const c = acharChat(sala); if (!c) return irInicio();
   if (!$("chat").hidden && atual && atual.sala === sala){ return; }
   pararChat();
-  atual = c; msgs = []; fixadas = []; ultimo = 0; firstRender = true; fixIdx = 0;
-  limparResposta(); setNote("");
+  atual = c; msgs = []; fixadas = []; rev = -1; pv = 0; firstRender = true; fixIdx = 0; online = null; digitando = [];
+  limparResposta(); limparFoto(); setNote("");
   $("chatTitulo").textContent = c.titulo;
-  statusEl.textContent = "conectando…"; statusEl.classList.remove("on");
+  avatar($("chatAv"), c.fotoOutra, c.titulo);
+  atualizarStatus();
   list.textContent = ""; $("fixada").hidden = true; $("aviso").hidden = true;
   mostrar("chat");
   if (history.state?.tela !== "chat") history.pushState({ tela: "chat" }, "");
   buscar(); atualizarSino();
 }
-function pararChat(){ clearTimeout(timer); atual = null; }
+function pararChat(){ clearTimeout(timer); if (atual) avisarDigitando(true); atual = null; }
 $("voltar").addEventListener("click", () => history.state?.tela === "chat" ? history.back() : irInicio());
-window.addEventListener("popstate", () => { if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
+window.addEventListener("popstate", () => { if (!$("visor").hidden){ fecharVisor(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
 $("cab").addEventListener("click", () => atual && abrirEditor(atual.sala));
 
 function marcarVisto(){
@@ -382,6 +517,7 @@ function marcarVisto(){
 
 function render(){
   const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 80;
+  const topo = list.scrollTop;
   list.textContent = "";
   if (!msgs.length){
     list.innerHTML = '<div class="empty"><b>Nenhuma mensagem ainda</b>Escreva a primeira aí embaixo. Ela aparece em segundos para a outra pessoa.</div>';
@@ -393,17 +529,43 @@ function render(){
     const d = new Date(m.em), day = d.toDateString();
     if (day !== lastDay){ list.appendChild(el("div","day",dayLabel(d))); lastDay = day; lastNome = null; }
     const mine = m.nome === atual.nome;
-    const box = el("div", "msg" + (mine ? " me" : "")); box.dataset.id = m.id;
+    const box = el("div", "msg" + (mine ? " me" : "") + (m.apagada ? " apagada" : "")); box.dataset.id = m.id;
     if (!mine && m.nome !== lastNome) box.appendChild(el("div","who",m.nome || "Amiga"));
     const b = el("div","bubble");
+    if (m.apagada){
+      b.appendChild(el("span","t", mine ? "Você apagou esta mensagem" : "Mensagem apagada"));
+      box.appendChild(b);
+      const t = el("div","time", d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})); box.appendChild(t);
+      list.appendChild(box); lastNome = m.nome; continue;
+    }
     if (m.resp){
       const q = el("span","cita"); q.appendChild(el("b",null, m.resp.nome === atual.nome ? "Você" : m.resp.nome)); q.appendChild(el("span",null,m.resp.texto));
       q.addEventListener("click", ev => { ev.stopPropagation(); irPara(m.resp.id); });
       b.appendChild(q);
     }
-    b.appendChild(el("span","t",m.texto));
+    if (m.foto){
+      const img = new Image(); img.className = "foto"; img.alt = "Foto de " + m.nome; img.loading = "lazy"; img.decoding = "async";
+      img.width = m.w; img.height = m.h; img.style.aspectRatio = m.w + " / " + m.h;
+      img.src = fotoUrl(atual.sala, m.foto); img.draggable = false;
+      img.addEventListener("click", ev => { ev.stopPropagation(); abrirVisor(img.src); });
+      b.appendChild(img);
+      if (!m.texto && !m.resp) b.classList.add("so-foto");
+    }
+    if (m.texto) b.appendChild(el("span","t",m.texto));
     const seta = el("span","seta"); seta.innerHTML = ICON_SETA; box.appendChild(seta);
     box.appendChild(b);
+    const reac = Object.entries(m.reacoes || {});
+    if (reac.length){
+      const r = el("div","reacoes");
+      for (const [e, ns] of reac){
+        const bt = el("button", ns.includes(atual.nome) ? "minha" : ""); bt.type = "button";
+        bt.title = ns.map(n => n === atual.nome ? "Você" : n).join(", ");
+        bt.appendChild(document.createTextNode(e)); if (ns.length > 1) bt.appendChild(el("small",null,String(ns.length)));
+        bt.addEventListener("click", () => reagir(m, e));
+        r.appendChild(bt);
+      }
+      box.appendChild(r);
+    }
     const t = el("div","time");
     if (fixos.has(m.id)){ const s = el("span"); s.innerHTML = ICON_FIXO; s.title = "Fixada"; t.appendChild(s); }
     t.appendChild(document.createTextNode(d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})));
@@ -411,7 +573,11 @@ function render(){
     ligarGestos(box, b, m);
     list.appendChild(box); lastNome = m.nome;
   }
-  if (atBottom || firstRender){ list.scrollTop = list.scrollHeight; firstRender = false; }
+  if (atBottom || firstRender){
+    list.scrollTop = list.scrollHeight; firstRender = false;
+    // fotos que ainda estão carregando mudam a altura: continua lá embaixo
+    list.querySelectorAll("img.foto").forEach(i => { if (!i.complete) i.addEventListener("load", () => { if (list.scrollHeight - list.scrollTop - list.clientHeight < 400) list.scrollTop = list.scrollHeight; }, { once: true }); });
+  } else list.scrollTop = topo;
 }
 
 function desenharFixada(){
@@ -437,9 +603,13 @@ function irPara(id){
 }
 
 function juntar(novas){
-  const ids = new Set(msgs.map(m=>m.id));
   let mudou = false;
-  for (const m of novas){ if (!ids.has(m.id)){ msgs.push(m); mudou = true; } if (m.em > ultimo) ultimo = m.em; }
+  for (const m of novas){
+    const i = msgs.findIndex(x => x.id === m.id);
+    if (i < 0){ msgs.push(m); mudou = true; }
+    else if (JSON.stringify(msgs[i]) !== JSON.stringify(m)){ msgs[i] = m; mudou = true; }
+    if (m.apagada && resposta && resposta.id === m.id) limparResposta();
+  }
   if (mudou){ msgs.sort((a,b)=>a.em-b.em); render(); marcarVisto(); }
   return mudou;
 }
@@ -451,13 +621,15 @@ function trocarFixadas(nova){
 async function buscar(){
   const c = atual; if (!c) return;
   try{
-    const r = await fetch(`${API}?sala=${c.sala}&depois=${ultimo}`, { cache: "no-store" });
+    const r = await fetch(`${API}?sala=${c.sala}&desde=${rev}&pv=${pv}&eu=${encodeURIComponent(c.nome)}`, { cache: "no-store" });
     if (!r.ok) throw new Error(r.status);
     const j = await r.json();
     if (atual !== c) return;
+    if (j.perfis) aplicarPerfis(j.perfis);
+    digitando = j.digitando || [];
     setOnline(true);
     if (firstRender && !j.msgs.length) render();
-    juntar(j.msgs); trocarFixadas(j.fixadas || []);
+    juntar(j.msgs); rev = j.rev; trocarFixadas(j.fixadas || []);
   }catch(err){
     if (atual === c) setOnline(false);
   }
@@ -472,29 +644,63 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // Escrever e enviar
+let ultimoDig = 0;
+function avisarDigitando(parou){
+  const c = atual; if (!c) return;
+  if (parou){ if (!ultimoDig) return; ultimoDig = 0; }
+  else { if (Date.now() - ultimoDig < 3000) return; ultimoDig = Date.now(); }
+  postJSON(`/api/digitando?sala=${c.sala}`, { nome: c.nome, parou: !!parou }).catch(() => {});
+}
+function podeEnviar(){ send.disabled = !text.value.trim() && !fotoPend; }
 text.addEventListener("input", () => {
   text.style.height = "auto"; text.style.height = Math.min(text.scrollHeight,140)+"px";
-  send.disabled = !text.value.trim();
+  podeEnviar();
+  avisarDigitando(!text.value.trim());
 });
+text.addEventListener("blur", () => avisarDigitando(true));
+
+// Foto
+$("anexo").addEventListener("click", () => $("arquivo").click());
+$("arquivo").addEventListener("change", async () => {
+  const f = $("arquivo").files[0]; $("arquivo").value = "";
+  if (!f) return;
+  try{
+    const r = await comprimir(f, 1600, 0.82, false);
+    limparFoto();
+    fotoPend = { ...r, url: URL.createObjectURL(r.blob) };
+    $("previaFotoImg").src = fotoPend.url; $("previaFoto").hidden = false; podeEnviar();
+  }catch(_){ toast("Não deu para abrir essa foto. Tente outra."); }
+});
+function limparFoto(){ if (fotoPend) URL.revokeObjectURL(fotoPend.url); fotoPend = null; $("previaFoto").hidden = true; podeEnviar(); }
+$("previaFotoFechar").addEventListener("click", limparFoto);
+function abrirVisor(src){ $("visorImg").src = src; $("visor").hidden = false; history.pushState({ tela: "chat", visor: 1 }, ""); }
+function fecharVisor(){ $("visor").hidden = true; $("visorImg").removeAttribute("src"); }
+$("visor").addEventListener("click", () => history.back());
 text.addEventListener("keydown", e => {
   if (e.key==="Enter" && !e.shiftKey && !toque){ e.preventDefault(); $("form").requestSubmit(); }
   if (e.key==="Escape" && resposta) limparResposta();
 });
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
-  const v = text.value.trim(), c = atual; if (!v || !c) return;
+  const v = text.value.trim(), c = atual, foto = fotoPend; if ((!v && !foto) || !c) return;
   send.disabled = true;
   try{
-    const r = await fetch(`${API}?sala=${c.sala}`, { method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify({ texto: v, nome: c.nome, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined }) });
-    if (!r.ok) throw new Error(r.status);
-    const { msg } = await r.json();
+    const corpo = { texto: v, nome: c.nome, respId: resposta ? resposta.id : undefined, endpoint: minhaSub ? minhaSub.endpoint : undefined };
+    if (foto){
+      $("previaFotoTxt").textContent = "Enviando foto…";
+      const r = await fetch(`/api/foto?sala=${c.sala}`, { method: "POST", headers: { "content-type": "image/jpeg" }, body: foto.blob });
+      if (!r.ok) throw new Error(r.status);
+      corpo.foto = (await r.json()).id; corpo.w = foto.w; corpo.h = foto.h;
+    }
+    const { msg } = await postJSON(`${API}?sala=${c.sala}`, corpo);
+    ultimoDig = 0;
     if (atual === c){ juntar([msg]); list.scrollTop = list.scrollHeight; }
-    text.value = ""; text.style.height = "auto"; setNote(""); limparResposta();
+    text.value = ""; text.style.height = "auto"; setNote(""); limparResposta(); limparFoto();
   }catch(err){
-    setNote("A mensagem não foi enviada. Confira a internet e tente de novo.");
+    setNote(foto ? "A foto não foi enviada. Confira a internet e tente de novo." : "A mensagem não foi enviada. Confira a internet e tente de novo.");
     send.disabled = false;
   }
+  $("previaFotoTxt").textContent = "Foto pronta. Escreva uma legenda, se quiser, e toque em Enviar.";
   if (!toque) text.focus();
 });
 
@@ -502,7 +708,7 @@ $("form").addEventListener("submit", async e => {
 function responder(m){
   resposta = m;
   $("respNome").textContent = m.nome === atual.nome ? "Respondendo a você mesma" : "Respondendo a " + m.nome;
-  $("respTxt").textContent = m.texto;
+  $("respTxt").textContent = resumo(m);
   $("resp").hidden = false; text.focus();
 }
 function limparResposta(){ resposta = null; $("resp").hidden = true; }
@@ -510,15 +716,20 @@ $("respFechar").addEventListener("click", limparResposta);
 
 // Toque abre o menu; arrastar para a direita responde (como no WhatsApp)
 function ligarGestos(box, bubble, m){
-  let x0 = null, y0 = 0, dx = 0, arrastou = false;
+  let x0 = null, y0 = 0, dx = 0, arrastou = false, segurou = false, longo = null;
   const seta = box.querySelector(".seta");
+  const soltar = () => { clearTimeout(longo); longo = null; };
+  // Segurar o dedo na mensagem abre o menu (reagir, responder, fixar, apagar)
+  bubble.addEventListener("contextmenu", e => { e.preventDefault(); soltar(); segurou = true; abrirAcoes(m); });
   bubble.addEventListener("pointerdown", e => {
     if (e.pointerType === "mouse") return;
-    x0 = e.clientX; y0 = e.clientY; dx = 0; arrastou = false; bubble.style.transition = "none";
+    x0 = e.clientX; y0 = e.clientY; dx = 0; arrastou = false; segurou = false; bubble.style.transition = "none";
+    soltar(); longo = setTimeout(() => { longo = null; segurou = true; x0 = null; if (navigator.vibrate) navigator.vibrate(15); abrirAcoes(m); }, 450);
   });
   bubble.addEventListener("pointermove", e => {
     if (x0 === null) return;
     const ddx = e.clientX - x0, ddy = e.clientY - y0;
+    if (Math.abs(ddx) > 8 || Math.abs(ddy) > 8) soltar();
     if (!arrastou && Math.abs(ddy) > 12 && Math.abs(ddy) > Math.abs(ddx)){ x0 = null; bubble.style.transform = ""; return; }
     if (ddx > 8) arrastou = true;
     if (!arrastou) return;
@@ -527,26 +738,57 @@ function ligarGestos(box, bubble, m){
     seta.style.opacity = Math.min(1, dx/60); seta.style.transform = `translateX(${dx}px)`;
   });
   const fim = () => {
+    soltar();
     if (x0 === null) return;
     x0 = null; bubble.style.transition = ""; bubble.style.transform = ""; seta.style.opacity = 0; seta.style.transform = "";
     if (dx >= 60){ if (navigator.vibrate) navigator.vibrate(10); responder(m); }
   };
   bubble.addEventListener("pointerup", fim);
   bubble.addEventListener("pointercancel", fim);
-  bubble.addEventListener("click", () => { if (arrastou){ arrastou = false; return; } abrirAcoes(m); });
+  bubble.addEventListener("click", e => {
+    if (arrastou || segurou){ arrastou = segurou = false; e.stopPropagation(); return; }
+    if (e.target.closest(".foto,.cita")) return; // a foto abre em tela cheia; a citação leva à mensagem
+    abrirAcoes(m);
+  }, true);
 }
 
 // Menu de ações
 let acaoMsg = null;
 function abrirAcoes(m){
   acaoMsg = m;
-  $("acoesPrevia").textContent = (m.nome === atual.nome ? "Você" : m.nome) + ": " + m.texto;
+  $("acoesPrevia").textContent = (m.nome === atual.nome ? "Você" : m.nome) + ": " + resumo(m);
   $("aFixarTxt").textContent = fixadas.some(f => f.id === m.id) ? "Desafixar" : "Fixar no topo";
+  $("aCopiar").hidden = !m.texto;
+  $("aApagar").hidden = m.nome !== atual.nome; $("aApagar").dataset.certeza = ""; $("aApagarTxt").textContent = "Apagar para todas";
+  const box = $("emojis"); box.textContent = "";
+  for (const e of EMOJIS){
+    const b = el("button", (m.reacoes && (m.reacoes[e] || []).includes(atual.nome)) ? "minha" : "", e); b.type = "button";
+    b.setAttribute("aria-label", "Reagir com " + e);
+    b.addEventListener("click", () => { fecharAcoes(); reagir(m, e); });
+    box.appendChild(b);
+  }
   $("acoes").hidden = false; $("aResponder").focus();
 }
+async function reagir(m, e){
+  const c = atual;
+  try{
+    const j = await postJSON(`/api/reagir?sala=${c.sala}`, { id: m.id, emoji: e, nome: c.nome });
+    if (atual === c) juntar([j.msg]);
+  }catch(_){ toast("Não deu para reagir. Tente de novo."); }
+}
+$("aApagar").addEventListener("click", async () => {
+  const b = $("aApagar");
+  if (!b.dataset.certeza){ b.dataset.certeza = "1"; $("aApagarTxt").textContent = "Toque de novo para apagar"; return; }
+  const m = acaoMsg, c = atual; fecharAcoes();
+  try{
+    const j = await postJSON(`/api/apagar?sala=${c.sala}`, { id: m.id, nome: c.nome });
+    if (atual === c){ trocarFixadas(fixadas.filter(f => f.id !== m.id)); juntar([j.msg]); }
+    toast("Mensagem apagada");
+  }catch(_){ toast("Não deu para apagar. Tente de novo."); }
+});
 function fecharAcoes(){ $("acoes").hidden = true; acaoMsg = null; }
 $("acoes").addEventListener("click", e => { if (e.target.id === "acoes") fecharAcoes(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("acoes").hidden) fecharAcoes(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape"){ if (!$("visor").hidden) history.back(); else if (!$("acoes").hidden) fecharAcoes(); } });
 $("aFechar").addEventListener("click", fecharAcoes);
 $("aResponder").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); responder(m); });
 $("aCopiar").addEventListener("click", async () => {

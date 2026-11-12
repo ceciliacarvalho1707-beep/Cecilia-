@@ -4,7 +4,8 @@
   functions = "netlify/functions"
   # Só publica quando o app muda de verdade (cada publicação gasta créditos).
   # Mudanças só em outros arquivos (como o supabase.sql) são puladas.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- public netlify package.json"
+  # Envios marcados com [rascunho] na mensagem também são pulados (trabalho salvo, ainda não testado).
+  ignore = "git log -1 --format=%B | grep -q '\\[rascunho\\]' || git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- public netlify package.json"
 
 [[headers]]
   for = "/sw.js"

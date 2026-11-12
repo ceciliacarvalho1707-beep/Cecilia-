@@ -20,7 +20,7 @@
   --acc-l:#7b3fe4; --acc-d:#a47bff;
   --bg:#f6f3fb; --surface:#ffffff; --fg:#231a33; --muted:#6f6582;
   --accent:var(--acc-l); --accent-fg:#ffffff; --line:#e0d8ee; --bad:#c2334d; --ok:#2fb36b;
-  --quote-me:rgba(255,255,255,.2); --shade:rgba(20,10,35,.45); --gravando:#e03131;
+  --quote-me:rgba(255,255,255,.2); --shade:rgba(20,10,35,.45); --gravando:#e03131; --azul:#1a8fe3;
   --display:"Bricolage Grotesque",system-ui,sans-serif;
   --body:"DM Sans",system-ui,-apple-system,sans-serif;
   color-scheme:light;
@@ -28,11 +28,11 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#16121e; --surface:#1f1a2b; --fg:#eee8f8; --muted:#a49bb6;
   --accent:var(--acc-d); --accent-fg:#14091f; --line:#332b47; --bad:#ff7a92;
-  --quote-me:rgba(20,9,31,.16); --shade:rgba(0,0,0,.6); --gravando:#ff6b6b; color-scheme:dark}}
+  --quote-me:rgba(20,9,31,.16); --shade:rgba(0,0,0,.6); --gravando:#ff6b6b; --azul:#53bdeb; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#16121e; --surface:#1f1a2b; --fg:#eee8f8; --muted:#a49bb6;
   --accent:var(--acc-d); --accent-fg:#14091f; --line:#332b47; --bad:#ff7a92;
-  --quote-me:rgba(20,9,31,.16); --shade:rgba(0,0,0,.6); --gravando:#ff6b6b; color-scheme:dark}
+  --quote-me:rgba(20,9,31,.16); --shade:rgba(0,0,0,.6); --gravando:#ff6b6b; --azul:#53bdeb; color-scheme:dark}
 /* .cor recalcula as cores derivadas onde a cor da conversa muda */
 :root,.cor{--accent:var(--acc-l);--other:color-mix(in srgb,var(--accent) 12%,var(--bg));--quote-other:color-mix(in srgb,var(--accent) 14%,transparent)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]),:root:not([data-theme="light"]) .cor{--accent:var(--acc-d);--other:color-mix(in srgb,var(--accent) 16%,var(--bg))}}
@@ -188,9 +188,10 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
 .folha > button.marcado{background:var(--other)}
 .folha > button .ok{margin-left:auto;color:var(--accent)}
 /* vistos */
-.tique{display:inline-flex;color:var(--muted)}
-.tique svg{width:16px;height:11px}
-.tique.lido{color:var(--accent)}
+.tique{display:inline-flex;color:var(--muted);margin-left:2px}
+.tique svg{width:20px;height:14px}
+.tique.relogio svg{width:14px;height:14px}
+.tique.lido{color:var(--azul)}
 /* áudio */
 .audio{display:flex;align-items:center;gap:10px;min-width:min(220px,60vw);padding:2px 0}
 .audio .play{width:38px;height:38px;min-height:38px;border-radius:50%;padding:0;display:grid;place-items:center;flex:none;background:var(--accent);color:var(--accent-fg)}
@@ -390,6 +391,32 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
 .msg.me .chamada .icone.perdida{color:inherit}
 .chamada .txt{display:flex;flex-direction:column;gap:1px}
 .chamada small{font-size:.75rem;opacity:.8}
+/* ── grupos, menções, lista ── */
+.msg .who{display:flex;align-items:center;gap:6px}
+.msg .who.cor{color:var(--accent)}
+.who .mini{width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;font-size:.62rem;font-weight:700;overflow:hidden;flex:none}
+.who .mini img{width:100%;height:100%;object-fit:cover}
+.mencao{font-weight:700;color:var(--accent)}
+.msg.me .mencao{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.msg.mencionou .bubble{box-shadow:0 0 0 2px var(--accent)}
+.mencoes{display:flex;gap:6px;overflow-x:auto;padding-block:8px;background:var(--surface);border-top:1px solid var(--line)}
+.mencoes button{flex:none;display:flex;align-items:center;gap:6px;background:var(--other);color:var(--fg);padding:6px 12px 6px 6px;min-height:36px;font-weight:500;font-size:.88rem}
+.mencoes .mini{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;font-size:.7rem;font-weight:700;overflow:hidden}
+.mencoes .mini img{width:100%;height:100%;object-fit:cover}
+.mencoes:not([hidden]) ~ #form{border-top:0;padding-top:4px}
+.buscaLista{padding-block:10px 4px}
+.buscaLista input{width:100%;padding:9px 14px}
+.item .icones{display:flex;gap:4px;color:var(--muted);flex:none}
+.item .icones svg{width:14px;height:14px}
+.item .prev .mencionada{color:var(--accent);font-weight:700}
+.folha .pessoa{display:flex;align-items:center;gap:12px;padding:10px 12px}
+.folha .pessoa .meio{display:flex;flex-direction:column;gap:1px;min-width:0}
+.folha .pessoa small{color:var(--muted);font-size:.8rem}
+.folha .pessoa small.on{color:var(--ok);font-weight:600}
+.folha .secao{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;padding:12px 12px 2px;display:flex;align-items:center;gap:6px}
+.folha .secao .tique svg{width:18px;height:12px}
+.linkConvite{width:100%;font-size:.85rem}
+.criar .botoes button{flex:1}
 .toast{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:.85rem;z-index:30;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.bubble{transition:none}.msg.flash .bubble{animation:none;outline:3px solid var(--accent)}}
 </style>
@@ -402,6 +429,7 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
     <header class="gut"><h1>Nosso Cantinho</h1>
       <button class="ic" id="temaBtn" type="button" aria-label="Aparência: claro ou escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg></button>
     </header>
+    <div class="buscaLista gut"><input id="buscaConversas" type="search" placeholder="Buscar conversas" aria-label="Buscar conversas" autocomplete="off"></div>
     <div id="conversas" class="gut"></div>
     <button class="fab" id="novaBtn" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -414,7 +442,7 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
     <form id="editarForm" autocomplete="off">
       <h2 id="editarTit">Nova conversa</h2>
       <p id="editarSub">Quem usar a mesma senha cai na mesma conversa. Cada pessoa dá o nome que quiser para a conversa no próprio celular.</p>
-      <label>Nome da conversa
+      <label><span id="fTituloRot">Nome da conversa</span>
         <input id="fTitulo" maxlength="40" required placeholder="Ex.: Eu e a Bia">
       </label>
       <label>Seu nome
@@ -441,9 +469,9 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
         <div class="fundos" id="fFundos"></div>
         <input type="file" id="fFundoArq" accept="image/*" hidden>
       </fieldset>
-      <label id="fSenhaBox">Senha da conversa
-        <input id="fSenha" type="password" minlength="4" placeholder="Pelo menos 4 caracteres">
-        <span class="hint">Combinem pessoalmente. Misture letras e números: quem adivinhar a senha consegue ler a conversa.</span>
+      <label id="fSenhaBox"><span id="fSenhaRot">Senha da conversa</span>
+        <input id="fSenha" type="password" placeholder="Pelo menos 4 caracteres" autocomplete="off">
+        <span class="hint" id="fSenhaDica">Combinem pessoalmente. Misture letras e números: quem adivinhar a senha consegue ler a conversa.</span>
       </label>
       <p class="err" id="editarErr"></p>
       <div class="botoes">
@@ -508,6 +536,7 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       <button id="gravParar" type="button" aria-label="Parar e ouvir antes de mandar"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
       <button id="gravEnviar" type="button">Enviar</button>
     </div>
+    <div class="mencoes gut" id="mencoes" hidden></div>
     <form id="form" class="gut">
       <button class="anexo" id="figBtn" type="button" aria-label="Figurinhas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.3 2 3.5 2 3.5-2 3.5-2"/><path d="M9 9.5h.01M15 9.5h.01"/></svg></button>
       <button class="anexo" id="anexo" type="button" aria-label="Mandar fotos, vídeos, enquete ou jogo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v9M7.5 12h9"/></svg></button>
@@ -528,6 +557,7 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       <button type="button" id="aEditar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>Editar</button>
       <button type="button" id="aFav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg><span id="aFavTxt">Favoritar</span></button>
       <button type="button" id="aEnc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0-5 5v6"/></svg>Encaminhar</button>
+      <button type="button" id="aInfo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5h.01"/></svg>Informações</button>
       <button type="button" id="aCopiar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copiar texto</button>
       <button type="button" id="aApagar" class="perigo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg><span id="aApagarTxt">Apagar para todas</span></button>
       <button type="button" id="aFechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Cancelar</button>
@@ -655,7 +685,9 @@ const nuvem = {
     return todas.slice(0, 3);
   },
   async desafixar(sala, id){ await rest(sala, `fixadas?sala=eq.${sala}&id=eq.${id}`, { method: "DELETE" }); },
-  async pessoas(sala){ return (await rest(sala, `pessoas?select=nome,foto,lido,visto&sala=eq.${sala}`)) || []; },
+  async pessoas(sala){ return (await rest(sala, `pessoas?select=nome,foto,lido,visto,entregue&sala=eq.${sala}`)) || []; },
+  async grupo(sala){ const r = await rest(sala, `grupos?select=nome,foto&sala=eq.${sala}`); return r && r[0] ? r[0] : null; },
+  async salvarGrupo(sala, campos){ await rest(sala, "grupos?on_conflict=sala", { method: "POST", body: { sala, ...campos, atualizado: Date.now() }, prefer: "resolution=merge-duplicates" }); },
   async pessoa(sala, nome, campos, keepalive){
     await rest(sala, "pessoas?on_conflict=sala,nome", { method: "POST", body: { sala, nome, ...campos }, prefer: "resolution=merge-duplicates", keepalive });
   },
@@ -794,36 +826,57 @@ let assinaturaLista = "";
 function desenharLista(){
   const box = $("conversas");
   atualizarIcone();
-  const sig = JSON.stringify([dados.chats, ultimas, naoLidas]);
+  const q = normal($("buscaConversas").value.trim());
+  const sig = JSON.stringify([dados.chats, ultimas, naoLidas, q]);
   if (sig === assinaturaLista && box.childElementCount) return;
   assinaturaLista = sig; box.textContent = "";
   if (!dados.chats.length){
     box.innerHTML = '<div class="vazio"><b>Nenhuma conversa salva</b>Toque em “Nova conversa”, dê um nome e combine a senha com a sua amiga.</div>';
     return;
   }
-  const ordem = [...dados.chats].sort((a,b) => ((ultimas[b.sala]||{}).em||b.criado||0) - ((ultimas[a.sala]||{}).em||a.criado||0));
+  const ordem = [...dados.chats]
+    .filter(c => !q || normal(c.titulo).includes(q))
+    .sort((a,b) => ((b.fixada ? 1 : 0) - (a.fixada ? 1 : 0)) || (((ultimas[b.sala]||{}).em||b.criado||0) - ((ultimas[a.sala]||{}).em||a.criado||0)));
+  if (!ordem.length){ box.innerHTML = '<div class="vazio"><b>Nenhuma conversa com esse nome</b></div>'; return; }
   for (const c of ordem){
     const u = ultimas[c.sala];
     const n = naoLidas[c.sala] || 0;
     const novo = n > 0 || (u && u.em > (c.visto||0) && u.nome !== c.nome);
     const it = el("button", "item" + (novo ? " novo" : "")); it.type = "button";
-    const av = el("span","av cor"); pintar(av, c.cor); avatar(av, c.fotoOutra, c.titulo); it.appendChild(av);
+    const av = el("span","av cor"); pintar(av, c.cor); avatar(av, c.grupo ? c.fotoGrupo : c.fotoOutra, c.titulo); it.appendChild(av);
     const meio = el("span","meio");
-    const l1 = el("span","linha"); l1.appendChild(el("span","tit",c.titulo)); if (u) l1.appendChild(el("span","hora",hora(u.em)));
-    const l2 = el("span","linha"); l2.appendChild(el("span","prev", u ? (u.nome === c.nome ? "Você: " : u.nome + ": ") + resumo(u) : "Nenhuma mensagem ainda"));
+    const l1 = el("span","linha"); l1.appendChild(el("span","tit",c.titulo));
+    if (c.fixada || silenciada(c)){
+      const ic = el("span","icones");
+      if (silenciada(c)) ic.insertAdjacentHTML("beforeend", I.sinoOff);
+      if (c.fixada) ic.insertAdjacentHTML("beforeend", ICON_FIXO);
+      l1.appendChild(ic);
+    }
+    if (u) l1.appendChild(el("span","hora",hora(u.em)));
+    const l2 = el("span","linha"), prev = el("span","prev");
+    if (u && novo && mencionaMe(u, c.nome)) prev.appendChild(el("span","mencionada", u.nome + " mencionou você: "));
+    prev.appendChild(document.createTextNode(u ? (u.nome === c.nome ? "Você: " : (c.grupo ? u.nome + ": " : "")) + resumo(u) : "Nenhuma mensagem ainda"));
+    l2.appendChild(prev);
     if (n > 0) l2.appendChild(el("span","contador", n > 99 ? "99+" : String(n)));
     else if (novo) l2.appendChild(el("span","ponto"));
     meio.append(l1,l2); it.appendChild(meio);
     it.addEventListener("click", () => abrir(c.sala));
+    ligarSegurar(it, () => menuConversa(c));
     box.appendChild(it);
   }
 }
 async function atualizarPrevias(){
   clearTimeout(listaT);
+  conferirSilencios();
   if ($("inicio").hidden) return;
   ligarCanais();
   await Promise.all(dados.chats.map(async c => {
-    try{ const u = await nuvem.ultima(c.sala); const ja = ultimas[c.sala]; if (u && (!ja || u.em >= ja.em)) ultimas[c.sala] = u; }catch(_){}
+    try{
+      const [u, g] = await Promise.all([nuvem.ultima(c.sala), nuvem.grupo(c.sala).catch(() => null)]);
+      const ja = ultimas[c.sala]; if (u && (!ja || u.em >= ja.em)) ultimas[c.sala] = u;
+      if (u && u.nome !== c.nome) marcarEntregue(c.sala, u.em);
+      if (g && (g.nome !== c.titulo || (g.foto || null) !== (c.fotoGrupo || null) || !c.grupo)) aplicarGrupo(c, g);
+    }catch(_){}
     await contarNaoLidas(c);
   }));
   // as novidades chegam pelo tempo real; isto é só uma conferência de segurança
@@ -832,7 +885,11 @@ async function atualizarPrevias(){
 function irInicio(){
   pararChat(); mostrar("inicio"); desenharLista(); atualizarPrevias();
 }
-$("novaBtn").addEventListener("click", () => abrirEditor(null));
+$("novaBtn").addEventListener("click", () => abrirFolha("Nova conversa", (f, fechar) => {
+  opcao(f, I.pessoa, "Conversa com uma pessoa", () => { fechar(); abrirEditor(null, "pessoa"); });
+  opcao(f, I.grupo, "Novo grupo", () => { fechar(); abrirEditor(null, "grupo"); });
+  opcao(f, I.link, "Entrar com link ou senha", () => { fechar(); abrirEditor(null, "entrar"); });
+}));
 
 // Nova / editar
 let editando = null; // sala ou null
@@ -872,45 +929,70 @@ async function salvarPerfil(c, foto){
     if (atual === c) aplicarPessoas([{ nome: c.nome, foto: foto || null }], true);
   }catch(_){ toast("Não deu para salvar a foto. Tente de novo."); }
 }
-function abrirEditor(sala){
+let modoEditor = "pessoa"; // pessoa | grupo | entrar
+function abrirEditor(sala, modo = "pessoa", pre = {}){
   editando = sala; const c = sala && acharChat(sala);
-  $("editarTit").textContent = c ? "Editar conversa" : "Nova conversa";
+  modoEditor = c ? (c.grupo ? "grupo" : "pessoa") : modo;
+  const grupo = modoEditor === "grupo";
+  $("editarTit").textContent = c ? (grupo ? "Dados do grupo" : "Editar conversa") : grupo ? "Novo grupo" : modo === "entrar" ? "Entrar numa conversa" : "Nova conversa";
+  $("editarSub").textContent = grupo ? "Depois de criar, mande o link de convite para quem você quiser no grupo."
+    : modo === "entrar" ? (pre.senha ? "Você recebeu um convite. Escreva seu nome para entrar." : "Cole o link de convite ou digite a senha que te mandaram.")
+    : "Depois de criar, mande o link de convite para a outra pessoa.";
   $("editarSub").hidden = !!c;
-  $("fTitulo").value = c ? c.titulo : "";
+  $("fTituloRot").textContent = grupo ? "Nome do grupo" : "Nome da conversa (só você vê)";
+  $("fTitulo").placeholder = grupo ? "Ex.: Amigas da escola" : "Ex.: Bia";
+  $("fTitulo").value = c ? c.titulo : (pre.titulo || "");
   $("fNome").value = c ? c.nome : (dados.ultimoNome || "");
-  $("fSenhaBox").hidden = !!c; $("fSenha").value = ""; $("fSenha").required = !c;
-  $("editarSalvar").textContent = c ? "Salvar" : "Salvar conversa";
+  const mostraSenha = !c && modo !== "grupo" && !pre.senha;
+  $("fSenhaBox").hidden = !mostraSenha; $("fSenha").value = pre.senha || ""; $("fSenha").required = modo === "entrar";
+  $("fSenhaRot").textContent = modo === "entrar" ? "Link de convite ou senha" : "Senha (opcional)";
+  $("fSenhaDica").textContent = modo === "entrar" ? "Quem te convidou pode pegar o link no menu ⋮ da conversa, em “Convidar com link”."
+    : "Deixe em branco para criar uma conversa nova. Para entrar numa que já existe, use a mesma senha dela.";
+  $("fSenha").type = modo === "entrar" ? "text" : "password";
+  $("fSenha").placeholder = modo === "entrar" ? "Cole o link ou digite a senha" : "Deixe em branco";
+  $("editarSalvar").textContent = c ? "Salvar" : grupo ? "Criar grupo" : modo === "entrar" ? "Entrar" : "Criar conversa";
   $("editarRemover").hidden = !c; $("editarRemover").dataset.certeza = "";
   $("editarRemover").textContent = "Tirar esta conversa da lista";
   $("editarErr").textContent = "";
-  editorFoto = undefined; editorFundoFoto = undefined;
+  editorFoto = undefined; editorFundoFoto = undefined; editorPre = pre;
   const cor = c ? (c.cor || 0) : Math.floor(Math.random() * CORES.length);
   $("fCor" + cor).checked = true; pintar($("editar"), cor); $("editar").classList.add("cor");
   mostrar("editar"); mostrarFotoEditor(); montarFundos(c);
-  if (!toque) $("fTitulo").focus();
+  if (!toque) (pre.senha ? $("fNome") : $("fTitulo")).focus();
 }
+let editorPre = {};
 $("editarCancelar").addEventListener("click", () => editando ? abrir(editando) : irInicio());
 $("editarForm").addEventListener("submit", async e => {
   e.preventDefault();
-  const titulo = $("fTitulo").value.trim(), nome = $("fNome").value.trim(), senha = $("fSenha").value;
-  if (!titulo){ $("editarErr").textContent = "Dê um nome para a conversa."; return; }
+  const titulo = $("fTitulo").value.trim(), nome = $("fNome").value.trim();
+  const grupo = modoEditor === "grupo";
+  if (!titulo){ $("editarErr").textContent = grupo ? "Dê um nome para o grupo." : "Dê um nome para a conversa."; return; }
   if (!nome){ $("editarErr").textContent = "Escreva seu nome."; return; }
   dados.ultimoNome = nome;
   if (editando){
-    const c = acharChat(editando); const nomeAntigo = c.nome;
+    const c = acharChat(editando); const nomeAntigo = c.nome, tituloAntigo = c.titulo;
     c.titulo = titulo; c.nome = nome; c.cor = corEscolhida(); Object.assign(c, fundoEscolhido(c)); guardar();
+    if (c.grupo && titulo !== tituloAntigo) salvarGrupo(c, { nome: titulo }).catch(() => toast("Não deu para mudar o nome do grupo"));
     if (editorFoto !== undefined) salvarPerfil(c, editorFoto);
     else if (nomeAntigo !== nome && c.minhaFoto) salvarPerfil(c, c.minhaFoto);
     abrir(c.sala); return;
   }
-  if (senha.trim().length < 4){ $("editarErr").textContent = "A senha precisa ter pelo menos 4 caracteres."; return; }
+  let senha = extrairSenha(editorPre.senha || $("fSenha").value), nova = false;
+  if (grupo || (modoEditor === "pessoa" && !senha)){ senha = gerarSenha(); nova = true; }
+  else if (senha.length < 4){ $("editarErr").textContent = modoEditor === "entrar" ? "Cole o link de convite ou digite a senha." : "A senha precisa ter pelo menos 4 caracteres."; return; }
   const sala = await salaDe(senha);
   let c = acharChat(sala);
   if (c){ c.titulo = titulo; c.nome = nome; c.cor = corEscolhida(); Object.assign(c, fundoEscolhido(c)); }
   else { c = { sala, titulo, nome, cor: corEscolhida(), notif: false, visto: 0, criado: Date.now(), ...fundoEscolhido(null) }; dados.chats.push(c); }
-  guardar();
+  c.senha = senha;
+  if (grupo){
+    c.grupo = true;
+    try{ await nuvem.salvarGrupo(sala, { nome: titulo }); }catch(_){ toast("O grupo foi criado só neste celular. Confira a internet."); }
+  }
+  guardar(); ligarCanais();
   if (editorFoto) salvarPerfil(c, editorFoto);
   abrir(sala);
+  if (nova) setTimeout(() => convidar(c), 350);
 });
 $("editarRemover").addEventListener("click", async () => {
   const b = $("editarRemover");
@@ -935,6 +1017,12 @@ function atualizarStatus(){
   if (dig) txt = digitando.length > 1 ? digitando.join(" e ") + " estão digitando…" : digitando[0] + " está digitando…";
   else if (online === null) txt = "conectando…";
   else if (!online) txt = "sem conexão";
+  else if (atual && atual.grupo){
+    const ons = [...new Set(outrosPresentes(atual.sala).map(p => p.nome))];
+    const outros = destinatarios();
+    txt = ons.length ? ons.join(", ") + (ons.length > 1 ? " estão online" : " está online")
+      : outros.length ? [...outros.slice(0, 4), "você"].join(", ") : "Toque aqui para convidar pessoas";
+  }
   else if (presOutra && presOutra.online) txt = "online";
   else if (presOutra && presOutra.visto) txt = "visto " + quando(presOutra.visto);
   else txt = "ao vivo";
@@ -955,16 +1043,17 @@ function aplicarPessoas(lista, juntarCom){
   if (!atual) return;
   if (!juntarCom) pessoas = {};
   for (const p of lista) pessoas[p.nome] = { ...(pessoas[p.nome] || {}), ...p };
-  const antes = JSON.stringify(lidos);
-  lidos = {}; for (const [n, p] of Object.entries(pessoas)) if (p.lido) lidos[n] = p.lido;
+  const antes = JSON.stringify([lidos, chegou, Object.values(pessoas).map(p => !!p.foto)]);
+  lidos = {}; chegou = {};
+  for (const [n, p] of Object.entries(pessoas)){ if (p.lido) lidos[n] = p.lido; if (p.entregue) chegou[n] = p.entregue; }
   const outra = Object.keys(pessoas).find(n => n !== atual.nome && pessoas[n].foto);
   atual.fotoOutra = outra ? pessoas[outra].foto : null;
   if (pessoas[atual.nome] && "foto" in pessoas[atual.nome]) atual.minhaFoto = pessoas[atual.nome].foto || null;
   guardar();
-  avatar($("chatAv"), atual.fotoOutra, atual.titulo);
+  avatar($("chatAv"), atual.grupo ? atual.fotoGrupo : atual.fotoOutra, atual.titulo);
   presOutra = { online: !!(presOutra && presOutra.online), visto: vistoOutra() };
   atualizarStatus();
-  if (JSON.stringify(lidos) !== antes && msgs.length) render();
+  if (JSON.stringify([lidos, chegou, Object.values(pessoas).map(p => !!p.foto)]) !== antes && msgs.length) render();
 }
 
 function abrir(sala){
@@ -976,7 +1065,7 @@ function abrir(sala){
   limparResposta(); limparFoto(); fecharFigs(); cancelarGravacao(); sairEdicao(); fecharBusca(); setNote("");
   pintar($("app"), c.cor); atualizarBarra(); aplicarFundo(c); naoLidas[c.sala] = 0; atualizarIcone();
   $("chatTitulo").textContent = c.titulo;
-  avatar($("chatAv"), c.fotoOutra, c.titulo);
+  avatar($("chatAv"), c.grupo ? c.fotoGrupo : c.fotoOutra, c.titulo);
   atualizarStatus();
   list.textContent = ""; $("fixada").hidden = true; $("aviso").hidden = true;
   mostrar("chat");
@@ -1039,6 +1128,7 @@ function abrirCanal(sala){
   const ch = sb.channel("c-" + sala, { config: { broadcast: { self: false }, presence: { key: (c.nome || "") + "-" + dados.aparelho } } });
   ch.on("broadcast", { event: "msg" }, ({ payload }) => {
     const c2 = acharChat(sala);
+    if (c2 && payload.nome !== c2.nome) marcarEntregue(sala, payload.em);
     if (c2 && payload.nome !== c2.nome && !(atual && atual.sala === sala && !document.hidden)){ naoLidas[sala] = (naoLidas[sala] || 0) + 1; atualizarIcone(); }
     recebeu(sala, payload);
   });
@@ -1051,6 +1141,7 @@ function abrirCanal(sala){
     if (atual && atual.sala === sala) atualizarPresenca();
   });
   ch.on("broadcast", { event: "lig" }, ({ payload }) => sinalRecebido(sala, payload));
+  ch.on("broadcast", { event: "grupo" }, ({ payload }) => aplicarGrupo(acharChat(sala), payload));
   ch.on("presence", { event: "sync" }, () => { if (atual && atual.sala === sala) atualizarPresenca(); conferirChamadaNaPresenca(sala); });
   ch.subscribe(st => {
     if (st === "SUBSCRIBED"){
@@ -1085,7 +1176,7 @@ function recebeuDig(p){
 }
 $("voltar").addEventListener("click", () => history.state?.tela === "chat" ? history.back() : irInicio());
 window.addEventListener("popstate", () => { if (ignorarPop){ ignorarPop = false; return; } if (folhaAtual){ fecharFolha(true); return; } if (!$("visor").hidden){ fecharVisor(); return; } if (!$("galeria").hidden){ fecharGaleria(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
-$("cab").addEventListener("click", () => atual && abrirEditor(atual.sala));
+$("cab").addEventListener("click", () => atual && verParticipantes());
 
 function marcarVisto(){
   if (!atual || !msgs.length || document.hidden) return;
@@ -1097,7 +1188,8 @@ function marcarVisto(){
   if (deOutra && deOutra.em > lidoEnviado && deOutra.em > (lidos[atual.nome] || 0)){
     lidoEnviado = deOutra.em;
     const c = atual, em = deOutra.em;
-    nuvem.pessoa(c.sala, c.nome, { lido: em })
+    if (em > (entregueEnviado[c.sala] || 0)) entregueEnviado[c.sala] = em;
+    nuvem.pessoa(c.sala, c.nome, { lido: em, entregue: Math.max(em, entregueEnviado[c.sala] || 0) })
       .then(() => avisarCanal(c.sala, "pessoa", { nome: c.nome, lido: em }))
       .catch(() => { lidoEnviado = 0; });
   }
@@ -1120,7 +1212,12 @@ function montarMsg(m, mostraNome, fixo, viu, fav){
   const box = el("div", "msg" + (mine ? " me" : "") + (m.apagada ? " apagada" : "") + (m.fig ? " fig" : "")
     + (m.pendente ? " pendente" : "") + (m.erro ? " erro" : ""));
   box.dataset.id = m.id;
-  if (mostraNome) box.appendChild(el("div","who",m.nome || "Amiga"));
+  if (mostraNome){
+    const w = el("div","who cor"); pintar(w, corNome(m.nome || "?"));
+    w.append(miniAvatar(m.nome || "?", (pessoas[m.nome] || {}).foto), document.createTextNode(m.nome || "Amiga"));
+    box.appendChild(w);
+  }
+  if (mencionaMe(m, atual.nome)) box.classList.add("mencionou");
   const b = el("div","bubble");
   const hora = d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
   if (m.apagada){
@@ -1159,7 +1256,7 @@ function montarMsg(m, mostraNome, fixo, viu, fav){
     b.appendChild(img);
     if (!m.texto && !m.resp) b.classList.add("so-foto");
   }
-  if (m.texto) b.appendChild(el("span","t",m.texto));
+  if (m.texto){ const t = el("span","t"); t.appendChild(textoComMencoes(m.texto)); b.appendChild(t); }
   const seta = el("span","seta"); seta.innerHTML = ICON_SETA; box.appendChild(seta);
   box.appendChild(b);
   const reac = Object.entries(m.reacoes || {});
@@ -1183,9 +1280,11 @@ function montarMsg(m, mostraNome, fixo, viu, fav){
   } else {
     t.appendChild(document.createTextNode(hora));
     if (mine){
-      const tq = el("span", "tique" + (m.pendente ? " relogio" : viu ? " lido" : ""));
-      tq.innerHTML = m.pendente ? ICON_RELOGIO : viu ? ICON_TIQUE2 : ICON_TIQUE1;
-      tq.title = m.pendente ? "Enviando" : viu ? "Visto" : "Enviada"; tq.setAttribute("aria-label", tq.title);
+      const est = m.pendente ? "pendente" : viu || "enviada";
+      const tq = el("span", "tique" + (est === "pendente" ? " relogio" : est === "lida" ? " lido" : ""));
+      tq.innerHTML = est === "pendente" ? ICON_RELOGIO : est === "enviada" ? ICON_TIQUE1 : ICON_TIQUE2;
+      tq.title = { pendente: "Enviando", enviada: "Enviada", entregue: "Chegou", lida: atual.grupo ? "Todo mundo viu" : "Visto" }[est];
+      tq.setAttribute("aria-label", tq.title);
       t.appendChild(tq);
     }
   }
@@ -1216,10 +1315,11 @@ function render(){
       divisorPosto = true;
       linhas.push({ k: "naolidas", sig: "1", fazer: () => el("div","naolidas","Mensagens não lidas") });
     }
-    const mostraNome = m.nome !== atual.nome && m.nome !== lastNome;
-    const fixo = fixos.has(m.id), viu = m.nome === atual.nome && lidoPelaOutra >= m.em;
+    const mostraNome = !!atual.grupo && m.nome !== atual.nome && m.nome !== lastNome;
+    const fixo = fixos.has(m.id), viu = m.nome === atual.nome ? estadoMinha(m) : "";
     const fav = ehFav(m.id);
-    linhas.push({ k: m.id, msg: m, sig: JSON.stringify([m, mostraNome, fixo, viu, fav]), fazer: () => montarMsg(m, mostraNome, fixo, viu, fav) });
+    const fotoQuem = mostraNome ? !!(pessoas[m.nome] || {}).foto : false;
+    linhas.push({ k: m.id, msg: m, sig: JSON.stringify([m, mostraNome, fixo, viu, fav, fotoQuem]), fazer: () => montarMsg(m, mostraNome, fixo, viu, fav) });
     lastNome = m.nome;
   }
   const vivos = new Set();
@@ -1302,14 +1402,16 @@ function trocarFixadas(nova){
 async function buscar(){
   const c = atual; if (!c) return;
   try{
-    let [ms, fx, ps] = await Promise.all([nuvem.mensagens(c.sala), nuvem.fixadas(c.sala), nuvem.pessoas(c.sala)]);
+    let [ms, fx, ps, gr] = await Promise.all([nuvem.mensagens(c.sala), nuvem.fixadas(c.sala), nuvem.pessoas(c.sala), nuvem.grupo(c.sala).catch(() => null)]);
     if (atual !== c) return;
     if (!ms.length && !c.migrado && await migrar(c)){
       [ms, fx, ps] = await Promise.all([nuvem.mensagens(c.sala), nuvem.fixadas(c.sala), nuvem.pessoas(c.sala)]);
       if (atual !== c) return;
     }
+    if (gr) aplicarGrupo(c, gr);
     aplicarPessoas(ps);
     setOnline(true);
+    const deOutra = [...ms].reverse().find(m => m.nome !== c.nome); if (deOutra) marcarEntregue(c.sala, deOutra.em);
     if (firstRender && !ms.length) render();
     juntar(ms); trocarFixadas(fx.slice(0, 3));
     if (ms.length) ultimas[c.sala] = ms[ms.length - 1];
@@ -1787,6 +1889,7 @@ function abrirAcoes(m){
   const tipoX = (m.extra || {}).tipo;
   $("aEditar").hidden = m.nome !== atual.nome || !!m.fig || !!m.audio || ["enquete","velha","forca","quiz"].includes(tipoX);
   $("aFavTxt").textContent = ehFav(m.id) ? "Tirar das favoritas" : "Favoritar";
+  $("aInfo").hidden = m.nome !== atual.nome;
   $("aEnc").hidden = ["velha","forca","quiz","chamada"].includes(tipoX);
   if (tipoX === "chamada") $("aEditar").hidden = true;
   $("aApagar").hidden = m.nome !== atual.nome; $("aApagar").dataset.certeza = ""; $("aApagarTxt").textContent = "Apagar para todas";
@@ -1839,6 +1942,7 @@ $("aFechar").addEventListener("click", fecharAcoes);
 $("aResponder").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); responder(m); });
 $("aEditar").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); entrarEdicao(m); });
 $("aFav").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); alternarFav(m); });
+$("aInfo").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); infoMensagem(m); });
 $("aEnc").addEventListener("click", () => { const m = acaoMsg; fecharAcoes(); encaminhar(m); });
 $("aCopiar").addEventListener("click", async () => {
   const m = acaoMsg; fecharAcoes();
@@ -1917,6 +2021,8 @@ $("anexo").addEventListener("click", () => abrirFolha("Mandar", (f, fechar) => {
 }));
 // Menu dos três pontinhos da conversa
 $("maisBtn").addEventListener("click", () => abrirFolha("", (f, fechar) => {
+  opcao(f, I.grupo, atual.grupo ? "Participantes do grupo" : "Dados da conversa", () => verParticipantes());
+  opcao(f, I.link, "Convidar com link", () => convidar());
   opcao(f, '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>', "Buscar na conversa", () => { fechar(); abrirBusca(); });
   if (!$("sino").hidden){
     const on = $("sino").classList.contains("on");
@@ -2511,12 +2617,12 @@ function sinalizar(sala, dados){ avisarCanal(sala, "lig", dados); }
 function sinalizarFirme(sala, dados){ sinalizar(sala, dados); setTimeout(() => sinalizar(sala, dados), 800); setTimeout(() => sinalizar(sala, dados), 2000); }
 
 // ── Começar uma ligação ─────────────────────────────────────────────────
-async function ligar(video){
+async function ligar(video, para){
   if (!podeLigar){ toast("Este navegador não faz ligações"); return; }
   if (lig){ toast("Você já está numa ligação"); return; }
   const c = atual; if (!c) return;
   const id = crypto.randomUUID();
-  lig = { id, sala: c.sala, c, papel: "faz", video, estado: "chamando", filaIce: [], desde: Date.now() };
+  lig = { id, sala: c.sala, c, papel: "faz", video, para, outra: para, estado: "chamando", filaIce: [], desde: Date.now() };
   mostrarLigacao();
   let stream;
   try{ stream = await pegarMidia(video); }
@@ -2524,7 +2630,7 @@ async function ligar(video){
   if (!lig || lig.id !== id){ stream.getTracks().forEach(t => t.stop()); return; }
   lig.local = stream;
   $("ligLocal").srcObject = lig.local;
-  sinalizar(c.sala, { t: "convite", id, de: c.nome, video });
+  sinalizar(c.sala, { t: "convite", id, de: c.nome, video, para });
   atualizarTrack();
   // se a outra pessoa não está com o app aberto, avisa por notificação
   if (!outrosPresentes(c.sala).length){
@@ -2532,7 +2638,7 @@ async function ligar(video){
       body: JSON.stringify({ nome: c.nome, texto: video ? "📹 Chamada de vídeo: abra o app para atender" : "📞 Ligando para você: abra o app para atender", endpoint: minhaSub ? minhaSub.endpoint : undefined }) }).catch(() => {});
   }
   tocar("chamando");
-  lig.reconvite = setInterval(() => { if (lig && lig.id === id && lig.estado === "chamando") sinalizar(c.sala, { t: "convite", id, de: c.nome, video }); else clearInterval(lig && lig.reconvite); }, 3000);
+  lig.reconvite = setInterval(() => { if (lig && lig.id === id && lig.estado === "chamando") sinalizar(c.sala, { t: "convite", id, de: c.nome, video, para }); else clearInterval(lig && lig.reconvite); }, 3000);
   lig.prazo = setTimeout(() => { if (lig && lig.id === id && lig.estado === "chamando") encerrar("Ninguém atendeu"); }, 45000);
 }
 async function pegarMidia(video, frente = true){
@@ -2621,6 +2727,7 @@ async function aplicarFilaIce(l){
 async function sinalRecebido(sala, p){
   const c = acharChat(sala); if (!c || p.de === c.nome && p.t !== "ice" && p.t !== "sdp") return;
   if (p.t === "convite"){
+    if (p.para && p.para !== c.nome) return; // no grupo: a ligação é para outra pessoa
     if (lig){
       // as duas ligaram ao mesmo tempo: fica a ligação de id menor
       if (lig.sala === sala && lig.papel === "faz" && lig.estado === "chamando" && lig.id > p.id){
@@ -2662,11 +2769,12 @@ async function sinalRecebido(sala, p){
 // Quem abre o app no meio de uma chamada vê o "tocando" pela presença
 function conferirChamadaNaPresenca(sala){
   if (lig) return;
-  const p = outrosPresentes(sala).find(p => p.chamando && !recusadas.has(p.chamando.id) && Date.now() - p.chamando.desde < 45000);
+  const eu = (acharChat(sala) || {}).nome;
+  const p = outrosPresentes(sala).find(p => p.chamando && (!p.chamando.para || p.chamando.para === eu) && !recusadas.has(p.chamando.id) && Date.now() - p.chamando.desde < 45000);
   if (p) receber(sala, { id: p.chamando.id, de: p.nome, video: p.chamando.video });
 }
 function chamandoAgora(sala){
-  return lig && lig.sala === sala && lig.papel === "faz" && lig.estado === "chamando" ? { id: lig.id, video: lig.video, desde: lig.desde } : undefined;
+  return lig && lig.sala === sala && lig.papel === "faz" && lig.estado === "chamando" ? { id: lig.id, video: lig.video, desde: lig.desde, para: lig.para } : undefined;
 }
 
 // ── Encerrar ────────────────────────────────────────────────────────────
@@ -2751,8 +2859,8 @@ $("ligVirar").addEventListener("click", async () => {
   }catch(_){ toast("Não deu para trocar de câmera"); }
 });
 for (const [id, ic] of [["ligMudo", IL.mic], ["ligCam", IL.camOff], ["ligVirar", IL.virar], ["ligDesligar", IL.desligar], ["ligRecusar", IL.desligar], ["ligAtender", IL.fone]]) $(id).insertAdjacentHTML("afterbegin", ic);
-$("ligarBtn").addEventListener("click", () => ligar(false));
-$("videoBtn").addEventListener("click", () => ligar(true));
+$("ligarBtn").addEventListener("click", () => escolherELigar(false));
+$("videoBtn").addEventListener("click", () => escolherELigar(true));
 $("ligarBtn").hidden = $("videoBtn").hidden = !podeLigar;
 
 // ── Toque e vibração ────────────────────────────────────────────────────
@@ -2798,6 +2906,283 @@ function montarChamada(m){
   box.addEventListener("click", ev => { ev.stopPropagation(); ligar(!!x.video); });
   box.title = "Ligar de novo";
   return box;
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Grupos, convite por link, participantes, tracinhos, menções e lista
+// ════════════════════════════════════════════════════════════════════════
+Object.assign(I, {
+  pessoa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+  grupo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/></svg>',
+  link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4.4l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4-.4l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></svg>',
+  sinoOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.7 3.6A6 6 0 0 1 18 8c0 3.2.8 5.3 1.7 6.6M17 17H3s3-2 3-9c0-.5 0-1 .2-1.5M10.3 21a1.94 1.94 0 0 0 3.4 0M3 3l18 18"/></svg>',
+  lixo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
+  editar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
+});
+
+// ── Quem está na conversa ───────────────────────────────────────────────
+const TRINTA_DIAS = 30 * 864e5;
+// Pessoas que usaram a conversa no último mês (nomes antigos ficam de fora)
+function membros(){
+  if (!atual) return [];
+  const agora = Date.now(), nomes = new Set([atual.nome]);
+  for (const [n, p] of Object.entries(pessoas)) if (Math.max(p.visto || 0, p.lido || 0, p.entregue || 0) > agora - TRINTA_DIAS) nomes.add(n);
+  for (const m of msgs.slice(-80)) if (m.em > agora - TRINTA_DIAS) nomes.add(m.nome);
+  return [...nomes];
+}
+const destinatarios = () => membros().filter(n => n !== atual.nome);
+function corNome(n){ let h = 0; for (const ch of n) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h % CORES.length; }
+function miniAvatar(nome, foto, cls = "mini"){
+  const s = el("span", cls + " cor"); pintar(s, corNome(nome)); avatar(s, foto, nome); return s;
+}
+// Tracinhos: um = enviada; dois cinza = chegou no celular; dois azuis = viu (no grupo: todo mundo)
+let chegou = {}; // nome -> até que mensagem já recebeu no celular
+function estadoMinha(m){
+  if (m.pendente) return "pendente";
+  const outros = destinatarios();
+  if (!outros.length) return "enviada";
+  if (outros.every(n => (lidos[n] || 0) >= m.em)) return "lida";
+  if (outros.every(n => Math.max(chegou[n] || 0, lidos[n] || 0) >= m.em)) return "entregue";
+  return "enviada";
+}
+// Avisa que as mensagens chegaram neste celular (dois tracinhos cinza para quem mandou)
+const entregueEnviado = {}, entregueT = {};
+function marcarEntregue(sala, em){
+  const c = acharChat(sala); if (!c || !em || em <= (entregueEnviado[sala] || 0)) return;
+  entregueEnviado[sala] = em;
+  clearTimeout(entregueT[sala]);
+  entregueT[sala] = setTimeout(() => {
+    const v = entregueEnviado[sala];
+    nuvem.pessoa(sala, c.nome, { entregue: v })
+      .then(() => avisarCanal(sala, "pessoa", { nome: c.nome, entregue: v }))
+      .catch(() => { entregueEnviado[sala] = 0; });
+  }, 400);
+}
+
+// ── Grupo: nome e foto iguais para todo mundo ───────────────────────────
+function aplicarGrupo(c, g){
+  if (!c || !g) return;
+  c.grupo = true;
+  if (g.nome) c.titulo = g.nome;
+  if ("foto" in g) c.fotoGrupo = g.foto || null;
+  guardar();
+  if (atual === c){ $("chatTitulo").textContent = c.titulo; avatar($("chatAv"), c.fotoGrupo, c.titulo); atualizarStatus(); }
+  if (!$("inicio").hidden){ assinaturaLista = ""; desenharLista(); }
+}
+async function salvarGrupo(c, campos){
+  const dadosG = { nome: c.titulo, foto: c.fotoGrupo || null, ...campos };
+  await nuvem.salvarGrupo(c.sala, dadosG);
+  aplicarGrupo(c, dadosG);
+  avisarCanal(c.sala, "grupo", dadosG);
+}
+const grupoFotoArq = el("input"); grupoFotoArq.type = "file"; grupoFotoArq.accept = "image/*"; grupoFotoArq.hidden = true; $("app").appendChild(grupoFotoArq);
+grupoFotoArq.addEventListener("change", async () => {
+  const f = grupoFotoArq.files[0]; grupoFotoArq.value = ""; const c = atual; if (!f || !c) return;
+  try{ const { dataUrl } = await comprimir(f, 192, 0.8, true); await salvarGrupo(c, { foto: dataUrl }); toast("Foto do grupo trocada"); }
+  catch(_){ toast("Não deu para trocar a foto. Tente de novo."); }
+});
+
+// ── Convite por link ────────────────────────────────────────────────────
+function gerarSenha(){
+  const abc = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789", v = crypto.getRandomValues(new Uint8Array(16));
+  return [...v].map(x => abc[x % abc.length]).join("");
+}
+function extrairSenha(v){
+  v = (v || "").trim();
+  const i = v.indexOf("#entrar=");
+  if (i >= 0){ try{ return new URLSearchParams(v.slice(i + 1)).get("entrar") || ""; }catch(_){ return ""; } }
+  return v;
+}
+const linkConvite = c => `${location.origin}/#entrar=${encodeURIComponent(c.senha)}&n=${encodeURIComponent(c.grupo ? c.titulo : c.nome)}`;
+function convidar(c = atual){
+  if (!c) return;
+  abrirFolha(c.grupo ? "Convidar para " + c.titulo : "Convidar para a conversa", (f, fechar) => {
+    const box = el("div","criar");
+    if (!c.senha){
+      box.appendChild(el("p","hint","Para criar o link, digite a senha desta conversa (só desta vez; depois o celular lembra)."));
+      const i = campo(box, "Senha da conversa", "", 200); i.type = "password";
+      const err = el("p","err"); box.appendChild(err);
+      box.appendChild(botao("Criar link", "", async () => {
+        if (await salaDe(i.value) !== c.sala){ err.textContent = "Essa não é a senha desta conversa."; return; }
+        c.senha = i.value.trim(); guardar(); convidar(c);
+      }));
+      f.appendChild(box); if (!toque) i.focus(); return;
+    }
+    const link = linkConvite(c);
+    box.appendChild(el("p","hint", "Quem abrir este link entra na conversa e escreve o próprio nome. Mande só para quem você quer aqui."));
+    const caixa = el("input","linkConvite"); caixa.value = link; caixa.readOnly = true; caixa.setAttribute("aria-label", "Link de convite");
+    caixa.addEventListener("focus", () => caixa.select());
+    box.appendChild(caixa);
+    const linha = el("div","botoes");
+    if (navigator.share) linha.appendChild(botao("Compartilhar", "", () => navigator.share({
+      title: "Nosso Cantinho", url: link,
+      text: c.grupo ? `Entra no grupo "${c.titulo}" no Nosso Cantinho:` : "Vem conversar comigo no Nosso Cantinho:",
+    }).catch(() => {})));
+    linha.appendChild(botao("Copiar link", navigator.share ? "sec" : "", async () => {
+      try{ await navigator.clipboard.writeText(link); toast("Link copiado"); }
+      catch(_){ caixa.focus(); caixa.select(); toast("Selecione e copie o link"); }
+    }));
+    box.appendChild(linha); f.appendChild(box);
+  });
+}
+// Abriu um link de convite: entra direto (ou pede só o nome)
+async function abrirConvite(){
+  const h = new URLSearchParams(location.hash.slice(1)), senha = h.get("entrar");
+  if (!senha) return;
+  const n = h.get("n") || "";
+  history.replaceState(history.state, "", location.pathname);
+  const sala = await salaDe(senha), c = acharChat(sala);
+  if (c){ if (!c.senha){ c.senha = senha; guardar(); } abrir(sala); return; }
+  abrirEditor(null, "entrar", { senha, titulo: n });
+}
+
+// ── Participantes e dados da conversa ───────────────────────────────────
+function verParticipantes(){
+  const c = atual; if (!c) return;
+  abrirFolha(c.grupo ? c.titulo : "Conversa", (f, fechar) => {
+    opcao(f, I.link, "Convidar com link", () => convidar(c));
+    if (c.grupo) opcao(f, I.foto, "Trocar foto do grupo", () => { fechar(); grupoFotoArq.click(); });
+    opcao(f, I.editar, c.grupo ? "Nome do grupo, sua foto, cor e papel de parede" : "Nome, sua foto, cor e papel de parede", () => { fechar(); abrirEditor(c.sala); });
+    const presentes = outrosPresentes(c.sala), nomes = membros();
+    f.appendChild(el("div","secao", nomes.length + (nomes.length > 1 ? " participantes" : " participante")));
+    for (const n of nomes){
+      const p = pessoas[n] || {}, eu = n === c.nome, on = !eu && presentes.some(x => x.nome === n);
+      const lin = el("div","pessoa");
+      lin.appendChild(miniAvatar(n, eu ? c.minhaFoto : p.foto, "av-mini"));
+      const meio = el("span","meio");
+      meio.appendChild(el("b", null, eu ? n + " (você)" : n));
+      meio.appendChild(el("small", on ? "on" : "", eu ? "neste celular" : on ? "online agora" : p.visto ? "visto " + quando(p.visto) : "ainda não abriu a conversa"));
+      lin.appendChild(meio); f.appendChild(lin);
+    }
+  });
+}
+// Quem viu e quem recebeu uma mensagem minha
+function infoMensagem(m){
+  abrirFolha("Informações da mensagem", f => {
+    f.appendChild(el("div","previa", resumo(m)));
+    const outros = destinatarios();
+    const viram = outros.filter(n => (lidos[n] || 0) >= m.em);
+    const receberam = outros.filter(n => !viram.includes(n) && (chegou[n] || 0) >= m.em);
+    const faltam = outros.filter(n => !viram.includes(n) && !receberam.includes(n));
+    const secao = (titulo, icone, lista, cls) => {
+      if (!lista.length) return;
+      const s = el("div","secao"); if (icone){ const t = el("span","tique" + (cls ? " " + cls : "")); t.innerHTML = icone; s.appendChild(t); }
+      s.appendChild(document.createTextNode(titulo)); f.appendChild(s);
+      for (const n of lista){ const l = el("div","pessoa"); l.append(miniAvatar(n, (pessoas[n] || {}).foto, "av-mini"), el("b", null, n)); f.appendChild(l); }
+    };
+    secao("Vista por", ICON_TIQUE2, viram, "lido");
+    secao("Chegou para", ICON_TIQUE2, receberam);
+    secao("Ainda não chegou para", ICON_TIQUE1, faltam);
+    if (!outros.length) f.appendChild(el("p","vaziofolha","Ninguém mais entrou na conversa ainda. Mande o link de convite pelo menu ⋮."));
+  });
+}
+
+// ── Ligar no grupo: escolher para quem ──────────────────────────────────
+function escolherELigar(video){
+  if (!atual) return;
+  const outros = destinatarios();
+  if (!atual.grupo && outros.length <= 1) return ligar(video, outros[0]);
+  if (!outros.length){ toast("Ainda não tem ninguém para ligar nesta conversa"); return; }
+  abrirFolha(video ? "Chamada de vídeo com quem?" : "Ligar para quem?", (f, fechar) => {
+    const presentes = outrosPresentes(atual.sala);
+    for (const n of outros){
+      const b = el("button","itemenc"); b.type = "button";
+      const on = presentes.some(x => x.nome === n);
+      b.append(miniAvatar(n, (pessoas[n] || {}).foto, "av-mini"), document.createTextNode(n + (on ? " · online" : "")));
+      b.addEventListener("click", () => { fechar(); ligar(video, n); });
+      f.appendChild(b);
+    }
+  });
+}
+
+// ── Menções com @ ───────────────────────────────────────────────────────
+function textoComMencoes(t){
+  const nomes = membros().filter(Boolean).sort((a, b) => b.length - a.length);
+  if (!t.includes("@") || !nomes.length) return document.createTextNode(t);
+  const re = new RegExp("@(" + nomes.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")", "g");
+  const frag = document.createDocumentFragment(); let i = 0, mm;
+  while ((mm = re.exec(t))){
+    if (mm.index > i) frag.appendChild(document.createTextNode(t.slice(i, mm.index)));
+    frag.appendChild(el("span","mencao", mm[0])); i = mm.index + mm[0].length;
+  }
+  if (i < t.length) frag.appendChild(document.createTextNode(t.slice(i)));
+  return frag;
+}
+const mencionaMe = (m, nome) => !!(m && m.texto && nome && m.nome !== nome && m.texto.includes("@" + nome));
+function conferirMencao(){
+  const bar = $("mencoes");
+  const pos = text.selectionStart ?? text.value.length, antes = text.value.slice(0, pos);
+  const mm = antes.match(/(^|\s)@([^\s@]{0,20})$/);
+  const opcoes = mm && atual ? destinatarios().filter(n => normal(n).startsWith(normal(mm[2]))).slice(0, 8) : [];
+  if (!opcoes.length){ bar.hidden = true; return; }
+  bar.textContent = "";
+  for (const n of opcoes){
+    const b = el("button"); b.type = "button";
+    b.append(miniAvatar(n, (pessoas[n] || {}).foto), document.createTextNode(n));
+    b.addEventListener("mousedown", e => e.preventDefault());
+    b.addEventListener("click", () => {
+      const ini = antes.length - mm[2].length - 1;
+      text.value = text.value.slice(0, ini) + "@" + n + " " + text.value.slice(pos);
+      const c = ini + n.length + 2; text.focus(); text.setSelectionRange(c, c);
+      bar.hidden = true; text.dispatchEvent(new Event("input"));
+    });
+    bar.appendChild(b);
+  }
+  bar.hidden = false;
+}
+text.addEventListener("input", conferirMencao);
+text.addEventListener("click", conferirMencao);
+text.addEventListener("blur", () => setTimeout(() => { $("mencoes").hidden = true; }, 150));
+
+// ── Lista: buscar, fixar, silenciar ─────────────────────────────────────
+$("buscaConversas").addEventListener("input", () => { assinaturaLista = ""; desenharLista(); });
+const silenciada = c => !!(c.silencio && c.silencio > Date.now());
+async function minhaInscricao(){
+  try{ const reg = swReg || (navigator.serviceWorker && await navigator.serviceWorker.getRegistration()); return reg ? await reg.pushManager.getSubscription() : null; }
+  catch(_){ return null; }
+}
+async function pushSala(c, ligar){
+  const sub = await minhaInscricao(); if (!sub) return;
+  await fetch(`/api/push?sala=${c.sala}`, { method: ligar ? "POST" : "DELETE", headers: { "content-type": "application/json" },
+    body: JSON.stringify(ligar ? { sub, nome: c.nome } : { sub }) }).catch(() => {});
+}
+function silenciar(c, ate){
+  c.silencio = ate; guardar(); if (c.notif) pushSala(c, false);
+  assinaturaLista = ""; desenharLista(); toast("Conversa silenciada");
+}
+function dessilenciar(c){
+  delete c.silencio; guardar(); if (c.notif) pushSala(c, true);
+  assinaturaLista = ""; desenharLista(); toast("Notificações de volta");
+}
+function conferirSilencios(){ for (const c of dados.chats) if (c.silencio && c.silencio <= Date.now()){ delete c.silencio; guardar(); if (c.notif) pushSala(c, true); } }
+function menuConversa(c){
+  abrirFolha(c.titulo, (f, fechar) => {
+    opcao(f, ICON_FIXO, c.fixada ? "Desafixar do topo" : "Fixar no topo", () => {
+      c.fixada = c.fixada ? 0 : Date.now(); guardar(); fechar(); assinaturaLista = ""; desenharLista();
+    });
+    if (silenciada(c)) opcao(f, I.sinoOff, "Tirar do silêncio", () => { fechar(); dessilenciar(c); });
+    else opcao(f, I.sinoOff, "Silenciar", () => abrirFolha("Silenciar por quanto tempo?", (f2, fechar2) => {
+      opcao(f2, "", "8 horas", () => { fechar2(); silenciar(c, Date.now() + 8 * 36e5); });
+      opcao(f2, "", "1 semana", () => { fechar2(); silenciar(c, Date.now() + 7 * 864e5); });
+      opcao(f2, "", "Sempre", () => { fechar2(); silenciar(c, 9e15); });
+    }));
+    opcao(f, I.link, "Convidar com link", () => convidar(c));
+    const tirar = opcao(f, I.lixo, "Tirar da lista", async () => {
+      if (!tirar.dataset.certeza){ tirar.dataset.certeza = "1"; tirar.lastChild.textContent = "Toque de novo para tirar"; return; }
+      fechar();
+      if (c.notif) await desligarNotif(c);
+      dados.chats = dados.chats.filter(x => x.sala !== c.sala); guardar(); ligarCanais();
+      assinaturaLista = ""; desenharLista(); toast("Conversa tirada da lista");
+    }, "perigo");
+  });
+}
+// segurar o dedo numa conversa da lista abre o menu dela
+function ligarSegurar(elm, acao){
+  let t = null, segurou = false;
+  elm.addEventListener("contextmenu", e => { e.preventDefault(); segurou = true; acao(); });
+  elm.addEventListener("pointerdown", e => { if (e.pointerType === "mouse") return; segurou = false; t = setTimeout(() => { segurou = true; if (navigator.vibrate) navigator.vibrate(15); acao(); }, 500); });
+  for (const ev of ["pointerup", "pointercancel", "pointermove"]) elm.addEventListener(ev, e => { if (ev !== "pointermove" || Math.abs(e.movementY) > 4) clearTimeout(t); });
+  elm.addEventListener("click", e => { if (segurou){ e.stopImmediatePropagation(); e.preventDefault(); segurou = false; } }, true);
 }
 
 // ── Notificações ────────────────────────────────────────────────────────
@@ -2863,7 +3248,7 @@ async function ligarNotif(){
     }
     const r = await fetch(`/api/push?sala=${c.sala}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sub, nome: c.nome }) });
     if (!r.ok) throw new Error(r.status);
-    minhaSub = sub; c.notif = true; guardar(); setNote(""); toast("Notificações ligadas");
+    minhaSub = sub; c.notif = true; delete c.silencio; guardar(); setNote(""); toast("Notificações ligadas");
   }catch(err){
     setNote("Não deu para ativar as notificações. Tente de novo pelo sininho.");
   }
@@ -2905,6 +3290,8 @@ const pedido = new URLSearchParams(location.search).get("c");
 if (pedido){ history.replaceState({ tela: "inicio" }, "", "/"); }
 irInicio();
 if (pedido) abrirPorPrefixo(pedido);
+abrirConvite();
+window.addEventListener("hashchange", abrirConvite);
 </script>
 </body>
 </html>

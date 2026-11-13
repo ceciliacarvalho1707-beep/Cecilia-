@@ -188,8 +188,9 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
 .folha > button.marcado{background:var(--other)}
 .folha > button .ok{margin-left:auto;color:var(--accent)}
 /* vistos */
-.tique{display:inline-flex;color:var(--muted);margin-left:2px}
-.tique svg{width:26px;height:17px}
+.tique{display:inline-flex;color:var(--muted);margin-left:2px;margin-block:-4px}
+.tique svg,.msg .time .tique svg{width:30px;height:20px}
+.msg .time .tique.relogio svg{width:15px;height:15px}
 .tique.relogio svg{width:14px;height:14px}
 .tique.lido{color:var(--azul)}
 /* áudio */
@@ -795,8 +796,8 @@ const nuvem = {
 const fotoUrl = (sala, id) => nuvem.url(sala, id);
 const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
 const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
-const ICON_TIQUE1 = '<svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l3 3 6-7"/></svg>';
-const ICON_TIQUE2 = '<svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6l3 3 6-7M7 8.5l.5.5 6-7"/></svg>';
+const ICON_TIQUE1 = '<svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6l3 3 6-7"/></svg>';
+const ICON_TIQUE2 = '<svg viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6l3 3 6-7M7 8.5l.5.5 6-7"/></svg>';
 
 // Cores das conversas: [nome, tema claro, tema escuro]
 const CORES = [["Roxo","#7b3fe4","#a47bff"],["Rosa","#c2255c","#f783ac"],["Azul","#1971c2","#74c0fc"],

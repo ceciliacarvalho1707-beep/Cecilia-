@@ -3788,7 +3788,8 @@ async function mudarPrivacidade(campos){
   const { data, error } = await sbConta.from("perfis").update(campos).eq("id", eu.id).select().single();
   if (error){ toast("Não deu para salvar. Confira a internet."); return false; }
   eu = data; perfisCache.set(eu.id, eu);
-  if (campos.mostra_online === false) for (const c of dados.chats) nuvem.pessoa(c.sala, c.nome, { visto: 0 }).catch(() => {}); // apaga o "visto por último"
+  // apaga o "visto por último" e avisa quem estiver com a conversa aberta
+  if (campos.mostra_online === false) for (const c of dados.chats) nuvem.pessoa(c.sala, c.nome, { visto: 0 }).then(() => avisarCanal(c.sala, "pessoa", { nome: c.nome, visto: 0 })).catch(() => {});
   atualizarTrack(); if (atual){ atualizarStatus(); render(); }
   return true;
 }

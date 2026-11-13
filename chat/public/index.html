@@ -467,6 +467,62 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
 .humores{display:flex;gap:6px;flex-wrap:wrap}
 .humores button{background:var(--other);color:var(--fg);padding:6px 10px;min-height:32px;font-size:.82rem;font-weight:500}
 .euArroba{text-align:center;color:var(--muted);margin-top:-8px}
+/* ── segurança e status ── */
+.codigoRec{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.25rem;font-weight:700;letter-spacing:.06em;text-align:center;background:var(--other);border-radius:14px;padding:16px 10px;user-select:all;-webkit-user-select:all;overflow-wrap:anywhere}
+fieldset.escolha{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+fieldset.escolha legend{font-weight:600;font-size:.9rem;margin-bottom:4px}
+.opcaoRadio{flex-direction:row!important;align-items:center;gap:10px;font-weight:500!important;font-size:.95rem!important}
+.opcaoRadio input{width:20px;height:20px;accent-color:var(--accent);margin:0}
+.chave{flex-direction:row!important;align-items:center;gap:14px;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.chave span{display:flex;flex-direction:column;gap:2px}
+.chave b{font-size:.95rem}
+.chave small{font-weight:400;color:var(--muted);font-size:.8rem;line-height:1.35}
+.chave input{appearance:none;-webkit-appearance:none;width:48px;height:28px;border-radius:14px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:background .15s;margin:0;padding:0;border:0}
+.chave input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+.chave input:checked{background:var(--accent)}
+.chave input:checked::after{transform:translateX(20px)}
+.chave input:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.linhaSeg{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.statusFaixa{display:flex;gap:14px;overflow-x:auto;padding-block:12px 4px;scrollbar-width:none}
+.statusFaixa::-webkit-scrollbar{display:none}
+.bolhaStatus{background:none;color:var(--fg);padding:0;min-height:0;display:flex;flex-direction:column;align-items:center;gap:4px;flex:none;width:64px;font-weight:500}
+.bolhaStatus small{font-size:.72rem;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bolhaStatus .anel{position:relative;padding:3px;border-radius:50%;box-shadow:0 0 0 2px var(--line)}
+.bolhaStatus.nova .anel{box-shadow:0 0 0 2.5px var(--accent)}
+.bolhaStatus.tem .anel{box-shadow:0 0 0 2px var(--muted)}
+.bolhaStatus .av{width:52px;height:52px;font-size:1.2rem;overflow:hidden}
+.bolhaStatus .mais{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:grid;place-items:center;border:2px solid var(--bg)}
+.bolhaStatus .mais svg{width:12px;height:12px}
+.memoria{display:flex;align-items:center;gap:12px;margin:8px 0 2px;padding-block:10px;background:var(--other);border-radius:16px;cursor:pointer;margin-left:max(16px,env(safe-area-inset-left,0px));margin-right:max(16px,env(safe-area-inset-right,0px));padding-left:12px!important;padding-right:6px!important}
+.memoria img{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:none}
+.memoria .meio{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.memoria .meio b{font-size:.85rem}
+.memoria .meio span{font-size:.85rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.statusTela{position:absolute;inset:0;z-index:44;background:#0d0a12;color:#fff;display:flex;flex-direction:column;padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+.stBarras{display:flex;gap:4px;padding:0 12px}
+.stBarras span{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.3);overflow:hidden}
+.stBarras span i{display:block;height:100%;width:0;background:#fff}
+.stBarras span.cheia i{width:100%}
+.stBarras span.agora i{animation:enche 5s linear forwards}
+@keyframes enche{to{width:100%}}
+.stTopo{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.stTopo .av-mini{width:38px;height:38px}
+.stQuem{flex:1;display:flex;flex-direction:column}
+.stQuem small{opacity:.75;font-size:.78rem}
+.stTopo .ic{color:#fff}
+.stCorpo{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;user-select:none;-webkit-user-select:none;border-radius:16px;margin:0 8px;overflow:hidden}
+.stCorpo img{max-width:100%;max-height:100%;object-fit:contain;flex:1;min-height:0}
+.stCorpo .legenda{margin:0 0 8px;padding:0 16px;text-align:center}
+.stCorpo .textoStatus{font-family:var(--display);font-size:1.7rem;font-weight:700;text-align:center;padding:24px;line-height:1.25;white-space:pre-wrap;overflow-wrap:anywhere;text-wrap:balance}
+.stRodape{display:flex;gap:8px;justify-content:center;padding:12px;flex-wrap:wrap}
+.stRodape .stReacao{background:rgba(255,255,255,.12);font-size:1.5rem;width:48px;height:48px;min-height:48px;padding:0;border-radius:50%}
+.stRodape .stReacao.minha{background:rgba(255,255,255,.35)}
+.stRodape .stVistas{background:rgba(255,255,255,.14);color:#fff}
+.statusPrevia{border-radius:16px;min-height:200px;display:flex;align-items:center;justify-content:center;padding:16px}
+.statusPrevia textarea{background:none;border:0;color:#fff;font-family:var(--display);font-size:1.4rem;font-weight:700;text-align:center;width:100%;min-height:150px;resize:none;outline:0}
+.statusPrevia textarea::placeholder{color:rgba(255,255,255,.7)}
+.criar .cores button{width:36px;height:36px;min-height:36px;border-radius:50%;padding:0;border:3px solid var(--bg)}
+@media (prefers-reduced-motion:reduce){.stBarras span.agora i{animation:none;width:100%}}
 .toast{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:20px;font-size:.85rem;z-index:30;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.bubble{transition:none}.msg.flash .bubble{animation:none;outline:3px solid var(--accent)}}
 </style>
@@ -480,6 +536,8 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       <button class="ic" id="temaBtn" type="button" aria-label="Aparência: claro ou escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg></button>
     </header>
     <div class="aba" id="abaConversas">
+      <div class="statusFaixa gut" id="statusFaixa" hidden aria-label="Status das amigas"></div>
+      <div class="memoria gut" id="memoria" hidden role="button" tabindex="0"></div>
       <div class="buscaLista gut"><input id="buscaConversas" type="search" placeholder="Buscar conversas" aria-label="Buscar conversas" autocomplete="off"></div>
       <div id="conversas" class="gut"></div>
       <button class="fab" id="novaBtn" type="button">
@@ -518,6 +576,7 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       </label>
       <p class="err" id="contaErr"></p>
       <button type="submit" id="contaBtn">Criar conta</button>
+      <button type="button" class="perigo" id="esqueciSenha">Esqueci a senha</button>
       <button type="button" class="perigo" id="semConta">Continuar sem conta</button>
     </form>
   </section>
@@ -698,6 +757,16 @@ legend{font-weight:600;font-size:.85rem;padding:0;margin-bottom:8px}
       <span><button class="ligb" id="ligVirar" type="button" aria-label="Trocar de câmera"></button><span class="ligRot">Virar</span></span>
       <span><button class="ligb vermelho" id="ligDesligar" type="button" aria-label="Desligar"></button><span class="ligRot">Desligar</span></span>
     </div>
+  </section>
+  <section class="statusTela" id="statusTela" hidden aria-label="Status">
+    <div class="stBarras" id="stBarras"></div>
+    <div class="stTopo">
+      <span class="av-mini cor" id="stAv"></span>
+      <span class="stQuem"><b id="stNome"></b><small id="stQuando"></small></span>
+      <button class="ic" id="stFechar" type="button" aria-label="Fechar status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="stCorpo" id="stCorpo"></div>
+    <div class="stRodape" id="stRodape"></div>
   </section>
   <div class="toast" id="toast" hidden></div>
 </div>
@@ -962,7 +1031,8 @@ function desenharLista(){
 async function atualizarPrevias(){
   clearTimeout(listaT);
   conferirSilencios();
-  if (eu) sincronizarConversas().catch(() => {});
+  if (eu){ sincronizarConversas().catch(() => {}); carregarStatus().catch(() => {}); }
+  procurarMemoria().catch(() => {});
   if ($("inicio").hidden) return;
   ligarCanais();
   await Promise.all(dados.chats.map(async c => {
@@ -1124,8 +1194,9 @@ function atualizarStatus(){
   if (dig) txt = digitando.length > 1 ? digitando.join(" e ") + " estão digitando…" : digitando[0] + " está digitando…";
   else if (online === null) txt = "conectando…";
   else if (!online) txt = "sem conexão";
+  else if (!priv().online && !(atual && atual.grupo)) txt = "";
   else if (atual && atual.grupo){
-    const ons = [...new Set(outrosPresentes(atual.sala).map(p => p.nome))];
+    const ons = priv().online ? [...new Set(outrosPresentes(atual.sala).filter(p => !p.oculto).map(p => p.nome))] : [];
     const outros = destinatarios();
     txt = ons.length ? ons.join(", ") + (ons.length > 1 ? " estão online" : " está online")
       : outros.length ? [...outros.slice(0, 4), "você"].join(", ") : "Toque aqui para convidar pessoas";
@@ -1190,6 +1261,7 @@ function presenca(c){
   if (!c) return;
   atualizarTrack();
   avisarCanal(c.sala, "estado", { nome: c.nome, ativo: meuEstado(c.sala).ativo }); // chega mais rápido que a presença
+  if (!priv().online) return; // escolheu não mostrar o "visto por último"
   const visto = Date.now();
   nuvem.pessoa(c.sala, c.nome, { visto }, true).catch(() => {});
   avisarCanal(c.sala, "pessoa", { nome: c.nome, visto });
@@ -1201,7 +1273,7 @@ const sb = window.supabase ? supabase.createClient(SUPA_URL, SUPA_KEY, { auth: {
 if (!dados.aparelho){ dados.aparelho = Math.random().toString(36).slice(2, 10); }
 const canais = new Map(); // sala -> canal
 const canalPronto = sala => { const ch = canais.get(sala); return !!ch && ch.state === "joined"; };
-const meuEstado = sala => ({ nome: (acharChat(sala) || {}).nome, ativo: !!atual && atual.sala === sala && !document.hidden, chamando: chamandoAgora(sala) });
+const meuEstado = sala => ({ nome: (acharChat(sala) || {}).nome, ativo: !!atual && atual.sala === sala && !document.hidden, chamando: chamandoAgora(sala), oculto: !priv().online });
 function atualizarTrack(){ for (const [sala, ch] of canais) if (ch.state === "joined") ch.track(meuEstado(sala)).catch?.(() => {}); }
 // Avisos rápidos (digitando, online, visto) só vão pela conexão aberta; mensagens e mudanças
 // vão de qualquer jeito (se a conexão ainda não abriu, a outra pessoa recebe na próxima conferência).
@@ -1222,7 +1294,7 @@ function outrosPresentes(sala){
 }
 function atualizarPresenca(){
   if (!atual) return;
-  presOutra = { online: outrosPresentes(atual.sala).some(p => p.ativo), visto: vistoOutra() };
+  presOutra = { online: outrosPresentes(atual.sala).some(p => p.ativo && !p.oculto), visto: vistoOutra() };
   atualizarStatus();
 }
 function ligarCanais(){
@@ -1283,7 +1355,7 @@ function recebeuDig(p){
   clearTimeout(digT); if (digitando.length) digT = setTimeout(() => recebeuDig({ nome: "", parou: true }), 5200);
 }
 $("voltar").addEventListener("click", () => history.state?.tela === "chat" ? history.back() : irInicio());
-window.addEventListener("popstate", () => { if (ignorarPop){ ignorarPop = false; return; } if (folhaAtual){ fecharFolha(true); return; } if (!$("visor").hidden){ fecharVisor(); return; } if (!$("galeria").hidden){ fecharGaleria(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
+window.addEventListener("popstate", () => { if (ignorarPop){ ignorarPop = false; return; } if (vendo){ fecharStatus(false); return; } if (folhaAtual){ fecharFolha(true); return; } if (!$("visor").hidden){ fecharVisor(); return; } if (!$("galeria").hidden){ fecharGaleria(); return; } if (!$("acoes").hidden){ fecharAcoes(); history.pushState({ tela: "chat" }, ""); return; } irInicio(); });
 $("cab").addEventListener("click", () => atual && verParticipantes());
 
 function marcarVisto(){
@@ -1297,8 +1369,9 @@ function marcarVisto(){
     lidoEnviado = deOutra.em;
     const c = atual, em = deOutra.em;
     if (em > (entregueEnviado[c.sala] || 0)) entregueEnviado[c.sala] = em;
-    nuvem.pessoa(c.sala, c.nome, { lido: em, entregue: Math.max(em, entregueEnviado[c.sala] || 0) })
-      .then(() => avisarCanal(c.sala, "pessoa", { nome: c.nome, lido: em }))
+    const ent = Math.max(em, entregueEnviado[c.sala] || 0), comLido = priv().lido; // sem tracinhos azuis: só avisa que chegou
+    nuvem.pessoa(c.sala, c.nome, comLido ? { lido: em, entregue: ent } : { entregue: ent })
+      .then(() => avisarCanal(c.sala, "pessoa", comLido ? { nome: c.nome, lido: em } : { nome: c.nome, entregue: ent }))
       .catch(() => { lidoEnviado = 0; });
   }
 }
@@ -2131,6 +2204,7 @@ $("anexo").addEventListener("click", () => abrirFolha("Mandar", (f, fechar) => {
 $("maisBtn").addEventListener("click", () => abrirFolha("", (f, fechar) => {
   opcao(f, I.grupo, atual.grupo ? "Participantes do grupo" : "Dados da conversa", () => verParticipantes());
   opcao(f, I.link, "Convidar com link", () => convidar());
+  opcao(f, I.baixar, "Exportar conversa", () => { fechar(); exportarConversa(); });
   opcao(f, '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>', "Buscar na conversa", () => { fechar(); abrirBusca(); });
   if (!$("sino").hidden){
     const on = $("sino").classList.contains("on");
@@ -3049,7 +3123,7 @@ function estadoMinha(m){
   if (m.pendente) return "pendente";
   const outros = destinatarios();
   if (!outros.length) return "enviada";
-  if (outros.every(n => (lidos[n] || 0) >= m.em)) return "lida";
+  if (priv().lido && outros.every(n => (lidos[n] || 0) >= m.em)) return "lida";
   if (outros.every(n => Math.max(chegou[n] || 0, lidos[n] || 0) >= m.em)) return "entregue";
   return "enviada";
 }
@@ -3172,8 +3246,8 @@ function infoMensagem(m){
   abrirFolha("Informações da mensagem", f => {
     f.appendChild(el("div","previa", resumo(m)));
     const outros = destinatarios();
-    const viram = outros.filter(n => (lidos[n] || 0) >= m.em);
-    const receberam = outros.filter(n => !viram.includes(n) && (chegou[n] || 0) >= m.em);
+    const viram = priv().lido ? outros.filter(n => (lidos[n] || 0) >= m.em) : [];
+    const receberam = outros.filter(n => !viram.includes(n) && Math.max(chegou[n] || 0, priv().lido ? 0 : lidos[n] || 0) >= m.em);
     const faltam = outros.filter(n => !viram.includes(n) && !receberam.includes(n));
     const secao = (titulo, icone, lista, cls) => {
       if (!lista.length) return;
@@ -3348,7 +3422,9 @@ $("contaForm").addEventListener("submit", async e => {
       await carregarEu(data.session.user);
     }
     $("cSenha").value = "";
+    const criou = modoConta === "criar";
     await depoisDeEntrar();
+    if (criou) novoCodigo();
   }catch(ex){
     const m = String(ex && ex.message || ex);
     err.textContent = /already registered|already been registered/i.test(m) ? "Esse @ já existe. Escolha outro ou toque em “Entrar”."
@@ -3381,7 +3457,7 @@ async function sairDaConta(){
   try{ await sincronizarConversas(); }catch(_){}
   for (const c of [...dados.chats]) if (c.notif) await desligarNotif(c).catch(() => {});
   await sbConta.auth.signOut().catch(() => {});
-  eu = null; amizades = []; perfisCache.clear();
+  eu = null; amizades = []; perfisCache.clear(); statusLista = []; statusVistas = []; desenharFaixaStatus();
   // as conversas ficam guardadas na conta; neste celular, saem junto
   dados.chats = []; dados.favs = {}; guardar(); ligarCanais();
   if (canalPessoal){ sb.removeChannel(canalPessoal); canalPessoal = null; }
@@ -3433,6 +3509,7 @@ function ligarCanalPessoal(){
   canalPessoal = sb.channel("u-" + eu.id, { config: { broadcast: { self: false } } });
   canalPessoal.on("broadcast", { event: "nova" }, () => sincronizarConversas());
   canalPessoal.on("broadcast", { event: "amizade" }, () => carregarAmigos());
+  canalPessoal.on("broadcast", { event: "status" }, () => carregarStatus());
   canalPessoal.subscribe(st => { if (st === "CLOSED" || st === "CHANNEL_ERROR"){ const ch = canalPessoal; canalPessoal = null; setTimeout(() => { if (ch) sb.removeChannel(ch); ligarCanalPessoal(); }, 2000); } });
 }
 function cutucar(id, evento){
@@ -3531,7 +3608,7 @@ async function procurarPessoas(q, res){
   q = limpaUsuario(q).replace(/[%,()]/g, "");
   res.textContent = "";
   if (q.length < 2) return;
-  const { data } = await sbConta.from("perfis").select("id,usuario,nome,foto,bio,humor").or(`usuario.ilike.${q}%,nome.ilike.%${q}%`).neq("id", eu.id).limit(10);
+  const { data } = await sbConta.rpc("buscar_perfis", { q });
   if (!data || !data.length){ res.appendChild(el("p","vaziofolha","Ninguém encontrado com “" + q + "”.")); return; }
   for (const p of data){
     perfisCache.set(p.id, p);
@@ -3557,7 +3634,7 @@ async function abrirPerfilDe(id){
   if (eu && id === eu.id){ trocarAba("Eu"); return; }
   // sempre a versão mais nova do perfil (se a internet falhar, mostra a que já tinha)
   let p = perfisCache.get(id);
-  try{ const r = await sbConta.from("perfis").select("id,usuario,nome,foto,bio,humor").eq("id", id).maybeSingle(); if (r.data){ p = r.data; perfisCache.set(id, p); } }catch(_){}
+  try{ const r = await sbConta.rpc("ver_perfil", { alvo: id }); if (r.data && r.data[0]){ p = r.data[0]; perfisCache.set(id, p); } else if (!r.error){ toast("Esse perfil não está disponível"); return; } }catch(_){}
   if (!p) return;
   const corpo = $("perfilCorpo"); corpo.textContent = "";
   const av = el("span","av cor"); pintar(av, corNome(p.nome)); avatar(av, p.foto, p.nome); corpo.appendChild(av);
@@ -3583,6 +3660,11 @@ async function abrirPerfilDe(id){
       : a.de === eu.id ? botao("Pedido enviado", "sec", () => {})
       : botao("Aceitar pedido de amizade", "", () => aceitarAmizade(id).then(() => abrirPerfilDe(id))));
   }
+  const bl = botao("Bloquear", "perigo", async () => {
+    if (!bl.dataset.certeza){ bl.dataset.certeza = "1"; bl.textContent = "Toque de novo para bloquear " + p.nome; return; }
+    await bloquear(id); irInicio();
+  });
+  bl.style.marginTop = "18px"; corpo.appendChild(bl);
   mostrar("perfil");
   if (history.state?.tela !== "perfil") history.pushState({ tela: "perfil" }, "");
 }
@@ -3632,6 +3714,9 @@ function desenharEu(){
     toast("Perfil salvo");
   });
   box.appendChild(f);
+  const extra = el("div","euCard"); box.appendChild(extra);
+  secaoPrivacidade(extra);
+  secaoSeguranca(extra).catch(() => {});
 }
 
 // ── Abas da tela inicial ────────────────────────────────────────────────
@@ -3683,6 +3768,372 @@ async function iniciarConta(){
   } else {
     trocarModoConta(dados.chats.length ? "criar" : "criar"); mostrar("conta");
   }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Segurança (bloquear, privacidade, código de recuperação), status de 24 h,
+// memórias e exportar conversa
+// ════════════════════════════════════════════════════════════════════════
+Object.assign(I, {
+  escudo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/></svg>',
+  bloquear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>',
+  baixar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',
+  chave: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg>',
+});
+
+// ── Privacidade ─────────────────────────────────────────────────────────
+// Sem conta, vale o padrão (tudo ligado).
+const priv = () => ({ online: !eu || eu.mostra_online !== false, lido: !eu || eu.mostra_lido !== false, visivel: (eu && eu.visivel) || "todos" });
+async function mudarPrivacidade(campos){
+  const { data, error } = await sbConta.from("perfis").update(campos).eq("id", eu.id).select().single();
+  if (error){ toast("Não deu para salvar. Confira a internet."); return false; }
+  eu = data; perfisCache.set(eu.id, eu);
+  if (campos.mostra_online === false) for (const c of dados.chats) nuvem.pessoa(c.sala, c.nome, { visto: 0 }).catch(() => {}); // apaga o "visto por último"
+  atualizarTrack(); if (atual){ atualizarStatus(); render(); }
+  return true;
+}
+
+// ── Código de recuperação ───────────────────────────────────────────────
+function gerarCodigo(){
+  const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", v = crypto.getRandomValues(new Uint8Array(16));
+  return [...v].map(x => abc[x % abc.length]).join("");
+}
+const normalCodigo = c => (c || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+const mostrarCodigo = c => c.match(/.{1,4}/g).join("-");
+async function novoCodigo(depois){
+  const cod = gerarCodigo();
+  const { error } = await sbConta.rpc("guardar_codigo", { p_codigo: cod });
+  if (error){ toast("Não deu para criar o código. Confira a internet."); return; }
+  abrirFolha("Seu código de recuperação", (f, fechar) => {
+    const box = el("div","criar");
+    box.appendChild(el("p","hint","Se esquecer a senha, é com este código que você volta para a sua conta. Guarde num lugar seguro (anote no papel ou tire um print) e não mande para ninguém."));
+    const cx = el("div","codigoRec", mostrarCodigo(cod)); box.appendChild(cx);
+    const linha = el("div","botoes");
+    linha.appendChild(botao("Copiar", "sec", async () => { try{ await navigator.clipboard.writeText(mostrarCodigo(cod)); toast("Código copiado"); }catch(_){ toast("Anote o código"); } }));
+    linha.appendChild(botao("Já guardei", "", () => { fechar(); if (depois) depois(); }));
+    box.appendChild(linha); f.appendChild(box);
+  });
+}
+$("esqueciSenha").addEventListener("click", () => abrirFolha("Esqueci a senha", (f, fechar) => {
+  const box = el("form","criar"); box.noValidate = true;
+  box.appendChild(el("p","hint","Use o código de recuperação que o app mostrou quando você criou a conta (ou que você gerou na aba Eu)."));
+  const u = campo(box, "Seu @", "ex.: bia.souza", 20); u.autocapitalize = "none"; u.value = limpaUsuario($("cUsuario").value);
+  const cod = campo(box, "Código de recuperação", "XXXX-XXXX-XXXX-XXXX", 30); cod.autocapitalize = "characters";
+  const s = campo(box, "Senha nova", "Pelo menos 6 caracteres", 100); s.type = "password"; s.autocomplete = "new-password";
+  const err = el("p","err"); box.appendChild(err);
+  const ok = el("button", null, "Trocar a senha e entrar"); ok.type = "submit"; box.appendChild(ok);
+  box.addEventListener("submit", async e => {
+    e.preventDefault();
+    const usuario = limpaUsuario(u.value), codigo = normalCodigo(cod.value);
+    if (s.value.length < 6){ err.textContent = "A senha nova precisa ter pelo menos 6 caracteres."; return; }
+    ok.disabled = true; err.textContent = "";
+    const { data, error } = await sbConta.rpc("recuperar_conta", { p_usuario: usuario, p_codigo: codigo, p_senha: s.value });
+    if (error || !data){
+      ok.disabled = false;
+      err.textContent = error && /muitas/.test(error.message) ? "Muitas tentativas erradas. Espere uma hora e tente de novo." : "O @ ou o código não conferem.";
+      return;
+    }
+    const r = await sbConta.auth.signInWithPassword({ email: emailDe(usuario), password: s.value });
+    if (r.error){ ok.disabled = false; err.textContent = "A senha foi trocada. Entre com ela na tela anterior."; return; }
+    fechar(); await carregarEu(r.data.session.user); await depoisDeEntrar(); toast("Senha trocada");
+  });
+  f.appendChild(box);
+}));
+
+// ── Bloquear ────────────────────────────────────────────────────────────
+async function bloquear(id){
+  const p = perfisCache.get(id) || {};
+  const { error } = await sbConta.from("bloqueios").insert({ quem: eu.id, bloqueado: id });
+  if (error && !/duplicate/i.test(error.message)){ toast("Não deu para bloquear"); return; }
+  await sbConta.from("amizades").delete().eq("de", eu.id).eq("para", id);
+  await sbConta.from("amizades").delete().eq("de", id).eq("para", eu.id);
+  (dados.bloqueadas = dados.bloqueadas || {})[id] = p.nome || p.usuario || "Pessoa bloqueada";
+  // a conversa a dois sai da lista e para de notificar
+  for (const c of dados.chats.filter(c => c.amiga === id && !c.grupo)){
+    if (c.notif) await desligarNotif(c).catch(() => {});
+    esquecerConversa(c).catch(() => {});
+    if (atual === c) pararChat();
+  }
+  dados.chats = dados.chats.filter(c => !(c.amiga === id && !c.grupo)); guardar(); ligarCanais();
+  cutucar(id, "amizade"); await carregarAmigos();
+  toast((p.nome || "Pessoa") + " foi bloqueada");
+}
+async function desbloquear(id){
+  await sbConta.from("bloqueios").delete().eq("quem", eu.id).eq("bloqueado", id);
+  if (dados.bloqueadas) delete dados.bloqueadas[id]; guardar();
+  toast("Desbloqueada");
+}
+
+// ── Aba "Eu": privacidade, segurança, bloqueadas ────────────────────────
+function secaoPrivacidade(box){
+  const p = priv();
+  box.appendChild(el("div","secaoAmigos","Privacidade"));
+  const quem = el("fieldset","escolha");
+  quem.appendChild(el("legend", null, "Quem vê sua foto, bio e humor"));
+  for (const [v, txt] of [["todos","Todo mundo"],["amigas","Só amigas"]]){
+    const l = el("label","opcaoRadio"), r = el("input"); r.type = "radio"; r.name = "pVisivel"; r.value = v; r.checked = p.visivel === v;
+    r.addEventListener("change", () => mudarPrivacidade({ visivel: v }).then(ok => ok && toast(v === "amigas" ? "Só amigas veem sua foto, bio e humor" : "Todo mundo vê sua foto, bio e humor")));
+    l.append(r, document.createTextNode(txt)); quem.appendChild(l);
+  }
+  box.appendChild(quem);
+  const chave = (txt, dica, ligado, campo) => {
+    const l = el("label","chave"), t = el("span"), cb = el("input");
+    t.append(el("b", null, txt), el("small", null, dica));
+    cb.type = "checkbox"; cb.checked = ligado; cb.setAttribute("role", "switch");
+    cb.addEventListener("change", () => mudarPrivacidade({ [campo]: cb.checked }).then(ok => { if (!ok) cb.checked = !cb.checked; }));
+    l.append(t, cb); box.appendChild(l);
+  };
+  chave("Mostrar quando estou online", "Desligado, você também não vê o online e o “visto por último” das outras.", p.online, "mostra_online");
+  chave("Tracinhos azuis", "Desligado, ninguém sabe quando você viu, e você também não vê quando viram as suas.", p.lido, "mostra_lido");
+}
+async function secaoSeguranca(box){
+  box.appendChild(el("div","secaoAmigos","Segurança"));
+  const linha = el("div","linhaSeg"); box.appendChild(linha);
+  const { data: tem } = await sbConta.rpc("tem_codigo");
+  linha.appendChild(el("p","hint", tem ? "Você tem um código de recuperação. Se perder, gere outro (o antigo para de valer)." : "Você ainda não tem código de recuperação. Sem ele, se esquecer a senha, perde a conta."));
+  linha.appendChild(botao(tem ? "Gerar outro código" : "Criar código de recuperação", tem ? "sec" : "", () => novoCodigo(() => desenharEu())));
+  const bl = Object.entries(dados.bloqueadas || {});
+  const { data: bloqs } = await sbConta.from("bloqueios").select("bloqueado");
+  const ids = (bloqs || []).map(b => b.bloqueado);
+  if (ids.length){
+    box.appendChild(el("div","secaoAmigos","Bloqueadas"));
+    for (const id of ids){
+      const nome = (dados.bloqueadas || {})[id] || (bl.find(([k]) => k === id) || [])[1] || "Pessoa bloqueada";
+      const l = el("div","linhaPessoa"); l.append(miniAvatar(nome, null, "av"), el("span","meio")); l.querySelector(".meio").appendChild(el("b", null, nome));
+      const b = botao("Desbloquear", "sec", async () => { await desbloquear(id); l.remove(); }); const ac = el("span","acoesP"); ac.appendChild(b); l.appendChild(ac);
+      box.appendChild(l);
+    }
+  }
+}
+
+// ════════ Status (24 horas) ════════
+let statusLista = [], statusVistas = []; // tudo que eu posso ver; vistas: minhas + nos meus status
+const STATUS_CORES = ["#7b3fe4","#c2255c","#1971c2","#2b8a3e","#d9480f","#0b7285","#364fc7","#e8590c"];
+async function carregarStatus(){
+  if (!eu) return;
+  const agora = new Date().toISOString();
+  const [s, v] = await Promise.all([
+    sbConta.from("status").select("id,usuario,texto,foto,cor,criado,expira").gt("expira", agora).order("criado"),
+    sbConta.from("status_vistas").select("status,quem,em,reacao"),
+  ]);
+  if (s.error) return;
+  statusLista = s.data || []; statusVistas = v.data || [];
+  desenharFaixaStatus();
+}
+const vi = id => statusVistas.some(v => v.status === id && v.quem === eu.id);
+function porPessoa(){
+  const m = new Map();
+  for (const s of statusLista){ if (!m.has(s.usuario)) m.set(s.usuario, []); m.get(s.usuario).push(s); }
+  return m;
+}
+function desenharFaixaStatus(){
+  const box = $("statusFaixa"); box.textContent = "";
+  if (!eu){ box.hidden = true; return; }
+  box.hidden = false;
+  const grupos = porPessoa();
+  const meus = grupos.get(eu.id) || [];
+  const bolha = (id, nome, foto, novo, rotulo, extra) => {
+    const b = el("button", "bolhaStatus" + (novo ? " nova" : "") + (extra ? " " + extra : "")); b.type = "button";
+    const anel = el("span","anel"); anel.appendChild(miniAvatar(nome, foto, "av")); b.appendChild(anel);
+    b.appendChild(el("small", null, rotulo)); return b;
+  };
+  const meu = bolha(eu.id, eu.nome, eu.foto, false, meus.length ? "Seu status" : "Postar status", meus.length ? "tem" : "vazio");
+  if (!meus.length){ const mais = el("span","mais"); mais.innerHTML = I.mais; meu.querySelector(".anel").appendChild(mais); }
+  meu.addEventListener("click", () => meus.length ? verStatus(eu.id) : postarStatus());
+  if (meus.length) ligarSegurar(meu, () => postarStatus());
+  box.appendChild(meu);
+  const outros = [...grupos.entries()].filter(([id]) => id !== eu.id)
+    .map(([id, ss]) => ({ id, ss, novo: ss.some(s => !vi(s.id)), ult: ss[ss.length - 1].criado }))
+    .sort((a, b) => (b.novo - a.novo) || (b.ult > a.ult ? 1 : -1));
+  for (const o of outros){
+    const p = perfisCache.get(o.id) || { nome: "Amiga" };
+    const b = bolha(o.id, p.nome, p.foto, o.novo, p.nome.split(" ")[0]);
+    b.addEventListener("click", () => verStatus(o.id));
+    box.appendChild(b);
+  }
+}
+function postarStatus(){
+  abrirFolha("Novo status", (f, fechar) => {
+    f.appendChild(el("p","hint","Fica 24 horas no seu perfil e só suas amigas veem."));
+    opcao(f, I.foto, "Foto", () => { fechar(); statusArq.click(); });
+    opcao(f, I.editar, "Texto colorido", () => abrirFolha("Status de texto", (f2, fechar2) => {
+      const box = el("form","criar"); box.noValidate = true;
+      const prev = el("div","statusPrevia"); let cor = Math.floor(Math.random() * STATUS_CORES.length);
+      const t = el("textarea"); t.maxLength = 300; t.placeholder = "O que você está pensando?"; t.setAttribute("aria-label", "Texto do status");
+      prev.appendChild(t); prev.style.background = STATUS_CORES[cor];
+      const cores = el("div","cores");
+      STATUS_CORES.forEach((c, i) => { const b = el("button"); b.type = "button"; b.style.background = c; b.setAttribute("aria-label", "Cor " + (i + 1)); b.addEventListener("click", () => { cor = i; prev.style.background = c; }); cores.appendChild(b); });
+      const ok = el("button", null, "Postar"); ok.type = "submit";
+      box.append(prev, cores, ok);
+      box.addEventListener("submit", async e => {
+        e.preventDefault(); if (!t.value.trim()) return;
+        ok.disabled = true;
+        const { error } = await sbConta.from("status").insert({ usuario: eu.id, texto: t.value.trim(), cor });
+        if (error){ ok.disabled = false; toast("Não deu para postar"); return; }
+        fechar2(); avisarAmigasStatus(); toast("Status postado"); carregarStatus();
+      });
+      f2.appendChild(box); if (!toque) t.focus();
+    }));
+  });
+}
+const statusArq = el("input"); statusArq.type = "file"; statusArq.accept = "image/*"; statusArq.hidden = true; $("app").appendChild(statusArq);
+statusArq.addEventListener("change", async () => {
+  const x = statusArq.files[0]; statusArq.value = ""; if (!x) return;
+  try{
+    toast("Postando…");
+    const r = await comprimir(x, 1280, 0.8, false);
+    const pasta = await salaDe("status|" + eu.id);
+    const caminho = await nuvem.subir(pasta, r.blob, "image/jpeg");
+    const { error } = await sbConta.from("status").insert({ usuario: eu.id, foto: caminho, texto: "" });
+    if (error) throw error;
+    avisarAmigasStatus(); toast("Status postado"); carregarStatus();
+  }catch(_){ toast("Não deu para postar a foto"); }
+});
+function avisarAmigasStatus(){ for (const id of amigaIds()) cutucar(id, "status"); }
+
+// Tela de ver status
+let vendo = null; // { id, lista, i, t }
+function verStatus(id){
+  const lista = porPessoa().get(id); if (!lista || !lista.length) return;
+  const i = id === eu.id ? 0 : Math.max(0, lista.findIndex(s => !vi(s.id)));
+  vendo = { id, lista, i };
+  $("statusTela").hidden = false;
+  history.pushState({ tela: inicioOuChat(), status: 1 }, "");
+  mostrarStatusAtual();
+}
+const inicioOuChat = () => (atual ? "chat" : "inicio");
+function mostrarStatusAtual(){
+  const v = vendo; if (!v) return;
+  clearTimeout(v.t);
+  const s = v.lista[v.i], p = s.usuario === eu.id ? eu : (perfisCache.get(s.usuario) || { nome: "Amiga" });
+  const barras = $("stBarras"); barras.textContent = "";
+  v.lista.forEach((_, k) => { const b = el("span", k < v.i ? "cheia" : k === v.i ? "agora" : ""); b.appendChild(el("i")); barras.appendChild(b); });
+  const av = $("stAv"); pintar(av, corNome(p.nome)); avatar(av, p.foto, p.nome);
+  $("stNome").textContent = s.usuario === eu.id ? "Você" : p.nome;
+  $("stQuando").textContent = quando(Date.parse(s.criado));
+  const corpo = $("stCorpo"); corpo.textContent = ""; corpo.style.background = "";
+  if (s.foto){ const im = new Image(); im.src = fotoUrl("", s.foto); im.alt = "Status de " + p.nome; corpo.appendChild(im); if (s.texto) corpo.appendChild(el("p","legenda", s.texto)); }
+  else { corpo.style.background = STATUS_CORES[s.cor % STATUS_CORES.length] || STATUS_CORES[0]; corpo.appendChild(el("p","textoStatus", s.texto)); }
+  const rod = $("stRodape"); rod.textContent = "";
+  if (s.usuario === eu.id){
+    const vistas = statusVistas.filter(x => x.status === s.id && x.quem !== eu.id);
+    rod.appendChild(botao("👁 " + vistas.length + (vistas.length === 1 ? " visualização" : " visualizações"), "stVistas", () => verQuemViu(s)));
+  } else {
+    const minha = statusVistas.find(x => x.status === s.id && x.quem === eu.id);
+    for (const e of ["❤️","😂","😮","😢","🔥","👏"]){
+      const b = botao(e, "stReacao" + (minha && minha.reacao === e ? " minha" : ""), () => reagirStatus(s, e));
+      b.setAttribute("aria-label", "Reagir com " + e); rod.appendChild(b);
+    }
+    if (!vi(s.id)){
+      statusVistas.push({ status: s.id, quem: eu.id, em: new Date().toISOString(), reacao: null });
+      sbConta.from("status_vistas").upsert({ status: s.id, quem: eu.id }, { onConflict: "status,quem", ignoreDuplicates: true }).then(() => {});
+    }
+  }
+  v.t = setTimeout(() => passarStatus(1), s.foto ? 6000 : 5000);
+}
+function passarStatus(d){
+  const v = vendo; if (!v) return;
+  const n = v.i + d;
+  if (n < 0){ v.i = 0; mostrarStatusAtual(); return; }
+  if (n >= v.lista.length){ fecharStatus(true); return; }
+  v.i = n; mostrarStatusAtual();
+}
+function fecharStatus(voltar){
+  if (!vendo) return;
+  clearTimeout(vendo.t); vendo = null; $("statusTela").hidden = true; desenharFaixaStatus();
+  if (voltar && history.state && history.state.status){ ignorarPop = true; history.back(); }
+}
+$("stFechar").addEventListener("click", () => fecharStatus(true));
+$("stCorpo").addEventListener("click", e => { const r = $("stCorpo").getBoundingClientRect(); passarStatus(e.clientX - r.left < r.width / 3 ? -1 : 1); });
+async function reagirStatus(s, e){
+  const minha = statusVistas.find(x => x.status === s.id && x.quem === eu.id);
+  const nova = minha && minha.reacao === e ? null : e;
+  if (minha) minha.reacao = nova; else statusVistas.push({ status: s.id, quem: eu.id, reacao: nova });
+  await sbConta.from("status_vistas").upsert({ status: s.id, quem: eu.id, reacao: nova }, { onConflict: "status,quem" });
+  if (nova){ toast("Reação enviada " + e); cutucar(s.usuario, "status"); }
+  mostrarStatusAtual();
+}
+function verQuemViu(s){
+  clearTimeout(vendo && vendo.t);
+  abrirFolha("Quem viu", f => {
+    const vistas = statusVistas.filter(x => x.status === s.id && x.quem !== eu.id);
+    if (!vistas.length) f.appendChild(el("p","vaziofolha","Ninguém viu ainda."));
+    for (const v of vistas){
+      const p = perfisCache.get(v.quem) || { nome: "Amiga" };
+      const l = el("div","pessoa"); l.appendChild(miniAvatar(p.nome, p.foto, "av-mini"));
+      const meio = el("span","meio"); meio.append(el("b", null, p.nome + (v.reacao ? "  " + v.reacao : "")), el("small", null, quando(Date.parse(v.em))));
+      l.appendChild(meio); f.appendChild(l);
+    }
+    const apagar = opcao(f, I.lixo, "Apagar este status", async () => {
+      if (!apagar.dataset.certeza){ apagar.dataset.certeza = "1"; apagar.lastChild.textContent = "Toque de novo para apagar"; return; }
+      await sbConta.from("status").delete().eq("id", s.id);
+      fecharFolha(true); fecharStatus(true); toast("Status apagado"); carregarStatus();
+    }, "perigo");
+  });
+}
+
+// ════════ Memórias ════════
+async function procurarMemoria(){
+  const hoje = new Date().toDateString();
+  if (dados.memoria && dados.memoria.dia === hoje){ desenharMemoria(); return; }
+  dados.memoria = { dia: hoje }; guardar();
+  const agora = Date.now(), dia = 864e5;
+  for (const [quanto, rotulo] of [[365, "Há um ano"], [30, "Há um mês"]]){
+    const alvo = agora - quanto * dia;
+    for (const c of dados.chats.slice(0, 12)){
+      try{
+        const r = await rest(c.sala, `mensagens?select=${COLS}&sala=eq.${c.sala}&apagada=eq.false&em=gte.${Math.round(alvo - dia)}&em=lte.${Math.round(alvo + dia)}&order=em.asc&limit=60`);
+        const ms = (r || []).map(limpa).filter(m => !m.fig && !m.audio && !["velha","forca","quiz","chamada","enquete"].includes((m.extra || {}).tipo));
+        const comFoto = ms.find(m => m.foto || (m.extra || {}).tipo === "album");
+        const comTexto = ms.find(m => m.texto && m.texto.length >= 15);
+        const m = comFoto || comTexto;
+        if (m){ dados.memoria = { dia: hoje, rotulo, sala: c.sala, titulo: c.titulo, m }; guardar(); desenharMemoria(); return; }
+      }catch(_){}
+    }
+  }
+}
+function desenharMemoria(){
+  const box = $("memoria"), mem = dados.memoria;
+  if (!mem || !mem.m || mem.fechada || !acharChat(mem.sala)){ box.hidden = true; return; }
+  box.textContent = ""; box.hidden = false;
+  const m = mem.m, x = m.extra || {};
+  const foto = m.foto || (x.tipo === "album" && x.fotos[0] && x.fotos[0].p);
+  if (foto){ const im = new Image(); im.src = fotoUrl(mem.sala, foto); im.alt = ""; box.appendChild(im); }
+  const txt = el("span","meio");
+  txt.append(el("b", null, "📅 " + mem.rotulo + " em " + mem.titulo), el("span", null, (m.nome ? m.nome + ": " : "") + (m.texto || "uma foto")));
+  box.appendChild(txt);
+  const fechar = el("button","ic"); fechar.type = "button"; fechar.setAttribute("aria-label", "Fechar memória");
+  fechar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  fechar.addEventListener("click", e => { e.stopPropagation(); mem.fechada = true; guardar(); box.hidden = true; });
+  box.appendChild(fechar);
+  box.onclick = () => { if (foto) abrirVisor(fotoUrl(mem.sala, foto)); else abrir(mem.sala); };
+}
+
+// ════════ Exportar conversa ════════
+async function exportarConversa(){
+  const c = atual; if (!c) return;
+  toast("Preparando o arquivo…");
+  let ms = [];
+  try{ ms = ((await rest(c.sala, `mensagens?select=${COLS}&sala=eq.${c.sala}&order=em.asc&limit=1000`)) || []).map(limpa); }
+  catch(_){ ms = msgs; }
+  const linhas = [`Conversa "${c.titulo}" - Nosso Cantinho`, `Exportada em ${new Date().toLocaleString("pt-BR")}`, ""];
+  for (const m of ms){
+    const d = new Date(m.em), x = m.extra || {};
+    let t = resumo(m);
+    if (m.foto && !m.fig) t += " " + fotoUrl(c.sala, m.foto);
+    if (x.tipo === "album") t += " " + x.fotos.map(f => fotoUrl(c.sala, f.p)).join(" ");
+    if (x.tipo === "video") t += " " + fotoUrl(c.sala, x.p);
+    if (m.audio) t += " " + fotoUrl(c.sala, m.audio);
+    linhas.push(`[${d.toLocaleDateString("pt-BR")} ${d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}] ${m.nome}: ${t}`);
+  }
+  const nome = `Conversa - ${c.titulo.replace(/[\\/:*?"<>|]/g, "")}.txt`;
+  const arq = new File([linhas.join("\n")], nome, { type: "text/plain" });
+  if (navigator.canShare && navigator.canShare({ files: [arq] })){
+    try{ await navigator.share({ files: [arq], title: nome }); return; }catch(e){ if (e && e.name === "AbortError") return; }
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(arq); a.download = nome;
+  $("app").appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+  toast("Arquivo baixado: " + nome);
 }
 
 // ── Notificações ────────────────────────────────────────────────────────
